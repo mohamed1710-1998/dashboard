@@ -451,23 +451,13 @@
 #data-loading p{color:var(--text-dim);font-size:13px;line-height:1.9}
 #load-json-button{margin-top:18px;border:0;border-radius:9px;padding:10px 18px;background:var(--gold);color:#231A0C;font:600 13px 'Noto Sans Arabic',Tahoma,Arial,sans-serif;cursor:pointer}
 
-/* Equal-height cards with a shared comparison footer and room for department names. */
-#dashboard-view .kpirow,#dashboard-view .kpirow2{align-items:stretch;grid-auto-rows:1fr}
-#dashboard-view .kpi,#dashboard-view .kpi2,#dashboard-view .miniStat,#dashboard-view .statgrid .sg{display:flex;flex-direction:column;min-width:0}
-#dashboard-view .kpi .metric-previous,#dashboard-view .kpi2 .metric-previous,#dashboard-view .miniStat .metric-previous,#dashboard-view .statgrid .sg .metric-previous{margin-top:auto;padding-top:10px;border-top:1px solid var(--border)}
-#dashboard-view :is(.kpi,.kpi2,.miniStat,.sg) .metric-value-row{margin-bottom:10px}
-#dashboard-view .kpi .d{margin-top:-4px;margin-bottom:10px}
-#dashboard-view .executive-kpis>.kpi{padding:16px}
-#dashboard-view .executive-kpis .ico{position:absolute;inset-inline-end:14px;top:14px;margin:0}
-#dashboard-view .executive-kpis>.kpi>.l{padding-inline-end:38px;min-height:36px;line-height:1.7}
-#dashboard-view .executive-kpis .metric-value-row{min-height:42px;margin-top:6px}
-#dashboard-view .executive-kpis #k-best{flex:initial;min-width:0;font-size:16px!important;line-height:1.65}
+/* Four remaining executive cards share the available width and height. */
+#dashboard-view .executive-kpis{align-items:stretch;grid-auto-rows:1fr}
+@media(min-width:901px){#dashboard-view .executive-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:900px){#dashboard-view .executive-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 #dashboard-view .best-previous-title{display:block;margin-bottom:3px;font-size:12px;font-weight:600;color:var(--text-dim)}
 #dashboard-view .best-winners{display:block;font-size:13px;line-height:1.7}
 #dashboard-view .best-period{display:block;margin-top:5px;font-size:12px;line-height:1.65}
-#dashboard-view .urgent-panel .miniStatRow,#dashboard-view .range-panel .statgrid{align-items:stretch;grid-auto-rows:1fr}
-@media(min-width:901px){#dashboard-view .executive-kpis,#dashboard-view .kpirow2{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:900px){#dashboard-view .executive-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -656,8 +646,6 @@
       
       <div class="kpirow executive-kpis">
         <div class="kpi"><div class="ico" style="background:rgba(228,195,119,0.15)">★</div><div class="l" data-i18n="kpi_avg">متوسط التقييم النهائي</div><div class="metric-value-row"><div class="v num" id="k-avg">–</div><span id="k-avg-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" data-i18n="out_of_10">من 10</div><div id="k-avg-previous" class="metric-previous"></div></div>
-        <div class="kpi"><div class="ico" style="background:rgba(43,166,190,0.15)">◧</div><div class="l" data-i18n="kpi_count">عدد التقييمات</div><div class="metric-value-row"><div class="v num" id="k-count">–</div><span id="k-count-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" id="k-count-total">مهمة</div><div id="k-count-previous" class="metric-previous"></div></div>
-        <div class="kpi"><div class="ico" style="background:rgba(210,98,75,0.15)">⏳</div><div class="l" data-i18n="kpi_incomplete">مهام غير مكتملة</div><div class="metric-value-row"><div class="v num" id="k-incomplete">–</div><span id="k-incomplete-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" data-i18n="in_progress">قيد التنفيذ</div><div id="k-incomplete-previous" class="metric-previous"></div></div>
         <div class="kpi"><div class="ico" style="background:rgba(52,178,123,0.15)">◎</div><div class="l" data-i18n="completion_rate">نسبة الإنجاز</div><div class="metric-value-row"><div class="v num" id="k-completion">–</div><span id="k-completion-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" data-i18n="completion_sub">مكتمل / إجمالي المهام</div><div id="k-completion-previous" class="metric-previous"></div></div>
         <div class="kpi"><div class="ico" style="background:rgba(52,178,123,0.15)">▦</div><div class="l" data-i18n="kpi_depts">الإدارات المعروضة</div><div class="metric-value-row"><div class="v num" id="k-depts">–</div><span id="k-depts-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" id="k-depts-total">إدارة</div><div id="k-depts-previous" class="metric-previous"></div></div>
         <div class="kpi"><div class="ico" style="background:rgba(228,195,119,0.15)">🏆</div><div class="l" data-i18n="kpi_best">أفضل إدارة أداءً</div><div class="metric-value-row"><div class="v" id="k-best" style="font-size:14px;"></div></div><div class="d num" id="k-best-score" style="color:var(--gold-2)"></div><div id="k-best-previous" class="metric-previous"></div></div>
@@ -1147,19 +1135,14 @@ function renderKPIs(){
   const urgentIncomplete = depts.reduce((s,d)=>s+(d.urgent_incomplete||0),0);
   const urgentTotalPossible = urgentCount*2;
   const urgentTaskRate = (urgentCount+urgentIncomplete) ? urgentCount/(urgentCount+urgentIncomplete)*100 : null;
-  const incompleteCount = depts.reduce((s,d)=>s+(d.incomplete_count||0),0);
   const totalTasks = depts.reduce((s,d)=>s+d.record_count,0);
   const completionRate = totalTasks ? count/totalTasks*100 : null;
   const best = depts.filter(d=>d.avg!==null).sort(baseDescending)[0];
 
   document.getElementById('k-avg').textContent = toAr(baseAvg===null?'–':baseAvg.toFixed(2));
   document.querySelector('[data-i18n="out_of_10"]').textContent=(LANG==='ar'?'بعد البونص: ':'After bonus: ')+toAr(afterBonusAvg===null?'–':afterBonusAvg.toFixed(2));
-  document.getElementById('k-count').textContent = toAr(count);
-  document.getElementById('k-count-total').textContent=(LANG==='ar'?'من أصل ':'out of ')+toAr(totalTasks)+(LANG==='ar'?' مهمة':' tasks');
   document.getElementById('k-depts-total').textContent=(LANG==='ar'?'من أصل ':'out of ')+toAr(depts.length)+(LANG==='ar'?' إدارة':' departments');
   document.getElementById('k-depts').textContent = toAr(depts.filter(d=>d.avg!==null).length);
-  document.getElementById('k-incomplete').textContent = toAr(incompleteCount);
-  document.querySelector('[data-i18n="in_progress"]').textContent=LANG==='ar'?'تشمل التقييم صفر والخانات الفاضية':'Includes zero and blank scores';
   document.getElementById('k-completion').textContent = toAr(fmt1(completionRate))+pctSign();
   document.getElementById('k-best').textContent = best ? deptName(best) : '–';
   document.getElementById('k-best-score').textContent = best ? toAr(fmt1(best.avg)) + '/' + toAr(10) : '';
@@ -1515,7 +1498,7 @@ function staticCardComparison(id,metric,now,before,ctx){
 function renderCardComparisons(scope='home'){
  const ctx=comparisonContext(),now=metricValues(ctx.now),prior=metricValues(ctx.prior);
  const ids=scope==='urgent'?{'ur-total':'urgent','ur-bonus':'bonus','ur-rate':'bonus_rate','ur-avg':'urgent_avg','ur-incomplete':'urgent_pending'}:
- {'k-avg':'avg','k-count':'completed','k-incomplete':'incomplete','k-completion':'completion','k-depts':'departments','mu-count':'urgent','mu-bonus':'bonus','mu-incomplete':'urgent_pending','mu-rate':'urgent_completion'};
+ {'k-avg':'avg','k-completion':'completion','k-depts':'departments','mu-count':'urgent','mu-bonus':'bonus','mu-incomplete':'urgent_pending','mu-rate':'urgent_completion'};
  for(const [id,metric] of Object.entries(ids))staticCardComparison(id,metric,now[metric],prior[metric],ctx);
  if(scope==='home'){
   const best=document.getElementById('k-best');
