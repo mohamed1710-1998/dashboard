@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>1K Coffee — نظام تقييم الأداء الإداري</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; scroll-padding-top:24px;}
+  html,body{min-height:100%;}
+  *{scrollbar-width:none; -ms-overflow-style:none;}
+  *::-webkit-scrollbar{display:none; width:0; height:0;}
+
+  :root{
+    --bg:#0C1526;
+    --panel:#122036;
+    --panel-2:#16273F;
+    --border:rgba(255,255,255,0.07);
+    --text:#EAE3D2;
+    --text-dim:#8E9BB3;
+    --gold:#C9A24B;
+    --gold-2:#E4C377;
+    --teal:#2BA6BE;
+    --green:#34B27B;
+    --amber:#E0B24E;
+    --rust:#D2624B;
+    --chartText:#EAE3D2;
+    --chartDim:#8E9BB3;
+    --chartGrid:rgba(255,255,255,0.06);
+  }
+  :root[data-theme="light"]{
+    --bg:#F4F1E9;
+    --panel:#FFFFFF;
+    --panel-2:#FBF8F1;
+    --border:rgba(20,30,50,0.10);
+    --text:#25201A;
+    --text-dim:#726A5C;
+    --chartText:#25201A;
+    --chartDim:#726A5C;
+    --chartGrid:rgba(20,30,50,0.08);
+    --alert-title:#8A3A28;
+    --alert-text:#7A4433;
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Noto Sans Arabic',Tahoma,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  body.dash-mode{ min-height:100%; overflow-x:hidden; padding-top:0; padding-bottom:0; }
+
+  /* shared brand mark — used identically in the landing topbar and the dashboard topbar */
+  .mark{ width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--gold),var(--gold-2)); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:13px; color:#231A0C; flex:none; }
+  .logo-img{ height:30px; width:auto; display:block; flex:none; }
+
+/* ===================== landing view ===================== */
+#landing-view .num{font-family:'IBM Plex Mono',monospace;}
+#landing-view a{color:inherit; text-decoration:none;}
+#landing-view .wrap{max-width:1120px; margin:0 auto; padding:0 28px;}
+@media(max-width:640px){
+#landing-view .wrap{padding:0 18px;}
+}
+#landing-view::before, #landing-view::after{
+    content:''; position:fixed; border-radius:50%; filter:blur(90px); z-index:0; pointer-events:none;
+  }
+#landing-view::before{ width:520px; height:520px; top:-180px; left:-140px; background:radial-gradient(circle, rgba(201,162,75,0.16), transparent 70%); }
+#landing-view::after{ width:600px; height:600px; bottom:-220px; right:-160px; background:radial-gradient(circle, rgba(43,166,190,0.12), transparent 70%); }
+#landing-view header{ position:relative; z-index:2; }
+#landing-view .topbar{ display:flex; align-items:center; justify-content:space-between; padding:22px 0; }
+#landing-view .brand{ display:flex; align-items:center; gap:10px; }
+#landing-view .mark{ width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--gold),var(--gold-2)); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:13px; color:#231A0C; flex:none; }
+#landing-view .brandtext .n{ font-weight:800; font-size:15.5px; }
+#landing-view .brandtext .s{ font-size:10.5px; color:var(--text-dim); font-weight:600; }
+#landing-view .topcta{ display:flex; align-items:center; gap:16px; }
+#landing-view .navlink{ font-size:13px; color:var(--text-dim); font-weight:600; }
+#landing-view .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:10px; font-size:13.5px; font-weight:700; transition:transform .15s ease, box-shadow .15s ease; }
+#landing-view .btn-gold{ background:linear-gradient(135deg,var(--gold),var(--gold-2)); color:#231A0C; box-shadow:0 6px 18px rgba(201,162,75,0.25); }
+#landing-view .btn-gold:hover{ transform:translateY(-1px); box-shadow:0 10px 24px rgba(201,162,75,0.35); }
+#landing-view .btn-ghost{ border:1px solid var(--border); color:var(--text); }
+#landing-view .btn-ghost:hover{ border-color:rgba(255,255,255,0.2); }
+#landing-view .btn-sm{ padding:8px 16px; font-size:12.5px; }
+#landing-view .hero{ position:relative; z-index:1; padding:36px 0 10px; display:grid; grid-template-columns:1.05fr 0.95fr; gap:40px; align-items:center; }
+@media(max-width:900px){
+#landing-view .hero{ grid-template-columns:1fr; padding-top:10px; }
+}
+#landing-view .kicker{ font-size:13px; color:var(--teal); font-weight:700; margin-bottom:14px; }
+#landing-view h1{ font-size:38px; font-weight:800; line-height:1.32; letter-spacing:-0.01em; }
+@media(max-width:640px){
+#landing-view h1{ font-size:29px; }
+}
+#landing-view h1 b{ color:var(--gold-2); font-weight:800; }
+#landing-view .herotext{ margin-top:16px; font-size:15px; color:var(--text-dim); max-width:52ch; }
+#landing-view .heroactions{ display:flex; align-items:center; gap:14px; margin-top:28px; flex-wrap:wrap; }
+#landing-view .heronote{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-dim); margin-top:22px; }
+#landing-view .heronote i{ width:6px; height:6px; border-radius:50%; background:var(--green); flex:none; }
+#landing-view .gaugewrap{ position:relative; display:flex; flex-direction:column; align-items:center; }
+#landing-view .gaugecard{ background:var(--panel); border:1px solid var(--border); border-radius:20px; padding:26px 26px 20px; width:100%; max-width:420px; box-shadow:0 24px 60px rgba(0,0,0,0.35); }
+#landing-view .gaugecard .cap{ display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--text-dim); font-weight:700; margin-bottom:6px; }
+#landing-view .gaugecard .cap span.num{ color:var(--text); }
+#landing-view .frombadge{ position:absolute; top:34px; left:6px; background:var(--panel-2); border:1px solid var(--border); border-radius:10px; padding:8px 12px; font-size:11px; color:var(--text-dim); font-weight:700; text-align:center; }
+#landing-view .frombadge .num{ display:block; font-size:16px; color:var(--rust); font-weight:700; }
+@media(max-width:900px){
+#landing-view .frombadge{ display:none; }
+}
+#landing-view .statstrip{ position:relative; z-index:1; margin-top:52px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:22px 0; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+@media(max-width:760px){
+#landing-view .statstrip{ grid-template-columns:repeat(2,1fr); row-gap:22px; }
+}
+#landing-view .stat{ text-align:center; }
+#landing-view .stat .v{ font-size:26px; font-weight:700; color:var(--gold-2); }
+#landing-view .stat .l{ font-size:11.5px; color:var(--text-dim); font-weight:600; margin-top:4px; }
+#landing-view section{ position:relative; z-index:1; padding:64px 0; }
+#landing-view .sectitle{ font-size:24px; font-weight:800; margin-bottom:10px; }
+#landing-view .secsub{ font-size:14px; color:var(--text-dim); max-width:56ch; margin-bottom:34px; }
+#landing-view .featuregrid{ display:grid; grid-template-columns:1.3fr 1fr 1fr; grid-template-rows:auto auto; gap:14px; }
+@media(max-width:900px){
+#landing-view .featuregrid{ grid-template-columns:1fr 1fr; }
+}
+@media(max-width:640px){
+#landing-view .featuregrid{ grid-template-columns:1fr; }
+}
+#landing-view .fcard{ background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:22px; }
+#landing-view .fcard.lead{ grid-row:span 2; background:linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%); display:flex; flex-direction:column; justify-content:space-between; min-height:280px; }
+#landing-view .ftag{ width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:17px; margin-bottom:14px; }
+#landing-view .fcard h3{ font-size:15.5px; font-weight:700; margin-bottom:8px; }
+#landing-view .fcard p{ font-size:12.8px; color:var(--text-dim); line-height:1.6; }
+#landing-view .fcard.lead h3{ font-size:19px; }
+#landing-view .fcard.lead p{ font-size:13.5px; }
+#landing-view .leadviz{ margin-top:18px; display:flex; align-items:flex-end; gap:6px; height:56px; }
+#landing-view .leadviz i{ flex:1; border-radius:4px 4px 0 0; background:linear-gradient(180deg,var(--gold-2),var(--gold)); opacity:0.9; }
+#landing-view .dimband{ background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:28px 26px; }
+#landing-view .segbar{ display:flex; height:14px; border-radius:8px; overflow:hidden; gap:3px; }
+#landing-view .segbar i{ display:block; height:100%; }
+#landing-view .dimlegend{ display:grid; grid-template-columns:40% 20% 20% 20%; gap:8px; margin-top:10px; }
+@media(max-width:760px){
+#landing-view .dimlegend{ grid-template-columns:40% 20% 20% 20%; gap:6px; }
+#landing-view .dimitem .t{ flex-direction:column; gap:3px; }
+}
+#landing-view .dimitem{ text-align:center; }
+#landing-view .dimitem .dot{ width:9px; height:9px; border-radius:50%; display:inline-block; margin-left:7px; }
+#landing-view .dimitem .t{ font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+#landing-view .dimitem .w{ font-size:11.5px; color:var(--text-dim); font-weight:600; margin-top:4px; font-family:'IBM Plex Mono',monospace; }
+#landing-view .ctaband{ background:linear-gradient(135deg, var(--panel-2), var(--panel)); border:1px solid var(--border); border-radius:20px; padding:44px 36px; text-align:center; position:relative; overflow:hidden; }
+#landing-view .ctaband::before{ content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 0%, rgba(201,162,75,0.14), transparent 60%); }
+#landing-view .ctaband h2{ position:relative; font-size:22px; font-weight:800; margin-bottom:10px; }
+#landing-view .ctaband p{ position:relative; font-size:13.5px; color:var(--text-dim); margin-bottom:24px; }
+#landing-view .ctaband .heroactions{ position:relative; justify-content:center; margin-top:0; }
+#landing-view footer{ position:relative; z-index:1; padding:34px 0 40px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+#landing-view .foottag{ font-size:12px; color:var(--text-dim); }
+#landing-view .foottag b{ color:var(--text); }
+#landing-view .footlinks{ display:flex; gap:18px; font-size:12px; color:var(--text-dim); font-weight:600; }
+
+/* ===================== dashboard view ===================== */
+#dashboard-view .num{font-family:'IBM Plex Mono',monospace;}
+#dashboard-view.lang-en .sf-chip.dept, #dashboard-view.lang-en .fchip.dept, #dashboard-view.lang-en .fchip.all{font-family:'Inter',Tahoma,Arial,sans-serif;}
+#dashboard-view .layout{display:grid; grid-template-columns:1fr 210px; height:100vh;}
+#dashboard-view.lang-en .layout{grid-template-columns:210px 1fr;}
+#dashboard-view.lang-en .layout > main{order:2;}
+#dashboard-view.lang-en .layout > .sidebar{order:1;}
+#dashboard-view .navtoggle-btn{ display:none !important; }
+#dashboard-view .navbackdrop{ display:none; }
+#dashboard-view.nav-open .navbackdrop{ display:block; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:210; }
+#dashboard-view .tablewrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#dashboard-view .tablewrap table{ min-width:560px; }
+#dashboard-view .sidebar{background:var(--panel); border-inline-start:1px solid var(--border); padding:16px 14px; display:flex; flex-direction:column; gap:4px; height:100vh; overflow-y:auto;}
+@media(max-width:1180px){
+#dashboard-view .layout{grid-template-columns:1fr;}
+#dashboard-view .sidebar{
+  display:flex; position:fixed; top:0; right:0; height:100dvh; width:min(82vw,300px);
+  transform:translateX(100%); transition:transform .25s ease; z-index:220;
+  box-shadow:-10px 0 30px rgba(0,0,0,.45); border-inline-start:1px solid var(--border);
+}
+#dashboard-view.lang-en .sidebar{ right:auto; left:0; transform:translateX(-100%); }
+#dashboard-view.nav-open .sidebar{ transform:translateX(0); }
+#dashboard-view .navtoggle-btn{ display:inline-flex !important; }
+#dashboard-view main{ padding:12px 14px 16px; }
+}
+@media(max-width:640px){
+#dashboard-view .kpirow{ grid-template-columns:repeat(2,1fr) !important; }
+#dashboard-view .kpirow2{ grid-template-columns:repeat(2,1fr) !important; }
+#dashboard-view .topbar h1{ font-size:16px; }
+#dashboard-view .topbar .tagline{ display:none; }
+#dashboard-view .filterbar{ gap:8px; }
+}
+#dashboard-view .navitem{display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:10px; font-size:12.5px; font-weight:600; color:var(--text-dim); cursor:pointer; transition:.15s;}
+#dashboard-view .navitem:hover{background:rgba(255,255,255,0.04); color:var(--text);}
+#dashboard-view .navitem.active{background:linear-gradient(90deg, rgba(201,162,75,0.22), rgba(201,162,75,0.06)); color:var(--gold-2); box-shadow:inset 0 0 0 1px rgba(201,162,75,0.3);}
+#dashboard-view .navspacer{height:6px;}
+#dashboard-view .sidefilters{background:var(--panel-2); border-radius:12px; padding:10px 10px 12px; margin:6px 0 8px; box-shadow:inset 0 0 0 1px var(--border);}
+#dashboard-view .sidefilters h5{margin:0 0 8px; font-size:10px; color:var(--gold-2); font-weight:800; letter-spacing:.3px;}
+#dashboard-view .sf-block{margin-bottom:10px;}
+#dashboard-view .sf-block:last-child{margin-bottom:0;}
+#dashboard-view .sf-label{font-size:9.5px; color:var(--text-dim); font-weight:700; margin-bottom:5px; display:flex; justify-content:space-between;}
+#dashboard-view .sf-chips{display:flex; flex-wrap:wrap; gap:4px;}
+#dashboard-view .sf-chip{border:none; box-shadow:inset 0 0 0 1px var(--border); background:var(--panel); color:var(--text-dim); padding:4px 8px; border-radius:7px; font-size:10px; font-family:'IBM Plex Mono',monospace; font-weight:700; cursor:pointer; transition:.14s; user-select:none;}
+#dashboard-view .sf-chip.dept{font-family:'Noto Sans Arabic',Tahoma,Arial,sans-serif; font-size:10.5px;}
+#dashboard-view .sf-chip.on{background:var(--gold); box-shadow:none; color:#1A1004;}
+#dashboard-view .sf-chip.disabled{opacity:.4; cursor:not-allowed;}
+#dashboard-view .sidefoot{margin-top:auto; border-radius:14px; overflow:hidden; position:relative; height:110px; background:linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.55)), radial-gradient(circle at 30% 20%, #4A2E14, #1B1108 70%); flex:none;}
+#dashboard-view .sidefoot .ring2{position:absolute; width:150px; height:150px; border-radius:50%; border:20px solid rgba(201,162,75,0.18); bottom:-70px; right:-50px;}
+#dashboard-view .sidefoot p{position:absolute; bottom:10px; right:14px; left:14px; font-size:10.5px; color:#D8C9A3; margin:0; line-height:1.5; font-weight:600;}
+#dashboard-view main{padding:14px 20px 16px; height:100vh; overflow-y:auto;}
+#dashboard-view .topbar{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:12px;}
+#dashboard-view .brandmark{display:flex; align-items:center; gap:14px;}
+#dashboard-view .ring{width:42px; height:42px; border-radius:50%; border:5px solid var(--gold); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:12px; color:var(--gold-2); flex:none;}
+#dashboard-view .logobadge{background:#F3EAD8; border-radius:12px; padding:8px 14px; display:flex; align-items:center; flex:none; box-shadow:0 2px 10px rgba(0,0,0,0.25);}
+#dashboard-view .logobadge img{height:32px; width:auto; display:block;}
+#dashboard-view .topbar h1{margin:0; font-size:19px; font-weight:800;}
+#dashboard-view .topbar .sub{margin:2px 0 0; font-size:12px; color:var(--text-dim); font-weight:500;}
+#dashboard-view .themetoggle{display:flex; align-items:center; gap:7px; background:var(--panel); box-shadow:inset 0 0 0 1px var(--border); border:none; border-radius:20px; padding:8px 16px; font-family:'Noto Sans Arabic',Tahoma,Arial,sans-serif; font-size:12px; font-weight:700; color:var(--text); cursor:pointer; transition:.15s;}
+#dashboard-view .themetoggle:hover{box-shadow:inset 0 0 0 1px var(--gold);}
+#dashboard-view .tagline{font-size:12.5px; color:var(--gold-2); font-weight:600;}
+#dashboard-view .page{display:none;}
+#dashboard-view .page.active{display:block; animation:rise .35s ease both;}
+#dashboard-view @keyframes rise{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+#dashboard-view h2.ptitle{font-size:16px; font-weight:800; margin:0 0 18px; padding-inline-start:12px; border-inline-start:4px solid var(--gold);}
+#dashboard-view .filterbar{display:flex; gap:10px; flex-wrap:wrap; background:var(--panel); border:1px solid transparent; box-shadow:inset 0 0 0 1px var(--border), 0 6px 14px -9px rgba(0,0,0,0.55); border-radius:14px; padding:10px; margin-bottom:14px; transform:translateZ(0);}
+#dashboard-view .fgroup{flex:1; min-width:170px;}
+#dashboard-view .flabel{font-size:10.5px; color:var(--text-dim); font-weight:700; padding:2px 10px 4px; display:flex; justify-content:space-between;}
+#dashboard-view .flabel .hint{font-weight:500; color:#5E6B82;}
+#dashboard-view .fchips{display:flex; flex-wrap:wrap; gap:5px; padding:0 6px 6px;}
+#dashboard-view .fchip{border:1px solid var(--border); background:var(--panel-2); color:var(--text-dim); padding:5px 12px; border-radius:8px; font-size:11.5px; font-family:'IBM Plex Mono',monospace; font-weight:600; cursor:pointer; transition:.14s; user-select:none;}
+#dashboard-view .fchip.dept{font-family:'Noto Sans Arabic',Tahoma,Arial,sans-serif;}
+#dashboard-view .fchip.on{background:var(--gold); border-color:var(--gold); color:#1A1004;}
+#dashboard-view .fchip.all{border-style:dashed; font-family:'Noto Sans Arabic',Tahoma,Arial,sans-serif;}
+#dashboard-view .dimrow{display:flex; flex-wrap:wrap; gap:5px; padding:0 6px 6px;}
+#dashboard-view .kpirow{display:grid; grid-template-columns:repeat(7,1fr); gap:10px; margin-bottom:12px;}
+@media(max-width:1100px){
+#dashboard-view .kpirow{grid-template-columns:repeat(3,1fr);}
+}
+#dashboard-view .kpi{background:linear-gradient(165deg, var(--panel-2), var(--panel)); border:1px solid transparent; box-shadow:inset 0 0 0 1px var(--border), 0 6px 14px -9px rgba(0,0,0,0.55); border-radius:14px; padding:13px 15px; position:relative; overflow:hidden; transform:translateZ(0);}
+#dashboard-view .kpi .ico{width:28px; height:28px; border-radius:9px; display:flex; align-items:center; justify-content:center; margin-bottom:8px;}
+#dashboard-view .kpi .l{font-size:10.5px; color:var(--text-dim); font-weight:700;}
+#dashboard-view .kpi .v{font-size:22px; font-weight:700; margin-top:2px;}
+#dashboard-view .kpi .d{font-size:10px; margin-top:4px; font-weight:600;}
+#dashboard-view .kpi.hero-tile{background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.6)), radial-gradient(circle at 75% 30%, #4A2E14, #1B1108 70%); display:flex; align-items:center; justify-content:center; padding:12px; text-align:center;}
+#dashboard-view .kpi.hero-tile p{margin:0; font-size:14.5px; font-weight:800; color:var(--gold-2); line-height:1.5;}
+#dashboard-view .grid2{display:grid; grid-template-columns:1.3fr 1fr; gap:12px; margin-bottom:12px; align-items:stretch;}
+#dashboard-view .grid3{display:grid; grid-template-columns:1.5fr 1fr; gap:12px; margin-bottom:12px;}
+#dashboard-view .grid4{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;}
+#dashboard-view .gridTB{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;}
+#dashboard-view .colstack{display:flex; flex-direction:column; gap:12px;}
+@media(max-width:1100px){
+#dashboard-view .grid2, #dashboard-view .grid3, #dashboard-view .grid4, #dashboard-view .gridTB{grid-template-columns:1fr;}
+}
+#dashboard-view .panel{background:var(--panel); border:1px solid transparent; box-shadow:inset 0 0 0 1px var(--border), 0 6px 14px -9px rgba(0,0,0,0.55); border-radius:14px; padding:14px 16px; transform:translateZ(0);}
+#dashboard-view .panel.emph{background:linear-gradient(165deg, var(--panel-2), var(--panel)); box-shadow:inset 0 0 0 1px rgba(201,162,75,0.28), 0 6px 14px -9px rgba(0,0,0,0.55);}
+#dashboard-view .panel h3{margin:0 0 10px; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;}
+#dashboard-view .panel h4{margin:0 0 10px; font-size:11.5px; font-weight:700; color:var(--text-dim);}
+#dashboard-view .legend{display:flex; gap:12px; flex-wrap:wrap; font-size:10.5px; color:var(--text-dim); font-weight:600;}
+#dashboard-view .legend span{display:inline-flex; align-items:center; gap:5px;}
+#dashboard-view .legend i{width:8px; height:8px; border-radius:50%; display:inline-block;}
+#dashboard-view svg.chart{width:100%; height:auto; display:block;}
+#dashboard-view svg.chart text{ direction:ltr; unicode-bidi:plaintext; }
+#dashboard-view .hbarlist{display:flex; flex-direction:column; gap:7px;}
+#dashboard-view .hbrow{display:grid; grid-template-columns:46px 1fr 40px; gap:8px; align-items:center;}
+#dashboard-view .hbcode{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dim); font-weight:700;}
+#dashboard-view .hbtrack{height:13px; background:var(--track-bg); border-radius:4px; overflow:hidden;}
+#dashboard-view .hbfill{height:100%; border-radius:4px;}
+#dashboard-view .hbval{font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; color:var(--gold-2); text-align:left;}
+#dashboard-view table.minitable{width:100%; border-collapse:collapse;}
+#dashboard-view table.minitable td, #dashboard-view table.minitable th{padding:6px 4px; font-size:11px; border-bottom:1px solid var(--border);}
+#dashboard-view table.minitable th{color:var(--text-dim); font-weight:700; text-align:right;}
+#dashboard-view table.minitable tr:last-child td{border-bottom:none;}
+#dashboard-view .statgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+#dashboard-view .statgrid .sg{background:var(--panel-2); border-radius:10px; padding:10px 12px;}
+#dashboard-view .statgrid .sg .v{font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:16px;}
+#dashboard-view .statgrid .sg .l{font-size:10px; color:var(--text-dim); font-weight:700; margin-top:2px;}
+#dashboard-view .gaugestats{display:flex; flex-direction:column; gap:10px; flex:1; justify-content:center;}
+#dashboard-view .gstat{background:var(--panel-2); border-radius:12px; padding:13px 16px; display:flex; align-items:center; justify-content:space-between; box-shadow:inset 0 0 0 1px var(--border);}
+#dashboard-view .gstat .gl{display:flex; align-items:center; gap:9px; font-size:12.5px; font-weight:700; color:var(--text-dim);}
+#dashboard-view .gstat .gdot{width:10px; height:10px; border-radius:50%; flex:none; box-shadow:0 0 0 3px rgba(255,255,255,0.05);}
+#dashboard-view .gstat .gvwrap{display:flex; align-items:baseline; gap:8px;}
+#dashboard-view .gstat .gv{font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:21px;}
+#dashboard-view .gstat .gpct{font-size:11px; color:var(--text-dim); font-weight:600;}
+#dashboard-view table.dtable{width:100%; border-collapse:collapse;}
+#dashboard-view table.dtable th{text-align:right; font-size:10.5px; color:var(--text-dim); font-weight:700; padding:8px 10px; border-bottom:1px solid var(--border); cursor:pointer; white-space:nowrap;}
+#dashboard-view table.dtable th:hover{color:var(--gold-2);}
+#dashboard-view table.dtable td{padding:9px 10px; font-size:12px; border-bottom:1px solid var(--border); white-space:nowrap;}
+#dashboard-view table.dtable tr:last-child td{border-bottom:none;}
+#dashboard-view .statusdot{width:8px; height:8px; border-radius:50%; display:inline-block; margin-inline-end:8px;}
+#dashboard-view .deptcell{display:flex; align-items:center;}
+#dashboard-view .insightrow{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px;}
+#dashboard-view .ibox{border-radius:12px; padding:12px 14px;}
+#dashboard-view .ibox.good{background:rgba(52,178,123,0.1); border:1px solid rgba(52,178,123,0.3);}
+#dashboard-view .ibox.warn{background:rgba(210,98,75,0.1); border:1px solid rgba(210,98,75,0.3);}
+#dashboard-view .ibox .ititle{font-size:11px; font-weight:700; margin-bottom:4px;}
+#dashboard-view .ibox.good .ititle{color:var(--green);}
+#dashboard-view .ibox.warn .ititle{color:var(--rust);}
+#dashboard-view .ibox p{margin:0; font-size:11px; color:var(--text-dim); line-height:1.6;}
+#dashboard-view .alertbanner{background:rgba(210,98,75,0.13); border:1px solid transparent; box-shadow:inset 0 0 0 1px rgba(210,98,75,0.45), 0 6px 14px -9px rgba(0,0,0,0.55); border-radius:14px; padding:13px 18px; display:flex; gap:14px; align-items:flex-start; margin-bottom:12px; transform:translateZ(0);}
+#dashboard-view .alertbanner .aicon{width:36px; height:36px; border-radius:50%; background:var(--rust); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; flex:none;}
+#dashboard-view .alertbanner b{color:var(--alert-title);}
+#dashboard-view .alertbanner p{margin:4px 0 0; font-size:12.5px; color:var(--alert-text); line-height:1.7;}
+#dashboard-view .miniStatRow{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+#dashboard-view .miniStat.incomplete{background:rgba(210,98,75,0.10); border:1px solid rgba(210,98,75,0.28);}
+#dashboard-view .miniStat.rate{background:rgba(52,178,123,0.10); border:1px solid rgba(52,178,123,0.28);}
+#dashboard-view .miniStat.incomplete .mv{color:var(--rust);}
+#dashboard-view .miniStat.rate .mv{color:var(--green);}
+#dashboard-view .miniStat .mv .of{font-size:13px; color:var(--text-dim); font-weight:600; font-family:'Noto Sans Arabic',Tahoma,Arial,sans-serif;}
+#dashboard-view .miniStat{border-radius:12px; padding:14px 16px;}
+#dashboard-view .miniStat.urgent{background:rgba(210,98,75,0.10); border:1px solid rgba(210,98,75,0.28);}
+#dashboard-view .miniStat.bonus{background:rgba(201,162,75,0.10); border:1px solid rgba(201,162,75,0.28);}
+#dashboard-view .miniStat .mv{font-size:26px; font-weight:700; font-family:'IBM Plex Mono',monospace;}
+#dashboard-view .miniStat.urgent .mv{color:var(--rust);}
+#dashboard-view .miniStat.bonus .mv{color:var(--gold-2);}
+#dashboard-view .miniStat .ml{font-size:11px; color:var(--text-dim); font-weight:700; margin-top:2px;}
+#dashboard-view .top5row{display:flex; align-items:center; gap:10px; padding:8px 0;}
+#dashboard-view .top5row + .top5row{border-top:1px solid var(--border);}
+#dashboard-view .t5rank{width:20px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dim); font-weight:700;}
+#dashboard-view .t5name{flex:1; font-size:12px; font-weight:600;}
+#dashboard-view .t5track{width:110px; height:8px; background:var(--track-bg); border-radius:5px; overflow:hidden;}
+#dashboard-view .t5fill{height:100%; border-radius:5px; background:linear-gradient(90deg, var(--teal), var(--green));}
+#dashboard-view .t5val{width:34px; text-align:left; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:700; color:var(--gold-2);}
+#dashboard-view footer{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; background:var(--panel); border:1px solid transparent; box-shadow:inset 0 0 0 1px var(--border), 0 6px 14px -9px rgba(0,0,0,0.55); border-radius:14px; padding:10px 16px; font-size:10.5px; color:var(--text-dim); font-weight:600;}
+#dashboard-view .deptbig{background:var(--panel); border:1px solid transparent; box-shadow:inset 0 0 0 1px var(--border), 0 6px 14px -9px rgba(0,0,0,0.55); border-radius:14px; padding:22px 24px; transform:translateZ(0);}
+#dashboard-view .deptbig-top{display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px; align-items:flex-start; margin-bottom:20px;}
+#dashboard-view .deptbig h2{margin:6px 0 0; font-size:21px; font-weight:800;}
+#dashboard-view .deptbig .meta{font-size:12px; color:var(--text-dim); margin-top:4px;}
+#dashboard-view .deptbig .code{font-family:'IBM Plex Mono',monospace; background:rgba(201,162,75,0.15); color:var(--gold-2); padding:5px 12px; border-radius:8px; font-size:12px; font-weight:700;}
+#dashboard-view .kpirow2{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:20px;}
+@media(max-width:900px){
+#dashboard-view .kpirow2{grid-template-columns:repeat(2,1fr);}
+}
+#dashboard-view .kpi2{background:var(--panel-2); border-radius:12px; padding:14px 16px;}
+#dashboard-view .kpi2 .v{font-size:21px; font-weight:700; font-family:'IBM Plex Mono',monospace;}
+#dashboard-view .kpi2 .l{font-size:10.5px; color:var(--text-dim); font-weight:700; margin-top:3px;}
+#dashboard-view .twocol2{display:grid; grid-template-columns:1.3fr 1fr; gap:16px;}
+@media(max-width:900px){
+#dashboard-view .twocol2{grid-template-columns:1fr;}
+}
+#dashboard-view .comprow2{margin-bottom:12px;}
+#dashboard-view .comprow2 .t{display:flex; justify-content:space-between; font-size:11.5px; margin-bottom:5px; color:var(--text-dim); font-weight:600;}
+#dashboard-view .compbarwrap2{background:var(--track-bg); border-radius:6px; height:9px; overflow:hidden;}
+#dashboard-view .compbar2{height:100%; border-radius:6px; background:linear-gradient(90deg,var(--gold),var(--teal));}
+#dashboard-view .urgentitem2{border-top:1px solid var(--border); padding:9px 0;}
+#dashboard-view .urgentitem2:first-child{border-top:none; padding-top:0;}
+#dashboard-view .udate2{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dim);}
+#dashboard-view .udesc2{font-size:12.5px; margin:3px 0; font-weight:600;}
+#dashboard-view .placeholder{background:var(--panel); border:1px dashed var(--border); border-radius:14px; padding:40px 30px; text-align:center;}
+#dashboard-view .placeholder .pico{font-size:34px; margin-bottom:12px;}
+#dashboard-view .placeholder h3{margin:0 0 8px; font-size:15px;}
+#dashboard-view .placeholder p{margin:0; font-size:12.5px; color:var(--text-dim); max-width:460px; margin:0 auto; line-height:1.8;}
+#dashboard-view .settingsgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+@media(min-width:1201px){#dashboard-view .executive-kpis{grid-template-columns:repeat(6,minmax(0,1fr));}} #dashboard-view th[data-fixed-k]{cursor:pointer;user-select:none;} #dashboard-view th.sorted-desc::after{content:' ▼';font-size:8px;color:var(--gold-2);} #dashboard-view th.sorted-asc::after{content:' ▲';font-size:8px;color:var(--gold-2);} #dashboard-view th.sorted-desc,#dashboard-view th.sorted-asc{color:var(--gold-2);}*{scrollbar-width:none!important}*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+  /* range card fills its box exactly like the urgent-tasks card beside it */
+  #dashboard-view .range-panel, #dashboard-view .urgent-panel{display:flex; flex-direction:column;}
+  #dashboard-view .urgent-panel .miniStatRow, #dashboard-view .range-panel .statgrid{flex:1; grid-auto-rows:1fr;}
+  #dashboard-view .range-panel .statgrid{gap:10px;}
+  #dashboard-view .range-panel .statgrid .sg{border-radius:12px; padding:14px 16px; display:flex; flex-direction:column; justify-content:center;}
+  #dashboard-view .range-panel .statgrid .sg .v{font-size:26px; font-weight:700; font-family:'IBM Plex Mono',monospace;}
+  #dashboard-view .range-panel .statgrid .sg .l{font-size:11px; font-weight:700; margin-top:2px;}
+  #dashboard-view .range-panel .sg.max{background:rgba(52,178,123,0.10); border:1px solid rgba(52,178,123,0.28);}
+  #dashboard-view .range-panel .sg.max .v{color:var(--green);}
+  #dashboard-view .range-panel .sg.min{background:rgba(210,98,75,0.10); border:1px solid rgba(210,98,75,0.28);}
+  #dashboard-view .range-panel .sg.min .v{color:var(--rust);}
+  #dashboard-view .range-panel .sg.diff{background:rgba(43,166,190,0.10); border:1px solid rgba(43,166,190,0.28);}
+  #dashboard-view .range-panel .sg.diff .v{color:var(--teal);}
+  #dashboard-view .range-panel .sg.median{background:rgba(201,162,75,0.10); border:1px solid rgba(201,162,75,0.28);}
+  #dashboard-view .range-panel .sg.median .v{color:var(--gold-2);}
+#dashboard-view .dd-after-bonus{margin-top:9px;font-size:12px;color:var(--text-dim)}#dashboard-view .dd-after-bonus strong{color:var(--gold-2);font-size:15px}#dashboard-view .dd-incomplete{margin-top:16px}#dashboard-view .dd-task-count{color:var(--rust);margin-inline-start:8px}#dashboard-view .dd-incomplete td{white-space:normal;line-height:1.8}#dashboard-view .dd-incomplete td.num{white-space:nowrap}#dashboard-view .dd-empty{color:var(--text-dim);padding:15px 0}
+#dashboard-view .dd-incomplete{font-family:Tahoma,Arial,sans-serif}
+#dashboard-view .dd-incomplete h3{display:flex;justify-content:flex-start;align-items:center;gap:10px;text-align:start;line-height:1.6}
+#dashboard-view .dd-incomplete .dd-task-count{margin:0;padding:2px 9px;border-radius:8px;background:rgba(210,98,75,.12);font-size:12px}
+#dashboard-view .dd-incomplete .tablewrap{overflow-x:auto;max-width:100%}
+#dashboard-view #dd-incomplete-table{table-layout:fixed;min-width:620px;width:100%}
+#dashboard-view #dd-incomplete-table th,#dashboard-view #dd-incomplete-table td{text-align:start;vertical-align:middle;padding:12px 14px;line-height:1.7}
+#dashboard-view #dd-incomplete-table th{cursor:default;font-size:12px}
+#dashboard-view #dd-incomplete-table th:nth-child(1),#dashboard-view #dd-incomplete-table th:nth-child(2),#dashboard-view #dd-incomplete-table th:nth-child(4),#dashboard-view #dd-incomplete-table td.num{text-align:center}
+#dashboard-view #dd-incomplete-table td.dd-task-name{white-space:normal;overflow-wrap:anywhere;font-family:Tahoma,Arial,sans-serif;font-size:13px}
+#dashboard-view #dd-incomplete-table td.num{font-family:Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:12px}
+
+/* Small comparisons inside the existing KPI cards */
+#dashboard-view .data-freshness{font-size:10px;color:var(--text-dim);margin:0 0 10px;line-height:1.7}
+#dashboard-view .kpi-change{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;font-size:10px;line-height:1.7;margin-top:5px;color:var(--text-dim)}
+#dashboard-view .kpi-change + .kpi-change{margin-top:1px}
+#dashboard-view .kpi-change .change-value{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;white-space:nowrap;color:var(--text-dim)}
+#dashboard-view .kpi-change .change-value.up{color:var(--green)}
+#dashboard-view .kpi-change .change-value.down{color:var(--rust)}
+#dashboard-view .kpi-change .change-label{font-size:9px;font-weight:400;color:var(--text-dim)}
+:root[data-theme="light"] #dashboard-view .kpi-change .up{color:#16704b}
+:root[data-theme="light"] #dashboard-view .kpi-change .down{color:#a13625}
+
+/* Compact comparison badges, following the supplied metric-card reference. */
+#dashboard-view .metric-value-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;margin-top:4px}
+#dashboard-view .metric-value-row>.v,#dashboard-view .metric-value-row>.mv{margin-top:0;min-width:0}
+#dashboard-view .metric-badge{display:inline-flex;align-items:center;justify-content:center;gap:3px;border-radius:5px;padding:3px 5px;font:600 9px 'IBM Plex Mono',Arial,sans-serif;line-height:1.35;white-space:nowrap;flex:none;vertical-align:middle;background:rgba(142,155,179,.11);color:var(--text-dim)}
+#dashboard-view .metric-badge.up{color:#58d5a0;background:rgba(52,178,123,.13)}
+#dashboard-view .metric-badge.down{color:#f08c7b;background:rgba(210,98,75,.13)}
+#dashboard-view .metric-badge.flat{color:var(--text-dim);background:rgba(142,155,179,.10)}
+#dashboard-view .metric-previous{font-size:9px;color:var(--text-dim);font-weight:400;line-height:1.7;margin-top:7px;overflow-wrap:anywhere}
+#dashboard-view .metric-previous b{font-weight:600;color:var(--text)}
+#dashboard-view .kpi{overflow:visible;min-width:0}
+#dashboard-view .kpi .v{font-size:24px}
+#dashboard-view .kpi .d{font-weight:400}
+#dashboard-view .kpi:has(#k-best) .metric-value-row{align-items:flex-start}
+#dashboard-view #k-best{font-size:12px!important;line-height:1.65;flex:1;min-width:85px}
+#dashboard-view .miniStat .metric-value-row{justify-content:center;gap:5px}
+#dashboard-view .kpi2 .metric-value-row,#dashboard-view .sg .metric-value-row{justify-content:center}
+#dashboard-view .miniStat .metric-previous,#dashboard-view .sg .metric-previous{font-size:8.5px}
+#dashboard-view .sg .metric-badge{font-size:8px}
+#dashboard-view .sg{min-width:0}
+#dashboard-view .data-freshness{font-size:10px;line-height:1.8}
+:root[data-theme="light"] #dashboard-view .metric-badge.up{color:#168154;background:rgba(36,169,112,.11)}
+:root[data-theme="light"] #dashboard-view .metric-badge.down{color:#c54157;background:rgba(216,64,96,.09)}
+@media(max-width:640px){#dashboard-view .metric-value-row{gap:6px}#dashboard-view .kpi .v{font-size:23px}#dashboard-view .metric-previous{font-size:9px}}
+
+#landing-view .landing-comparison{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:var(--text-dim);line-height:1.8}
+#landing-view .landing-comparison .metric-badge{display:inline-flex;padding:4px 7px;border-radius:5px;font:600 11px 'IBM Plex Mono',Arial,sans-serif;white-space:nowrap}
+#landing-view .landing-comparison .metric-badge.down{color:#f08c7b;background:rgba(210,98,75,.13)}
+#landing-view .landing-comparison .metric-badge.up{color:#58d5a0;background:rgba(52,178,123,.13)}
+#landing-view .landing-comparison .metric-badge.flat{color:var(--text-dim);background:rgba(142,155,179,.10)}
+#landing-view .landing-comparison b{color:var(--text);font-weight:600}
+:root[data-theme="light"] #landing-view .landing-comparison .metric-badge.down{color:#c54157;background:rgba(216,64,96,.09)}
+:root[data-theme="light"] #landing-view .landing-comparison .metric-badge.up{color:#168154;background:rgba(36,169,112,.11)}
+
+/* Decorative SVG icons and consistent spacing for department / urgent metrics. */
+#dashboard-view .metric-card{--metric-rgb:43,166,190;--metric-accent:var(--teal)}
+#dashboard-view .metric-card.tone-avg,#dashboard-view .metric-card.tone-bonus{--metric-rgb:201,162,75;--metric-accent:var(--gold-2)}
+#dashboard-view .metric-card.tone-completed,#dashboard-view .metric-card.tone-completion,#dashboard-view .metric-card.tone-bonus_rate,#dashboard-view .metric-card.tone-urgent_completion{--metric-rgb:52,178,123;--metric-accent:#58d5a0}
+#dashboard-view .metric-card.tone-incomplete,#dashboard-view .metric-card.tone-urgent_pending{--metric-rgb:210,98,75;--metric-accent:#ee927e}
+#dashboard-view .metric-card.tone-urgent{--metric-rgb:224,178,78;--metric-accent:var(--amber)}
+#dashboard-view :is(.miniStat,.kpi,.kpi2).metric-card{min-width:0;text-align:start;border:1px solid var(--border);border-block-start:2px solid rgba(var(--metric-rgb),.48);border-radius:14px;padding:15px 14px;background:linear-gradient(145deg,rgba(var(--metric-rgb),.055),transparent 75%),var(--panel-2);box-shadow:0 5px 15px -12px rgba(0,0,0,.5)}
+#dashboard-view .metric-card-heading{display:flex;align-items:center;justify-content:space-between;gap:9px;min-height:38px;margin-bottom:14px}
+#dashboard-view .metric-card-heading :is(.l,.ml){margin:0;min-width:0;font-size:10.5px;font-weight:600;line-height:1.75;color:var(--text-dim)}
+#dashboard-view .metric-icon{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex:0 0 34px;border-radius:10px;color:var(--metric-accent);background:rgba(var(--metric-rgb),.12);box-shadow:inset 0 0 0 1px rgba(var(--metric-rgb),.1)}
+#dashboard-view .metric-icon svg{width:19px;height:19px;display:block}
+#dashboard-view .metric-card .metric-value-row{justify-content:flex-start;gap:7px;margin-top:0;min-height:32px}
+#dashboard-view .metric-card :is(.v,.mv){font-size:25px;line-height:1.25;letter-spacing:-.7px;color:var(--text)}
+#dashboard-view .metric-card .metric-previous{border-top:1px solid var(--border);padding-top:8px;margin-top:11px;font-size:9px;line-height:1.8;letter-spacing:0}
+#dashboard-view .metric-card .dd-after-bonus{margin-top:6px;font-size:9px;color:var(--text-dim)}
+#dashboard-view .metric-card .dd-after-bonus strong{color:var(--gold-2)}
+:root[data-theme="light"] #dashboard-view .metric-card{--metric-accent:#168496}
+:root[data-theme="light"] #dashboard-view :is(.tone-avg,.tone-bonus,.tone-urgent){--metric-accent:#a1741c}
+:root[data-theme="light"] #dashboard-view :is(.tone-completed,.tone-completion,.tone-bonus_rate,.tone-urgent_completion){--metric-accent:#168154}
+:root[data-theme="light"] #dashboard-view :is(.tone-incomplete,.tone-urgent_pending){--metric-accent:#b84734}
+@media(max-width:640px){#dashboard-view :is(.miniStat,.kpi,.kpi2).metric-card{padding:13px 11px}#dashboard-view .metric-card-heading{gap:6px}#dashboard-view .metric-card-heading :is(.l,.ml){font-size:10px}#dashboard-view .metric-icon{width:30px;height:30px;flex-basis:30px;border-radius:9px}#dashboard-view .metric-card :is(.v,.mv){font-size:23px}}
+
+
+#data-loading{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:24px;background:var(--bg);direction:rtl}
+#data-loading .load-panel{max-width:480px;text-align:center;padding:32px;border-radius:18px;background:var(--panel);border:1px solid var(--border);font-family:'Noto Sans Arabic',Tahoma,Arial,sans-serif}
+#data-loading h2{color:var(--gold-2);font-size:21px;margin-bottom:14px}
+#data-loading p{color:var(--text-dim);font-size:13px;line-height:1.9}
+#load-json-button{margin-top:18px;border:0;border-radius:9px;padding:10px 18px;background:var(--gold);color:#231A0C;font:600 13px 'Noto Sans Arabic',Tahoma,Arial,sans-serif;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="data-loading" role="status" aria-live="polite"><div class="load-panel"><h2>1K Coffee</h2><p id="data-loading-message">جاري تحميل بيانات الداشبورد…</p><button id="load-json-button" type="button" hidden>اختيار ملف البيانات</button><input id="load-json-file" type="file" accept=".json,application/json" hidden></div></div>
+
+<div id="landing-view">
+<header class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <img class="logo-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAM4AAAA1CAYAAAAJStQeAAAujUlEQVR42u19ebglVXXvb629q85w7+2Rvj1DUDSKxIgiikYxBpWAKEgrg4Y00HQDGkPkJR/K00RixImgkaEHghp8TyUoOATjGJUoxAFRJCi0dHN7vt23hzudU1V7r/X+qF3n1j197tADar7Xu7/qc0+dc6p27b3WXmv91rAJ02w2vPrwqvkJg/nn88obbsju2bsN1lqM1Gey9x4zfU2SJLFcMSQiQAQkSZJ1xVWkaQprbcV7L1Pc1nHT6HHHHYv7Xxdu6D1EACUGVPMDABRH2pH2G2t8iL/3IMoajQaiKMLIyEiXiCgAybIMRKTee3XOaTgP7z1UFaqaEJEEkp/wsNaCCID3+VE0kTGmOdKOtN9wowNmsUCrlfB6ype2Y/fu3Xg8GaFqtVpxUjlJVbnuDQNwCgEzQ6AgoiettZsajQbAfLy1do7IpELnybjZ3FSpVHDyUXXcefnlwI6vgKgDzxzhoSPtfxLjvOCuPtPf3x/tqseqqucp1W8FINWMYgDqfAZrLbwKVPWzRHQFEUGAhwAcQzRpFz5bSZLlzIxFzd1YunQpPr/smM7fPMI4R9rvhKpGExwAQIRkwZk4655N+OnQXr+5GiWg2Ina5cZrhZ1EKdLIsSOKQY4yghHiCF3K3it7L+qaIKEJ70RCIOkajRiuq4rdtQXY27UIBZ8R8xjDHGGaI+13ysYhAsoSofT+3FtvxaZNm9Dd3d3DzOq9v5KZX66qzMyRtRaqygBYVTn8PaiqjohcFEWemTn0YaJj0FqL0dFRaJtupkfsmyPtt8s4PI5/xqlOgTiNtTCeYR0D8/8Ur7/7STzQ349ttRr2DYy6qu05viLR/7YZN5kUUJ8mmkAjNZ7FJpJatbCexYpRm0hqkzS1XsQiB+zGDpL8CO8LgTLiGtCYWsKFmcekzpF2pP1OSZzAPN57WM7h4LPXrMG2bdsgIlBVxHHMAD7DzPMAVACQMcYASACIqnoi8sws3vtUVTMicswsAVWb7Eh9QNKstfAlVE28RxRFR2bwSPutNFvIFw1/mCBlnAlsRfMAAEnlaUAcYzMvwDajyDCEVBU1F31dUn98ZNmxqG1QAiYyRBSpqmdVjo3xAJiISMEwxlCkRr33BJIpGdsYA+8JnhhUmDTKEA+AJuL98delw6zZHVEU/z9nnBwHIGjAeJkA0RLtVSw+uHYtb60dJ41Gw3xjYMCoaioqJzDzbZW48qIsy9S5hJgZxhhkWcZkCURkfJAMRESqChBAROQyB8r1woOmQefckRk80n47jJPbEMEDbwzSaEHuXJx1PM6//XY8qguwZmiIhvfsrKpWiXiwAYtzI639M4CZSTaqURRRBoYTgYOCrEHMhCzLEHmCgUK9wHpCAgFDwQBEBGNmyoHaKxxYLojKSi4ZUZ03XuIol821sZZtyyVRc+dBDRwdkTxHJE4LMQvU9aFPfhI/rB+Hxx9/HFvrEquqB0sCoIuA1UR0GYGaqjrive+KoggabCExucMzyxxUdcw2IUYcx3DewzmHmA2ICKrSuv0BG2jGtNA1tRbvX70aO2q9YGaoehARGAZpmiI2FqqK3PwC5mbbcM2KFTBsICKhL5ovIkfakTYV49QBMBjD3Sfi7bffjvvqR+Nj/f3wQw1obT4cD6fMDLH2AlV9r/fZcVCM1iSuMzPFtWouacgBEWBBsGwANvDew3sF2whqGInLYNmCrAEHQgV4WtCyUrDDCpiNABEPLP4TnLt6Nfq5G7dt2YKRpoOIRxb3gIhgPYGou6XWFYxsqyfgefc8ibqJkKYZfnp6FS21FXm/CARAjjDTkdZZ4ggEYMbIyAi2D27P48m8R61Wg8Cf4Zx7T5qmLwBgmDkjoq4gYWRkdJSq1SpFUQTnXE7TREjTFMyMKIpa8WnGGCgIIgIExqGDETUAEODoZWvXYtOmTdjsYlhrQYYQRRHEmLw/yi2JAozFyjWbTWzYsAE1jrBw4cJxzEvjvL1H2pHWgXFGWWIQpS/83PfwtW3bOPGDYq2dRaZy3lCSXCyE44mopx7QK6+IoUBiBQA4hoGxaEUqM1tAOfezEKGhCgFgBIFRctUst2+mb9dIO042/3S8dvVqfH37sEHU69mKATATJPMAzKTMGQM4IfEgRMjh8QqARFUNw9UAPBSJDs+omJYkKhjc+5yRhHMJR0eEzm+yHRJo9JT3LEicDMyI45izLJPg8e8l4GZjjKEprOBarQbvPZIkAVG+VmdZBoW07IkxIVEY6goRgbUWUwR5Tthet2YNNm3aBFRnEQADYBaAbwJ4JsZnQRgADkAVQJbbU1QBcDeAt7jMQURy+0zH98UYk6uDT+U87DfANN2oiGkRFxH9T46y+J3FYCwJ1ABghbICjgHvxRPTboHMJGUGYBxDw6KvAGByIuMkaxoiut1E/GxVPQUkYANAI0CDKwgE5TxchyRXz4gZElQ1IkIUx3DOoTE6iuHhYcyfPx9EBB8YqxLHGPUp9OSr8cf/9BH84NH1RF1zmJ2zAGIAXwXwXChnpcEuvFFVn0tM5jzY9N+s0XNFhLjaBcQViErLvnHegTgPTC1QuULeFf6uOExlWlmQn6kuVMQxTv/cf6LZbMJaiyzL6LsXvjSXxtl2hSqoOZA/j42QuQwUiNpTi21ABFQ0J5rGzJPylaZyFM677Tbsqs8n7z2YGd57fPf8k0NHdiG//k4wcet5JIx71XkIBGn3C0PoVLEgTAXp8zgapsEHx1NyzwlTGKdTaBWjP8/5OzckSWc9pxjuXF9WChbtBNcRm3cl3ZT3L9t5WPtnhn4xjoOdtqNq47m6IMYonPdtnxdxOgTgOlW9DsB9E9krRHmojKq2OpAjXwrnHJxziJyDMQbGGMydOxdZlsF7D2JGmqYgAJs3b8bTrr4av/rVBvLes6pGRNQE8CUALwgShUpaXRh0EABnrWWfJvcT0XkiXr33IENwTkqgQGHjTDMezhj94Jo12NG1hBqNBr69YQM1m00CgGq1ird+/OOoVquY53boNZdc0gpJLaIgijuojpufllv4itWrNY5j6o/nYv369dhVH1Gi3E6s1Wq4cvVqWGuxwO3Guy69FExjYEsuMV24j8LA4OrbbwcRIZPcBuUpGEc1l1jCOYJ56wUnw3sPNjnj/q/bbz8kwvzI+SchLHBkLfxl69ZpFEVkc9VeWivVBIzDPgeh5iV9eNdb3xpMgtwG9k5w9SH27+bzX4rMZ+BwfzYE8T5HgQ0bnPJNh/Xr18NVMnjvn0lsHhCRHuTyo5jjIQAzw/v1AK4iom8ERvsmgFMm6IgL3/lnAJeFgfoRgOeJiEZRhCRJEMcxTGCUwFifcN5faq2FBpsojmNqNBqMPDKhycx3Aji3A9NQGG0LYNQx6sz8favyKhFpxt6wtRYrzK/w3iuvFBreGH5lWsyeq5EyXmkwS/IVe/Yf4vw1a+iRWXMxMDAAP7yPVRVJkqgxRgtQJCwS1IUKLVy4EEaNxnGMb52xMKyUO/KVKnCQq84nAHTyVzdwmqa8a+8+HRkZ8caYYBxqgM0dEVGUpiniOM5qamXx4sVYMrwLn7/iCiBIBsRLcO26dfj+vBOQJAl27N6JRqOBVCl3Vk9EN4F1OYRWWQ/09PRg9pz5iOMYEEWSJOjbnK/0nmUKidW23oSvH3P0EhvHsVVCc2RkBHsGdmFkZASObRRFEWk+AX4iHS7LEo2iCNbGWLx4MY7Rrbh7+XK89NNfh3MOj/X1HRLjHL10KaIowo/PfEaeSJls3U/ilFsaDGktvTcAZgAYBrAWwPvD3+j0YAekL9q8G81mE91dXS1DvSDeKIqQNJtQVRoZGWFmjgA0iWjtFExTSMs6gPtU9UxjTJOZjTrRxYsXy3vPeWUrszSXOphQ2rAxEADvX7MGP+k+nvv6+rBhz6CqKiqSKTOjUqlI8XsiIhEhERGBUF9fH4waiuMYH7j9drrmkks66e963dq1uGnjRmeM0VSUCukc3F2RqloQRlVVoyhyImK9eGzatMnT6G6/bPVqPH/kZ3jXypWAc/DeY/369RARZMjVPGPjklTpJFn3Pzc0NITBoWY+VtpGwQfZ+vr6HAAXBAuTCllrI7D1qio6XnsYr6WFxVREkGUZNm7cCNWtePH112Pz5s0YGRkBDjGeccuWLYiiCP+wdi2uvfTS8XB0hxZhfNh0obJ9AcA/IE9CyyOYlZs4hBRsVcXw8DCiKIIxubMyD83J7RtrLZrNJowxREQ8Y8aMKMuyZpKmHwJw6cRMw2GghQB8LxL3emYedqkaY4x/h30C15z5KmPcFhUVIQSHbDE/6kEAuguiieZDALzoq09gzfbtGNyzT7k+QyPPYOYeMvGJAP7Iiy4SkbmqWgWwj63pz5z7Zcbpd2xsN9a8t8PZMK3Lfj99yZ3r6QdnzyYA6rqXErzXF93zCNZt3apZmqpaIsodxX+gqieLyAmqPA9gw8oEYACQJwF808f8S+dc+uuZs7B+cAj32+Px4n9/0jyw/A36cPdshXOUJVksphILEANkVZXJFyFX0j4xOYiqcABZx7D5AuqGA0IZhcW1azoSpr35Voyh2VY6PQecBboTCqYfT3RRZgjAPnj1GED6JC0YQQoHpBFsVA10etDsLX7fXuEoe6D+DGDO84BtW8HMEzJOHFAoABgFcAeA/wvge6ETJrxmpfcH6Y7hAP/6PLIgyzqhcJQv+CYaHBxsViqVK621VzvnJpM0RfsvAMsA7HPOmTiu+6VLl+KaPz3NgNmLCphyc0205F9qVwusxfW33op/fOIJMDMxszKzITIrVHWFiJwkIk5VLQAtIsABVKy1cN4lWZbdGyt90Hv/Q8mT+KIgzS2I3LvXrsXajRsjZk7DQnGiAjd4708MKrKbaLFzzj0K4J9E5JNElHjvecuWLXLahz6E7du3m4R6wMzvBfMV3vthQLuIyBV2qU5AWqSIAAznajsGAJwK4Mkw9zcDeP0hAlQnhOsCwA0AXgegEcZGwutkzQGwRFQH8HMAZwDYFTSN9yl0+SFqQ08XkX39/f04++abcc8bjs0ZxwBg8ehN+jGY9GNrZTYADAnha0L4NhR3A3icxxiKw4C6gH0cEuZORLmRyowsy9OsiQgqAuccRJUCVB4BaMZxfGGSJB+3UZSJCLV0//2YRgDgIYKcDWCv9bZSrVaTK/yj/M4zTiOTbiFRiQAWVfLGMMTnlmWZhoaKJaHrOfhp13Mw4veBmdV4Y1nxL9DsjapqAKQgOGYSIgponjAUHoCLEFdU9ZxR1dPZRn8xYHDHwMA2OenL+2wURTqClD6xezdndjgFQGC9wqu7Gcrl9dIWtkeWv7aenRVPB/BRVXsuFJcIaX+apPrjJMrUzqtGIk2vmA3nLQO9QkKqYNXJ3QF5VCF6wrRXNddmo0CwPQDmjlPdpqtpjEk4WwJxegGeFSRZbbKFoiy8SsvbbCFIoAMBUFPVubkcPEC3RzHOjC4R3bcpmotoxhIYCIzKWKc+f8klOPOWW7Bl3zCIaFsUx29oNpujhUQQ51CpVNK5c+dCRLBnYHeuVo118qBVtXKeDYIfyARmIoBFJALQZOYzmOiOOI4znzONTiJpNgI4M6xmRERu8eLF/M4zTiWoelGhMaVEJ/YnhWXhwnXrsGXLFqJ6TZMkoR7b8xVV/SMAQkQcVj3bpo8XNpYQkYYI8RqAm0VkmIi+sGXLlgwAJ1ZsGEcC8A5V/ch0BHa4R1aSXi8HcJuqnhGejQMBFjlSNQDNkkbx226N8Fov/Gyhr1l4vqns57JUGmpTy9Jp4O2Tc6X3sch4n2TuDihEyJ6H8LLhRzDPR6gPptnxM3pH5zYUlRToEouz4r04pz6Mx1+3AI+dNR9LFyxBNMZ3dLBMo6qtKIOgcuQ+EOdAzPVAlE1mfo33/t+c915UY8Mc0xgkTrlNw1DVGMC22LjXGCT7ulLoUaYmqyobcP85z1bOtghlWwqi1okN5DAyvAjghfhpVy9+1rPAVKSCGmp/SUSn5sQnEZGCSAt7Kg06dxoSNCyAmpB4IVFidSCpWOgHLHRWYiVOrBRS2yvhGUp4V7j/aKlDzdIC5Us+tSB6OI81V2Yo/7GArxWwMgQMyTzDe0YsBAghKmL/lFiVWCbOXh+3ECSkiClEUpDC0sRRFeXkFNd+UDiC1AJIRkASl34btS2Kpu1vLr0XVfWqWiNRIlFLoiBRwwrLGtAzZVt6tQFRm6I8WZwQGRhJEAW+VmhO+blH0+CaFStw2hcfR6PRQH9/PxYuXAieNRvOOXzqwvMB54AQIdAidj0Ai7CDmhaQJy2rbaqKarVKzWaTiUiY+eUA7jDGiPfeFr8REQ5h1Ro6EjPzk977V3j4LSLiarUa5s+fj+vOexXgnBbMSvvNsk7E3bh+3TrcODCQI32q85j5IiKKiTqSjAHwSIDrnw7gD8IQFyqJISIH4PcCNP/+oAJn4fPLAnrpSsTTLBHJwwB+FVSkl7VFSUQl6bMSwMcBDE7D01lIpSxIpKykjpVbV9siaafw+hf272Q2cDrV+lqKkihUt7J67tsW74KxbFD5JjVhprG4p3EcQ0fHtBICYAvdIBrpAwH4z9fOgHMe193xZbzrwpWgZn/OJD4L6EvOMHQY47fKYSFFOE5ISdgM4Ggi+rTLstmRteRyoEBNDhwQe1UiQmooBvCkZtkrYmu3aMaup6sL5+sjuO68V4GHN+b36MA0k7b6QmztXgwZGYFV71TpOGZzoqpm42EkRq4KyXsBfDhMKAO4C8BrS+hOAqAS+vAaAB8oOaR7oHxGsGV8meAk//tfAKwC4MJq+WYAn8zvxQSgUEAdgMUATgHwtfG2xX7GfwGuPAjgP0ohSgUTSokomwC2TxNCuy/49rqmGOHRKfwpBbN8Kxj/4yJYQh9NAEA3Athb+s1kwML3Q//iyfw7kdOESPCanmGsveBl+WpAIXW66EFkLZzkXtF3rVzZcmeLSMubXvJR5Bx4CPUyyh7uIoqgjLIZY04QkTuJaAkRJWma2iiOM+ec1bxxuE7ONKpnW2tzSVOt4eijl+C6s/6Y4Bw6SBo9kH4WIS4ATmFmLTzybW1TQIYk6OyjAN4RkKjZ4Z7lVfBZAOYDKCDZowtju2TgFr8ZBfCRwHgFUHNXYKQXldQiW4KLT21nnAlaBuB+AO8NvxVMLxauMcln3wXwoWlIlKlW/Uq4xj0AVoc+cZuqTSVGLz/T4BT9+7upbEhV5SKLGSKttDWrJiRwKZBBkFdzJnAjLCwcPqcxiFhEYJnzTFGmQ5I0BWNqKGlrQjqAtVZF5DQVURBlxpgqgMx7b4wxPssya60VZyjKV05zFREe8UadquIs3oBb33D2wUuaFjA/F5t9HeI8KFcInxlsKjPecBUA+OXY5HFBVE+GlXAOgJESzAoAXQosDYxDAI5p6fyF/p1X/EmDs3ljIDQfVlUP8A+CZEEJBDDBi/X703hoDUxoAiNUAmGmbdIGbcykJSbuRHOFn8dNg2mncmfEpbGOS6CLLamDSVsfeQpVbSqJBABqnJGuaheWYiOQbm9Fy7OIttKKWzpcCLw0xowL/R+Xs0K0Hxp2sK2QOGWVLUgcIiIOhT80+HOc994GGJpoLEDuMiJyWfADiQiQZS1JM4kOPml705o12LVrV3ENDtV8dILfru8AlpjAPGVHsgmoVheARSVCPCqcd6XfFp9tCsRRAAMF8+0o/c1tKFP3NIbfdSDu4j7thSK17dlpCrupgcnr5k1HX/Gl/lVKtpeU7J4yoFCWRJMxZAE2uEkOr6o6d+5cXLN8+bj8e5YyPKOAkkLCPyduP5g2V1Hyc3EcHxbGUVViY/KQlpB0FsJutIgg8CJOASMEC8NKgLosA5IEnGUNL+kZzifLYyaSNMGjOg/LPvOtwnuqned16nnbWZuPzTyrkI5KbGdKHrFb5KGW0fj+QPimNDkciHtX+HwPgC1BeuwO5wsCnF1GyoIcUxmDmikX8Yxc4rG2MY5lhedcuKYYiyucDnFKiZCkbXHZr5brxIzZGlcfpMlUx5TO+9J4NgMzaonppXQuLTG2b7t+e99d6fsTHsoVVOozYRtbQaPbW3e25QiLTsHNZaO93ZD33pcKTE364DQBVNm6TiHBCmdoSCoraq8ZABEzq4fCe6+GjbHWes49dDXJJeN7xbsvWmv3zJzZjbsuuURpvPg+aL2ysL+IqDs8v+9wvWZYrU2JKzMAfwng2jBR3eG3Pqgde1HkReVqmimNjy9R4/bSRBefFdJLSs/HJYStaxq+EAr9WAzgjwDMC/ZU1IGw1wPoK91/MhtnEYCXBIRwXCJh6HMNeejWE9OgHwA4Nthy9RLwUgljXglq8C/DYlSdoG9lulsM4PlhsUpLIEESxs0BeIyINhemTGfDLOD67UhZrkKVH2N8sWahdmtqSn12EpOHtA2AaDkpmVmLUIxwngBQxuWVH0uI9APeZ1eSYw/1/PY7H5CPrVihGH44t3OUW8Gc5aDOCWctNsgMiDlU0oJwiIvyHTzsaeiwHuNGdc6cOXh0pAbnXAqM7lFV9RQCY0nKdp4t6e9t+oQpQ8E6wZhSaR5NabES5Pm5buJBb9373HB0govj8PoO5AG+3KbudCLMNwO4qMRktgPEfDFNzTjF8/x1ONo5wZf6dyryECvuoEpSm9P4LQAuCONXabPfCkDjEqbsMy4bgY+XhLyqLR3gRB2TPuP2bNL9/R3tkmiKFa1YHbuNMfvptwV/MDMV9dfCOS4MVyKS4HWPiIg1jxXRtgkjIrqAmV+5e/dunPmxjxEzV8oPUeTdEOig6h20PS91Dv+ALFiwQL911VVy9NG9umTJIlQqFS1g9oAcWjPmjpZp6ORTRRB06lPU5kg8KHikZDfZaapXKPmt2lGw8gCOTAdDmuLzqG0cOmkW7fasa0PjCvU4bZNmAgDbt2/H+9atmxwKnH6WbaHbj+e9QgKxdux0wzknQWKkUwxWmSkKlWTQKNKARtWAPGu1rAcruKbQ6x6JZn6DmyyPSo++5O778IPXPAsgUpP1k0AhJBDVac+OtlGodnZluOK5n5H26VeH1+OBPyEAoLfe+aCiCpDJo7D7qOY2b95MG+qLDsghdxBEb0sdPRjmKQjKBrXoQJjQtz2XlFS1yiEsFO39awYVjidgugxjcZbtUQnUAb0rzqUsCYwKdtgFQLwISLccvomaolqNL0GoxfdoGlBgwTyNkvd5GYBXA7i6wwRKSZ8/WVXfDuDWwcFBaTQa+MDatbhm1SoQkbIyyVOTxt66aJqmeao4g1Rhbl61Ko8eIMph/K656as//GG7oTHOmXe4S+uYw3TNombDgY5FO6hgMJayooepbxT6Rm1AAjpIokLzsR3Gu0AAXekaaeGQr1QqeCpXuE6Sx4QVKwNQtdayc05L0ClPIp9J85VEAZwP4Fuah5xcSLlfJNaxEAtfVv2E8E4P/YKt2y2J+PhHM/4wxVEnQbZ9OfB6uw+dD8fztsJO7xxdipM+/3N0+QaY2RdJVxmJZlmGUfL8yO7dBMpy1SD32wh+91pWQs8mTCqbxJ41bfNcDiOaeZj6VymhaqZD/0yJRrJA9w55UOisEi+Us4YBoNeThTExZgxtANKth59xppA6Q8i93DcnScLGGAfg3QCWAzhtCn+DD4bmvwZxvAPAdQBu6cBrUlpl50dR9G6X+pXMLNu2baPzVq/WLy379xy9g+rBVtiZpI1blp54YiO6ZRQlieubknkASCPKCZFsRERFrY7mYe6PP4CV/ScAPhVQsLSkTmXhOjMAPFAi1vbQl/Z7/CfyxMdZbUxXdmT+YBr9KpDErwfUrLhGgZwV4EUNuSM57WBPlDXtYo5+gLzAS3dJClXa5uDHANDb24v3LDt9HOx8yIxTRtGoA8oWfBdvRB7SkRljim/ci7zIxtuRx3aVVbdMx+DQVYFpNMCkJkzwnwH4w5JuO05UG5DLmsllTPVPkfL3n6iJSavdvsFzAMugZGteAF6nKWnGZUjmZRc7jENVWqIyhbUWKVUoTdNlqcHvMTMBJhaRIouImPizBPpvPDWMUw6r72ScF/CrIK8BcVsHGLcAcsreeSm9TsQ4PwnXSyewW7umCQ4UUQ1fDPNeMIwt2SOmDbRI21whpq2fLjDOR0qMyG1AVh3AqLAlW62D/A6oc62rHNadmQovfVuEwZ8jzxz1ADBv3rzyhMQAPgbgnaVJKLh/JEipTwCoUysKGi68Xisicel9u78oCVEP19frdcqyDP39/Xz92rW5jXGINkwHQpESnMzWWgrO3Coznw/gPSLyblV9DxFdy8x/w8x/A+C5HSb8QNWiifpadjJOVk2jVkLB6mX/jnMucs5xFEVu4cKFsbW2FXY1BSrpACREVNGcINRaa4mo6r03URSNzJ07d7qIYRYYpph/LhF7ETpjJpC4pfCkVuGPctQAl55dSnRZSF1m5jwk7LAp9hNIoNLxWZB810uGZw3vkDN6u/CrNz0bf1tbj1fMNOmzm7uK1fAfhfBwyBWBELwQ6kI5s4nIcMVx1IUYp3Z7PKe5IxHXfIDhbifWCCRNkAhonJMpd7qRefHg0MhfUKWCUef4RzNPBOacBCYYa0BKAs1xtnCMp9QFwwN4ujbhXB6FooQRpTH1J6D2aXCDzS6kuPcZqXpquqzhCYjAcQSOrRJZJSpWdiIq+272lAi9nWGOakPGCoN4ZpsBXg7D34exhLAJuIuhYA35Q80Zibi5YnB2fbcumzHolneNZpfPFfeW2h79xfkvd7PnHAVjY7AlCPy4xbL9AIDn7t3RfO2MCt5c3asXdQ1lf1YfbFw8Y9S/yezEY285bbpkFZUYpR08yjA+YoDaVHeaQCpWpnFf85zuCt3/5jcBtADAfEQ0lrPwlLQwcN+BaiOKonjhwoX+0xdf7EGEv7zoIsLck/TcW27xj+51hcj9eWn1LaJ8UyAP7fGjTubMmYO737YSr7/xRmNHKQFw02iz+ZZKpUIdRHKsqiNEVI+i6J1M+gXv/ebNmzfjgttvpztf20vej4P5NP8z1M8KY/y5K67Aebfeqo/s2UvBD7OZiMJOP+NUDwugt8PKHgc9v91R2BX6u7d0fm9JZc1KxipjLJSnyJUpVKpZE/gtBLkXXQ4U9p09ezb+ecUygBnIOH/1TfzVbbfhs/v2IUmSkBEO8CSXVlUsXboUn7rsMkB3t6oJwRjAe1y1bh3uGJ0WoheVVEpTck8U61xc+rycSWvbgKPyOO1ro/9Oi4sMDg7K6TffjFcN/AxXr1yZS1sveKo30RwyZOEzyZa4fQbNARONbtfYDQgcs9EoFkIkeW3nHR1UDU1chmaWmohYNXPm3JtuQ6MJIyJVAI9Exl5H2gqRQNitWkuredN7v4C8/H3MBr/unolv7dqDs+7d7nXxmYRFr6FlX92Ml967By//2iCWffFxyIJXwsVz4OI5wGgfFo08CU49qjmRbAqCNdVcyjCNldedV4h+IajkuRh1AAsmUO+aGEspAICtJYYo+18kXLuMQhUq1bETEJspjem0Yd+mZdhZM0B7HoLZ8yAw9GPw0A+BShVCDElzv0bLAT6FLjnb7QTcTmDkJ8DIQ+H4yYHQUNQ2Hg7jg06LHCffpn75Sfw6COppu+Ha/jiyXSI8snMQm2csAboWIhNpcedT2Z4mIiYU4kgLvVkV9MbVq922bdtSdM0qCONpnUxyZiZjjEoqMmfOHPv5i86m89asSWvDjZ40TRNmWhOAgj/A/rn0EQDLzM00ab45juN/sZH9D+ccNmzYQGetXas+GaW+vj7anFYQRREy2adnf/zjeOHgI7h21SoglKgq6lwr8wNElJVi9rS0wr8EwHEAHi314fmB6KkDRNofmKXMOHvCpJaDEYvacH8K4NMl26WKvIIpdfCfNJFD94egNeTChkopJc65g99h4uAdnFkAgk7H/vUcCs2pgJi/WgJEJnOy/x6AV0wl7YwxPwTQzLIsVEB6iv04ob3Wi9zIzI3P4yh+wRe/Lyw+y7IM/zHQz667G1DRnLD45E5oXUSkJIIscpTa1NHOe+muZcfgxV9uJH19ffUEo4PW2neT4h6Mj1FSAGQEQqqUVIxt+vQD9Sx6BZQaG7mOTdv2RImFM7VZiMhRAugW7qVNA4Jf1E/Vl/97P7539nPB1oCaAlYF1fwjBB0G7OySCqCBiKtQvhXA+5RkO/JEtb9DkWMznrg98hTogdL53QFy7S0tAqZkAH8wqCWPhWd8R7hH+7ULNfe+A/YmFvUEiqA7AYgJSJog8S23w4EyD+vYFpms03ZYFZIlBnAlgBWFpNX9mYvD2P0yaAUaFqCJ2huRO9QnQ1GT1OA47/22r/l5+vLPfx/3nVb5jTDOi4joUlX9VJZl+zZs2GCM5uX/MwMfBt8AeA+AJR2kPjnnDDMba1hCVRvjnZNKxWaLFi1St3drJUmSe4noHuQ1vsqoiYRtO2IiSonohUR0JTPfEEU1yrIs894pgKoROQ1At0Ce9N7/sNFoRENDmYOqc87hmGOeiYGBASRuaJOqfo+IXhsyUMd5mpFXmbk3nI8xcahLFKRHs817/X8AvLIkOalEHPMDxDsY/CrtUqb8/kEAP8UheOdV872JC7XsQLZlOVymcmkxtCW/TYTOAZwU0FjfAaLudO2pcrLUOVcjIjSbzbAbBx0eVI0g44794UC+AeBlgMSAeM9a9azMiohE6wD/E8BXtiEfGtA14Vg9rNdYMjVZkyIPjZTct89crP91ztFZT08PqWoG8teD/FCbbwFiiBJxiDxTFZE4r+9MMz/fiK1UuIoaVyqx2ospMvNgeWBvnL10sOrPGrS7mut3/7c7546v4Ia3/y3uv/RCPMOksB6ZcXoDK1zIe8knUZmgHAWULgpp6ROlH2sg6rvaPtfgs/pRsNUKZmzXxXvC62CH3xf3fN+48yQoH6Q8qQ+LzVg9N1UAxCAblYpE+ryyT3HN/XcwakkwaFugsE4oXTAByOFKdkkUPkhpzBFLJUetx/4JfROpgJ0lDUkheSUjVbFM3qdIktGxgOTDtCqUkbR2uJsA3ArgG8jrnBUlcy8Jntkr2jzK5ZZ575FlmSciMcawFoncWYZ//OQnyXvvOJ/NH4bVGDrWEQ4gARXVQAHMIKIPpmnaMMZYInoWET1ORBEzX0VEP2PmJcw8n5mjHTt24I233Ybz1qzRZrNZ+KbuU9VVJXWlVBZqnC/KtzNyqS1HHlFRJnhGniJ9UVA3CslUXC9rQ4jq6Jze/FcAvlOypQ7IF+Scg/cyLkIewb55iqTORFK5HJ3g2+y+gqGGg5RJS3RUMMVUmF3H0lWlI2NmJyIURVFed2BCCK5Tvl8H6MEzoJZhBRoppfBiTL4jCwjihQRCIoAkgLigwizzMLGHIYG9SmCfXXrgYvVolgipFhFQMazqKipZ7BnwEYzC7cQ7/vx1+pIK5IRkUAKvfBDgX+c7UnMGZVVVFxiJw3dSABc5xtkjWWIgQhDpUm92qjf3WWVjhFAbzhrzuZad3B3j6OHd+Nz5L8YrzSaNbF0JMYwO38UydAbyfJKGMxI5I4VfQYMfyzgGO4YaZY3IJipyv2F+boz04bqV2jNHtuIVM4FTZ0b87GSPgBMoNR+H8qsJ5itoVWxhAjgG2AaE2gGcAZyGRF7vve+PCeexd+t6MnIzHOOUrpiPG90nEaFuobZqjTMqINMEuAFvRuDNCJpxI27GDfg004gNFIbyOnWBeUZ3YdHITsyJInRJnpcaWVM3AjYCCvsrKasIqxAr5uRxijmavp/ESXZgftqPOJ5FQJ2M92S8FxYPFl8ReCgJe4Lx+VauHA6E9xVPqIaQmVo46hiLbVQAdSFWITZCTEIsQsz5ObBQKyLCgMSCxJLCMsgSkSWiHuYMcaw42o1g/sju1gbLh2TjRFEED0cAetS71BiTiPhykhOXYNOy0VqkAhcVahCqYHJJt1cAlRBPpmFHA5//54sNbOiOSy/Fm265xTw63ID3fjczX++9/1RgvAbGKlfWwu+LckXvV9UfWmt+lqbpCZajmqp+DcAbRORLURQNzpw5s/ujF755BMYovMe1K1fixfduQJIk2LWrOZJl2dcCknY28qSo54Tri6pyyF5NAQww84MAPkNEXwYw6pwjImocffTRuPPyywG1smz1an507z5Ya8Wluh55jN6rALwhIEBz2gADH9S1hwB8xlr7r6rSD8Cqql+6dCn+bfkb3Tlr1ugTu/eAiL6dpuleVY1EvTBzGXV6GMj39AlpQmE717zWnSfCX69YgVPufpjSNFVDBt77Lxq2m0qhO27MMcvfw1h1nv0VSgDvXLkSJ35ls27f3i9uVFlEvqSEX0VRVFH1TWZOKexEMwl6UOiIs5Bnp24v3e0bRJR2lrg0Zhe0aUqlGEZv4zyFf968ebhr5cp84y/QuKpPUweZlNuc52P5rbfiC6Pz2BgjxjdOF5GYonhURCKIkyBCawBGQ978AMC/CFc9raxnToDSDNV88iNVxRW1bfjbt74VlcE+MDMaGsKm7Hzz4U98Iv4oPbuZJEnEbDMReZkKzwTgFK6JsZJJRakhDlHXDxHrFlW1JPb3iWgeKN3gve+zNtZjjjmGfvLq7ghESk4z1XylMWToxHv26c6dOzEkDQNAhCUCMMczFgCYw54iIpLE8EYi2jErw7CqKkxeBmFhOojFixfrl89ZRKqwEuWxYBd8cQC//vWvsal7hjrnyHNFS36bpwefEAeCbAKyCcCAUclERDWqoVqt4tL0p/z3V1yh4MX61jVr8LnhCpiZK0JQVUojIlX1lXy/Y6QmryZ6bmUQt155JezQgwSAXNUCzoFC5Ted+QJdccstevdwFxERmbySGwX7lrgoKUaUAcAFPRluvOwyYHQC382cF+BtN92Ee4d7ICJWAHHOqVgGM+8fxF5s+jWJ0zXP9+JgY1nCWGJzKVNW2vK9ZJyWT8hDigxHSNMU583z+Pill4IHHzp0VK1areLY+cdSX18fMfN3AHjkFfCtjsWQTdS+2SHSoCMTLV68GH97/jn5Xi/q8+LoDICZwOz/+uKLGyd/Y5N54oknWEQs8vTZtGDaqSIcVNVB9ZH8vZD3nqpVy3mlUk2hagCqMnOTRCEqqFar1NvbCx0ekFqtRjv37HQi0s/M/UmSoMLxfvfp7e2l0WQU1WoVi9GDe1atIso3SCh8NZXPLF/ul61b57TeTZs3b9bgpC5CTh7u4JtpQbbWWp3d26u1Wk3+/oxV+YBGhiqVCh8771gyxrjmnkHEcRxrPVYA3MY4Utv7OEI93zzbN1QNau1SF0VUr9f1mYueqSJi4nyrByTNUcRxjKzZxNDQELpnzkSlUoHZ+auJ41msJZ9lYGY97rjj4iRJUhvH8N4bb6iI5NDxEmFyxunv70dvb6+2zFu12hGPKAXt5teX1sVFBGnSQJZlWqt2kbVW/cAjLYy+yCA+OInDBBvHcNUTaMVNN+FL6WwjkhMdM3unTo0xNLYPCrdj7hMjdWMBnailXo899lg88Oq6EhG8ytg+NkQwYeF40fcEjz32GMIOBuTJMIBuiOxtH6hxj5Vvt0EGFfLeA5SAmbGsOqxr3vY2pT0PAgg7UY6VbnIF5nT5Fx6kmy67DC/47HfR19eHzDVQqVTQcAaVSgVJlpcMfnNlALdcfjmuXHMLbrn8csT78oDoNOZ8Wn0+vUZdRCB2816cXH7jjbgznTvBrEju5gr7yECt9vb26qOvPyrf/Vu9MjNIBCbfhlBFBW/77IO4cdWqyI48COecoTAVWsR7UbGhcmBILpnjAExRoxICw4YFXkUwVrSu+0RctWYNPvqWk8cIXXU/OioVUSEm1qCqZy6v55C7E8YczFO7fcIFr/7cg7jhkksUIw+10+/0sTwG0PW88BwvAVRhyeZbX4ar/D/12AWd30Q2rgAAAABJRU5ErkJggg==" alt="1K Coffee">
+      <div class="brandtext">
+        <div class="n">1K Coffee</div>
+        <div class="s">نظام تقييم الأداء الإداري</div>
+      </div>
+    </div>
+    <div class="topcta">
+      <span class="navlink" style="display:none">.</span>
+      <a class="btn btn-gold btn-sm" href="#" onclick="showDashboard(); return false;">افتح لوحة التحكم</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="padding-top:26px;">
+    <div>
+      <div class="kicker">ديوان القهوة للتجارة المحدودة</div>
+      <h1>نظام واحد يجمع أداء <b>كل الإدارات</b>، ويحوّله لقرار</h1>
+      <p class="herotext">تقييم يومي موحّد لكل إدارات الشركة على أربعة أبعاد ثابتة — أساسية، جودة، سلوك، مبادرات — مع رصد المهام العاجلة والبونص، في لوحة تحكم واحدة تُحدَّث أولًا بأول.</p>
+      <div class="heroactions">
+        <a class="btn btn-gold" href="#" onclick="showDashboard(); return false;">افتح لوحة التحكم</a>
+        <a class="btn btn-ghost" href="#dimensions">آلية التقييم</a>
+      </div>
+      <div class="heronote"><i></i> معًا .. نحو أداء أفضل</div>
+    </div>
+
+    <div class="gaugewrap">
+      <div class="gaugecard">
+        <div class="cap"><span>نسبة الإنجاز</span><span class="num" id="landing-year">–</span></div>
+        <svg viewBox="0 0 320 240" style="width:100%; display:block;">
+          <defs>
+            <linearGradient id="hgGrad" gradientUnits="userSpaceOnUse" x1="45" y1="150" x2="275" y2="150">
+              <stop offset="0%" stop-color="#D2624B"/>
+              <stop offset="55%" stop-color="#E0B24E"/>
+              <stop offset="100%" stop-color="#34B27B"/>
+            </linearGradient>
+            <radialGradient id="hgBack" cx="50%" cy="68%" r="65%">
+              <stop offset="0%" stop-color="#34B27B" stop-opacity="0.16"/>
+              <stop offset="100%" stop-color="#34B27B" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="hgGlow" filterUnits="userSpaceOnUse" x="0" y="0" width="320" height="240">
+              <feGaussianBlur stdDeviation="4" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <circle cx="160" cy="150" r="106" fill="url(#hgBack)"/>
+          <path d="M 45 150 A 115 115 0 0 1 160 35" fill="none" stroke="#1E3252" stroke-width="20" stroke-linecap="round"/>
+          <path d="M 160 35 A 115 115 0 0 1 275 150" fill="none" stroke="#1E3252" stroke-width="20" stroke-linecap="round"/>
+          <path id="hgFillPath" d="M 45 150 A 115 115 0 0 1 45 150" fill="none" stroke="url(#hgGrad)" stroke-width="20" stroke-linecap="round" filter="url(#hgGlow)"/>
+          <line id="hgNeedle" x1="160" y1="150" x2="45" y2="150" stroke="#E4C377" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="160" cy="150" r="9" fill="#C9A24B" stroke="#122036" stroke-width="2.5"/>
+          <text x="160" y="205" text-anchor="middle" font-family="IBM Plex Mono" font-size="40" font-weight="700" fill="#34B27B" id="hgNum">0%</text>
+          <text x="160" y="229" text-anchor="middle" font-family="'Noto Sans Arabic',Tahoma,Arial,sans-serif" font-size="12" font-weight="600" fill="#8E9BB3">مكتمل / إجمالي المهام</text>
+        </svg>
+        <div class="landing-comparison" id="landing-completion-comparison" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="statstrip">
+    <div class="stat"><div class="v num" id="stat-depts">13</div><div class="l">إدارة تحت التقييم</div></div>
+    <div class="stat"><div class="v num">4</div><div class="l">أبعاد تقييم ثابتة</div></div>
+    <div class="stat"><div class="v num" id="stat-updated">–</div><div class="l" id="stat-update-label">آخر تحديث</div></div>
+    <div class="stat"><div class="v num" id="stat-avg" style="color:var(--green)">8.2/10</div><div class="l">متوسط الأداء العام</div></div>
+  </div>
+
+  <section>
+    <div class="sectitle">ما الذي تراه في اللوحة</div>
+    <p class="secsub">كل ما يحتاجه مدير القسم أو عضو مجلس الإدارة ليعرف أين يقف الأداء الآن، ولماذا.</p>
+    <div class="featuregrid">
+      <div class="fcard lead">
+        <div>
+          <div class="ftag" style="background:rgba(228,195,119,0.16); color:var(--gold-2);">◎</div>
+          <h3>نسبة إنجاز واحدة تلخّص كل شيء</h3>
+          <p>مقياس دائري يجمع المهام المكتملة وغير المكتملة في رقم واحد واضح، بدل عشرات الأرقام المتفرقة.</p>
+        </div>
+        <div class="leadviz">
+          <i style="height:35%; background:linear-gradient(180deg,#E4C377,#C9A24B)"></i>
+          <i style="height:58%; background:linear-gradient(180deg,#E0B24E,#C9A24B)"></i>
+          <i style="height:44%; background:linear-gradient(180deg,#E4C377,#C9A24B)"></i>
+          <i style="height:76%; background:linear-gradient(180deg,#34B27B,#2BA6BE)"></i>
+          <i style="height:62%; background:linear-gradient(180deg,#E0B24E,#C9A24B)"></i>
+          <i style="height:86%; background:linear-gradient(180deg,#34B27B,#2BA6BE)"></i>
+        </div>
+      </div>
+      <div class="fcard">
+        <div class="ftag" style="background:rgba(43,166,190,0.16); color:var(--teal);">↝</div>
+        <h3>اتجاه أسبوعي ويومي لكل بُعد</h3>
+        <p>خط زمني يعرض الأسابيع ويتحوّل للأيام عند اختيار أسبوع، مع إمكانية عزل بُعد واحد للمقارنة.</p>
+      </div>
+      <div class="fcard">
+        <div class="ftag" style="background:rgba(210,98,75,0.16); color:var(--rust);">!</div>
+        <h3>المهام العاجلة والبونص</h3>
+        <p>رصد فوري للمهام الطارئة ونقاط البونص المكتسبة، إدارة بإدارة.</p>
+      </div>
+      <div class="fcard">
+        <div class="ftag" style="background:rgba(52,178,123,0.16); color:var(--green);">▤</div>
+        <h3>ترتيب الإدارات</h3>
+        <p>كل الإدارات في تسلسل واحد من الأعلى إلى الأقل أداءً، محدّث تلقائيًا.</p>
+      </div>
+      <div class="fcard">
+        <div class="ftag" style="background:rgba(201,162,75,0.16); color:var(--gold);">⇄</div>
+        <h3>مقارنة جنبًا إلى جنب</h3>
+        <p>اختر إدارتين لمقارنة أدائهما على الأبعاد الأربعة في آن واحد.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="dimensions">
+    <div class="sectitle">آلية التقييم — 10 نقاط لكل مهمة</div>
+    <p class="secsub">كل مهمة تُقيَّم على أربعة أبعاد ثابتة، بالإضافة إلى بونص منفصل للمهام العاجلة يُضاف بلا سقف.</p>
+    <div class="dimband">
+      <div class="segbar">
+        <i style="width:40%; background:var(--green);"></i>
+        <i style="width:20%; background:var(--teal);"></i>
+        <i style="width:20%; background:var(--gold);"></i>
+        <i style="width:20%; background:var(--gold-2);"></i>
+      </div>
+      <div class="dimlegend">
+        <div class="dimitem"><div class="t"><span class="dot" style="background:var(--green);"></span>المهام الأساسية</div><div class="w">4 من 10</div></div>
+        <div class="dimitem"><div class="t"><span class="dot" style="background:var(--teal);"></span>جودة المخرجات</div><div class="w">2 من 10</div></div>
+        <div class="dimitem"><div class="t"><span class="dot" style="background:var(--gold);"></span>السلوك المهني والتعاون</div><div class="w">2 من 10</div></div>
+        <div class="dimitem"><div class="t"><span class="dot" style="background:var(--gold-2);"></span>المبادرات</div><div class="w">2 من 10</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="ctaband">
+      <h2>اطّلع على أداء إدارتك الآن</h2>
+      <p>لوحة تحكم واحدة تعرض آخر بيانات منشورة، بلا حاجة لتقارير منفصلة.</p>
+      <div class="heroactions">
+        <a class="btn btn-gold" href="#" onclick="showDashboard(); return false;">افتح لوحة التحكم</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <div class="foottag"><b>1K Coffee</b> · نظام تقييم الأداء الإداري · ديوان القهوة للتجارة المحدودة</div>
+  <div class="footlinks">
+    <span>معًا .. نحو أداء أفضل</span>
+  </div>
+</footer>
+</div>
+
+<div id="dashboard-view" style="display:none;">
+<div class="layout">
+
+  <main>
+    <div class="topbar">
+      <div class="brandmark" id="dash-home-link" onclick="showLanding()" style="cursor:pointer;" title="الرئيسية">
+        <img class="logo-img" src="data:image/png;base64,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" alt="1K Coffee">
+        <div>
+          <h1 data-i18n="app_title">لوحة تحكم الأداء الإداري</h1>
+          <p class="sub">Administrative Performance Dashboard</p>
+        </div>
+      </div>
+      <div class="tagline" data-i18n="tagline">معًا .. نحو أداء أفضل</div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="themetoggle navtoggle-btn" id="navtoggle" type="button" title="القائمة" aria-label="القائمة">☰</button>
+        <button class="themetoggle" id="langtoggle" type="button" data-i18n-title="lang_toggle_title" title="التبديل بين العربية والإنجليزية">
+          <span id="langicon">EN</span> <span id="langlabel" data-i18n="lang_toggle_label">English</span>
+        </button>
+        <button class="themetoggle" id="themetoggle" type="button" data-i18n-title="theme_toggle_title" title="تبديل الوضع الليلي/النهاري">
+          <span id="themeicon">☀</span> <span id="themelabel" data-i18n="theme_day">الوضع النهاري</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: HOME ============ -->
+    <div class="page active" id="page-home">
+      <div class="filterbar" id="flt-home" style="margin-bottom:14px;"></div>
+      <div class="fchips" id="flt-home-dept" style="margin-bottom:18px;"></div>
+      
+      <div class="kpirow executive-kpis">
+        <div class="kpi"><div class="ico" style="background:rgba(228,195,119,0.15)">★</div><div class="l" data-i18n="kpi_avg">متوسط التقييم النهائي</div><div class="metric-value-row"><div class="v num" id="k-avg">–</div><span id="k-avg-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" data-i18n="out_of_10">من 10</div><div id="k-avg-previous" class="metric-previous"></div></div>
+        <div class="kpi"><div class="ico" style="background:rgba(43,166,190,0.15)">◧</div><div class="l" data-i18n="kpi_count">عدد التقييمات</div><div class="metric-value-row"><div class="v num" id="k-count">–</div><span id="k-count-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" id="k-count-total">مهمة</div><div id="k-count-previous" class="metric-previous"></div></div>
+        <div class="kpi"><div class="ico" style="background:rgba(210,98,75,0.15)">⏳</div><div class="l" data-i18n="kpi_incomplete">مهام غير مكتملة</div><div class="metric-value-row"><div class="v num" id="k-incomplete">–</div><span id="k-incomplete-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" data-i18n="in_progress">قيد التنفيذ</div><div id="k-incomplete-previous" class="metric-previous"></div></div>
+        <div class="kpi"><div class="ico" style="background:rgba(52,178,123,0.15)">◎</div><div class="l" data-i18n="completion_rate">نسبة الإنجاز</div><div class="metric-value-row"><div class="v num" id="k-completion">–</div><span id="k-completion-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" data-i18n="completion_sub">مكتمل / إجمالي المهام</div><div id="k-completion-previous" class="metric-previous"></div></div>
+        <div class="kpi"><div class="ico" style="background:rgba(52,178,123,0.15)">▦</div><div class="l" data-i18n="kpi_depts">الإدارات المعروضة</div><div class="metric-value-row"><div class="v num" id="k-depts">–</div><span id="k-depts-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" id="k-depts-total">إدارة</div><div id="k-depts-previous" class="metric-previous"></div></div>
+        <div class="kpi"><div class="ico" style="background:rgba(228,195,119,0.15)">🏆</div><div class="l" data-i18n="kpi_best">أفضل إدارة أداءً</div><div class="metric-value-row"><div class="v" id="k-best" style="font-size:14px;"></div><span id="k-best-badge" class="metric-badge flat">—</span></div><div class="d num" id="k-best-score" style="color:var(--gold-2)"></div><div id="k-best-previous" class="metric-previous"></div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <h3><span data-i18n="trend_title">اتجاه الأداء اليومي</span>
+            <span class="legend" id="trend-legend"></span>
+          </h3>
+          <div style="font-size:10px; color:var(--text-dim); margin:-6px 0 6px;" data-i18n="trend_note">المتوسط الكلي = حاصل جمع الأبعاد الأربعة.</div>
+          <svg class="chart" id="trendchart" viewBox="0 0 500 300"></svg>
+        </div>
+
+        <div class="panel" style="display:flex; flex-direction:column;">
+          <h3 data-i18n="completion_rate">نسبة الإنجاز</h3>
+          <svg class="chart" id="gaugechart" viewBox="0 0 320 240" style="max-width:300px; margin:4px auto 8px;"></svg>
+          <div class="gaugestats" id="gaugedetail"></div>
+        </div>
+      </div>
+
+      <div class="panel emph" style="margin-bottom:12px;">
+        <h3 data-i18n="rank_title">ترتيب الإدارات — من الأكبر إلى الأصغر</h3>
+        <svg class="chart" id="rankchart" viewBox="0 0 900 360"></svg>
+      </div>
+
+      <div class="grid3">
+        <div class="panel">
+          <h3><span data-i18n="detail_table_title">أداء الإدارات التفصيلي</span> <span style="font-size:10.5px; color:var(--text-dim); font-weight:600;" data-i18n="sort_hint">اضغط أي عمود للترتيب</span></h3>
+          <div class="tablewrap"><table class="dtable">
+            <thead><tr>
+              <th data-fixed-k="name" data-i18n="th_dept">الإدارة</th><th data-fixed-k="avg" data-i18n="th_overall">الأداء العام</th><th data-fixed-k="H" data-i18n="th_basic">الأساسية</th>
+              <th data-fixed-k="I" data-i18n="th_quality">الجودة</th><th data-fixed-k="J" data-i18n="th_behavior">السلوك</th><th data-fixed-k="K" data-i18n="th_initiatives">المبادرات</th>
+              <th data-fixed-k="urgent_count" data-i18n="th_urgent">العاجلة</th><th data-fixed-k="incomplete_count" data-i18n="th_incomplete">غير مكتملة</th><th data-fixed-k="urgent_bonus" data-i18n="th_bonus">البونص</th><th data-fixed-k="final" data-i18n="th_final">النهائي</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
+          </table></div>
+        </div>
+        <div class="panel">
+          <h3><span data-i18n="radar_title">تحليل متعدد الأبعاد</span> — <span id="radar-dept-name" style="color:var(--gold-2)"></span></h3>
+          <div class="fchips" id="radar-picker" style="margin-bottom:8px;"></div>
+          <svg class="chart" id="radarchart" viewBox="0 0 260 240" style="max-width:300px; margin:0 auto; display:block;"></svg>
+          <div class="insightrow" id="insightrow"></div>
+        </div>
+      </div>
+
+      <div class="grid4">
+        <div class="panel urgent-panel">
+          <h3 data-i18n="urgent_bonus_title">المهام العاجلة والبونص</h3>
+          <div class="miniStatRow">
+            <div class="miniStat urgent metric-card tone-urgent"><div class="metric-card-heading"><div class="ml" data-i18n="urgent_flagged">مهمة عاجلة مكتملة</div><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m13 2-9 12h7l-1 8 10-13h-7Z"/></svg></span></div><div class="metric-value-row"><div class="mv num" id="mu-count">–</div><span id="mu-count-badge" class="metric-badge flat">—</span></div><div id="mu-count-previous" class="metric-previous"></div></div>
+            <div class="miniStat bonus metric-card tone-bonus"><div class="metric-card-heading"><div class="ml" data-i18n="bonus_earned">نقاط بونص مُكتسبة</div><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m12 3 2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2ZM20 3v4m-2-2h4"/></svg></span></div><div class="metric-value-row"><div class="mv num" id="mu-bonus">–</div><span id="mu-bonus-badge" class="metric-badge flat">—</span></div><div id="mu-bonus-previous" class="metric-previous"></div></div>
+            <div class="miniStat incomplete metric-card tone-urgent_pending"><div class="metric-card-heading"><div class="ml" data-i18n="urgent_incomplete_label">مهام عاجلة غير مكتملة</div><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span></div><div class="metric-value-row"><div class="mv num" id="mu-incomplete">–</div><span id="mu-incomplete-badge" class="metric-badge flat">—</span></div><div id="mu-incomplete-previous" class="metric-previous"></div></div>
+            <div class="miniStat rate metric-card tone-urgent_completion"><div class="metric-card-heading"><div class="ml" data-i18n="urgent_rate_label">نسبة إنجاز المهام العاجلة</div><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span></div><div class="metric-value-row"><div class="mv num" id="mu-rate">–</div><span id="mu-rate-badge" class="metric-badge flat">—</span></div><div id="mu-rate-previous" class="metric-previous"></div></div>
+          </div>
+        </div>
+        <div class="panel range-panel">
+          <h3 data-i18n="range_title">نطاق الأداء ضمن التحديد الحالي</h3>
+          <div class="statgrid" id="rangestats"></div>
+        </div>
+      </div>
+
+      <div class="alertbanner">
+        <div class="aicon">!</div>
+        <div><b data-i18n="alert_title">تنبيه — يحتاج متابعة عاجلة</b><p id="alertbanner-text"></p></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: DEPT DEEP DIVE ============ -->
+    <div class="page" id="page-dept">
+      <h2 class="ptitle" data-i18n="page_dept_title">الأداء حسب الإدارة</h2>
+      <div class="filterbar" id="flt-dept" style="margin-bottom:14px;"></div>
+      <div class="fchips" id="dd-picker" style="margin-bottom:18px;"></div>
+      <div id="dd-content"></div>
+    </div>
+
+    <!-- ============ PAGE: URGENT ============ -->
+    <div class="page" id="page-urgent">
+      <h2 class="ptitle" data-i18n="page_urgent_title">المهام العاجلة والبونص — كل الإدارات</h2>
+      <div class="filterbar" id="flt-urgent" style="margin-bottom:14px;"></div>
+      <div class="kpirow" style="grid-template-columns:repeat(5,1fr); margin-bottom:20px;">
+        <div class="kpi metric-card tone-urgent"><div class="metric-card-heading"><div class="l" data-i18n="ur_total">المهام العاجلة المكتملة</div><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m13 2-9 12h7l-1 8 10-13h-7Z"/></svg></span></div><div class="metric-value-row"><div class="v num" id="ur-total"></div><span id="ur-total-badge" class="metric-badge flat">—</span></div><div id="ur-total-previous" class="metric-previous"></div></div>
+        <div class="kpi metric-card tone-bonus"><div class="metric-card-heading"><div class="l" data-i18n="ur_bonus">إجمالي نقاط البونص</div><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m12 3 2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2ZM20 3v4m-2-2h4"/></svg></span></div><div class="metric-value-row"><div class="v num" id="ur-bonus"></div><span id="ur-bonus-badge" class="metric-badge flat">—</span></div><div id="ur-bonus-previous" class="metric-previous"></div></div>
+        <div class="kpi metric-card tone-bonus_rate"><div class="metric-card-heading"><div class="l" data-i18n="ur_completion_rate">نسبة إنجاز نقاط البونص</div><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span></div><div class="metric-value-row"><div class="v num" id="ur-rate" style="color:var(--green)"></div><span id="ur-rate-badge" class="metric-badge flat">—</span></div><div id="ur-rate-previous" class="metric-previous"></div></div>
+        <div class="kpi metric-card tone-urgent_avg"><div class="metric-card-heading"><div class="l" data-i18n="ur_avg">متوسط تقييم المهام العاجلة</div><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4 20h16M6 16v-5m6 5V5m6 11V8"/></svg></span></div><div class="metric-value-row"><div class="v num" id="ur-avg"></div><span id="ur-avg-badge" class="metric-badge flat">—</span></div><div id="ur-avg-previous" class="metric-previous"></div></div>
+        <div class="kpi metric-card tone-urgent_pending"><div class="metric-card-heading"><div class="l" data-i18n="urgent_incomplete_label">مهام عاجلة غير مكتملة</div><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span></div><div class="metric-value-row"><div class="v num" id="ur-incomplete" style="color:var(--rust)"></div><span id="ur-incomplete-badge" class="metric-badge flat">—</span></div><div id="ur-incomplete-previous" class="metric-previous"></div></div>
+      </div>
+      <div class="panel">
+        <div class="tablewrap"><table class="dtable">
+          <thead><tr><th data-k3="dept" data-i18n="th_dept">الإدارة</th><th data-k3="date" data-i18n="th_date">التاريخ</th><th data-i18n="th_desc">الوصف</th><th data-k3="score" data-i18n="th_score">التقييم</th><th data-k3="bonus" data-i18n="th_bonus">البونص</th></tr></thead>
+          <tbody id="urgbody"></tbody>
+        </table></div>
+      </div>
+
+      <div class="panel emph" style="margin-top:16px;">
+        <h3 data-i18n="urgent_rank_title">ترتيب الإدارات بعد إضافة البونص</h3>
+        <svg class="chart" id="urgentrankchart" viewBox="0 0 900 360"></svg>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: COMPARE ============ -->
+    <div class="page" id="page-compare">
+      <h2 class="ptitle" data-i18n="page_compare_title">مقارنة الإدارات</h2>
+      <div class="filterbar" id="flt-compare" style="margin-bottom:14px;"></div>
+      <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:18px;">
+        <div class="fgroup"><div class="flabel" data-i18n="cmp_first">الإدارة الأولى</div><div class="fchips" id="cmp-a"></div></div>
+        <div class="fgroup"><div class="flabel" data-i18n="cmp_second">الإدارة الثانية</div><div class="fchips" id="cmp-b"></div></div>
+      </div>
+      <div class="grid3">
+        <div class="panel">
+          <h3 data-i18n="cmp_radar_title">مقارنة الأبعاد الأربعة</h3>
+          <svg class="chart" id="cmp-radar" viewBox="0 0 260 240" style="max-width:300px; margin:0 auto; display:block;"></svg>
+          <div class="legend" id="cmp-legend" style="margin-top:10px;"></div>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="cmp_quick_title">مقارنة سريعة</h3>
+          <div class="tablewrap"><table class="minitable" id="cmp-table"></table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: WEEKLY REPORT ============ -->
+    <div class="page" id="page-settings">
+      <h2 class="ptitle" data-i18n="page_settings_title">إعدادات النظام</h2>
+      <div class="settingsgrid">
+        <div class="panel">
+          <h4 data-i18n="settings_criteria_title">معايير التقييم (من 10)</h4>
+          <div class="tablewrap"><table class="minitable">
+            <tr><td data-i18n="crit_basic">المهام الأساسية</td><td class="num" data-i18n="num_4">4</td></tr>
+            <tr><td data-i18n="crit_quality">جودة المخرجات</td><td class="num" data-i18n="num_2">2</td></tr>
+            <tr><td data-i18n="crit_behavior">السلوك المهني والتعاون</td><td class="num" data-i18n="num_2">2</td></tr>
+            <tr><td data-i18n="crit_initiatives">المبادرات</td><td class="num" data-i18n="num_2">2</td></tr>
+            <tr><td data-i18n="crit_bonus">بونص المهمة العاجلة (لكل مهمة)</td><td class="num" data-i18n="crit_bonus_val">حتى 2+</td></tr>
+          </table></div>
+        </div>
+        <div class="panel">
+          <h4 data-i18n="settings_depts_title">الإدارات المشمولة بالنظام</h4>
+          <div class="tablewrap"><table class="minitable" id="settings-depts"></table></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="navbackdrop" id="navbackdrop"></div>
+
+  <div class="sidebar">
+    <div class="navitem active" data-page="home">🏠 <span data-i18n="nav_home">الرئيسية</span></div>
+    <div class="navitem" data-page="dept">📊 <span data-i18n="nav_dept">الأداء حسب الإدارة</span></div>
+    <div class="navitem" data-page="urgent">⚠ <span data-i18n="nav_urgent">المهام العاجلة والبونص</span></div>
+    <div class="navitem" data-page="compare">📈 <span data-i18n="nav_compare">مقارنة الإدارات</span></div>
+    <div class="navitem" data-page="settings">⚙ <span data-i18n="nav_settings">إعدادات</span></div>
+
+    <div class="sidefoot"><div class="ring2"></div><p data-i18n="sidefoot_text">الجودة تبدأ من فريق متميز</p></div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function initializeDashboard(SOURCE){
+// Business rule: a blank evaluation and an explicit zero both mean incomplete.
+// Normalize copies so that cards, averages, trends and task details use one rule.
+SOURCE={...SOURCE,
+ rows:SOURCE.rows.map(r=>({...r,total:r.total??0,dims:r.dims.map(x=>x??0)})),
+ urgent:SOURCE.urgent.map(r=>({...r,score:r.score??0,bonus:r.bonus??0})),
+ methodology:{...SOURCE.methodology,blank:'incomplete_counted_as_zero_in_average'}
+};
+
+const iso=d=>d.toISOString().slice(0,10);
+const addDay=(s,n)=>{const d=new Date(s+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return iso(d)};
+const WEEK_CACHE={};
+function weeksFor(month){
+  if(WEEK_CACHE[month])return WEEK_CACHE[month];
+  const first=month+'-01',last=iso(new Date(Date.UTC(+month.slice(0,4),+month.slice(5,7),0)));
+  let start=addDay(first,(6-new Date(first+'T12:00:00Z').getUTCDay()+7)%7),out=[];
+  for(let id=1;id<=4;id++){
+    let end=id===4?last:addDay(start,5);if(end>last)end=last;
+    if(new Date(end+'T12:00:00Z').getUTCDay()===5)end=addDay(end,-1);
+    out.push({id,start,end});start=addDay(start,7);
+  }
+  return WEEK_CACHE[month]=out;
+}
+const EVAL_CACHE={};
+function evaluationDate(date){return EVAL_CACHE[date]??=(new Date(date+'T12:00:00Z').getUTCDay()!==5&&date>=weeksFor(date.slice(0,7))[0].start)}
+function periodContains(date,month,week){
+ if(!evaluationDate(date)||date>SOURCE.cutoff||(month!=='all'&&!date.startsWith(month)))return false;
+ if(!week)return true;
+ const w=weeksFor(date.slice(0,7)).find(x=>x.id===week);
+ return date>=w.start&&date<=w.end;
+}
+function scoreDescending(a,b){return (b.final??-Infinity)-(a.final??-Infinity)||a.code.localeCompare(b.code)}
+function baseDescending(a,b){return (b.avg??-Infinity)-(a.avg??-Infinity)||a.code.localeCompare(b.code)}
+const mean=arr=>arr.length?arr.reduce((s,v)=>s+v,0)/arr.length:null;
+function aggregate(month,week){
+ const rows=SOURCE.rows.filter(r=>periodContains(r.date,month,week));
+ const urgent=SOURCE.urgent.filter(r=>periodContains(r.date,month,week));
+ const departments=SOURCE.departments.map(d=>{
+   const rr=rows.filter(r=>r.dept===d.name),scored=rr.filter(r=>typeof r.total==='number');
+   const ur=urgent.filter(r=>r.dept===d.name),done=ur.filter(r=>r.score>0);
+   const daily={};
+   scored.forEach(r=>{const v=daily[r.date]??={count:0,sum:0,comp_sum:[0,0,0,0]};v.count++;v.sum+=r.total??0;r.dims.forEach((x,i)=>v.comp_sum[i]+=x??0);v.avg=v.sum/v.count});
+   const avg=mean(scored.map(r=>r.total)),bonus=done.reduce((s,r)=>s+r.bonus,0);
+   return {...d,avg,final:avg===null?null:avg+bonus,record_count:rr.length,count:scored.filter(r=>r.total!==0).length,incomplete_count:scored.filter(r=>r.total===0).length,pending_count:rr.length-scored.length,comp_avg:[0,1,2,3].map(i=>mean(scored.map(r=>r.dims[i]))),daily,urgent_count:done.length,urgent_incomplete:ur.length-done.length,urgent_bonus:bonus,urgent_tasks:done,urgent_pending:ur.filter(r=>r.score===0)};
+ });
+ const ranked=departments.filter(d=>d.avg!==null).sort((a,b)=>b.final-a.final);ranked.forEach((d,i)=>d.rank=i+1);departments.filter(d=>d.avg===null).forEach(d=>d.rank='–');
+ const days=[...new Set(rows.map(r=>r.date))].sort();
+ return {departments,days,daily_trend:days.map(date=>({date})),overall_avg:mean(ranked.map(d=>d.final)),base_avg:mean(ranked.map(d=>d.avg)),total_count:departments.reduce((s,d)=>s+d.count,0),total_departments:ranked.length,total_bonus:departments.reduce((s,d)=>s+d.urgent_bonus,0),total_incomplete:departments.reduce((s,d)=>s+d.incomplete_count,0)};
+}
+let DATA=aggregate(SOURCE.months.at(-1),0);
+function trendPoints(names=activeDepts().map(d=>d.name)){
+ if(currentMonth==='all')return SOURCE.months.map(month=>{
+  const data=aggregate(month,currentWeek),depts=data.departments.filter(d=>names.includes(d.name)&&d.avg!==null);
+  const w=currentWeek?weeksFor(month).find(w=>w.id===currentWeek):null;
+  const start=w?w.start:weeksFor(month)[0].start;
+  const end=w?w.end:iso(new Date(Date.UTC(+month.slice(0,4),+month.slice(5,7),0)));
+  return {start,end,label:monthLabel(month),count:depts.reduce((s,d)=>s+d.record_count-d.pending_count,0),overall:mean(depts.map(d=>d.avg)),...Object.fromEntries(['H','I','J','K'].map((k,i)=>[k,mean(depts.map(d=>d.comp_avg[i]))]))};
+ });
+ const periods=currentWeek?(()=>{const w=weeksFor(currentMonth).find(x=>x.id===currentWeek),a=[];for(let d=w.start;d<=w.end&&d<=SOURCE.cutoff;d=addDay(d,1))if(evaluationDate(d))a.push({start:d,end:d});return a})():weeksFor(currentMonth).filter(w=>w.start<=SOURCE.cutoff);
+ return periods.map(p=>{const r=SOURCE.rows.filter(r=>evaluationDate(r.date)&&names.includes(r.dept)&&r.date>=p.start&&r.date<=p.end&&r.date<=SOURCE.cutoff&&typeof r.total==='number');
+ const groups=[...new Set(r.map(x=>x.dept))].map(name=>r.filter(x=>x.dept===name));
+ return {...p,label:currentWeek?p.start.slice(8)+'/'+p.start.slice(5,7):p.start.slice(8)+'/'+p.start.slice(5,7)+' – '+p.end.slice(8)+'/'+p.end.slice(5,7),count:r.length,overall:mean(groups.map(g=>mean(g.map(x=>x.total)))),...Object.fromEntries(['H','I','J','K'].map((k,i)=>[k,mean(groups.map(g=>mean(g.map(x=>x.dims[i]))))]))}});
+}
+function trendTitle(){if(currentMonth==='all')return LANG==='ar'?(currentWeek?'مقارنة نفس الأسبوع عبر الشهور':'اتجاه الأداء الشهري'):(currentWeek?'Same week across months':'Monthly Performance Trend');return LANG==='ar'?(currentWeek?'اتجاه الأداء اليومي':'اتجاه الأداء الأسبوعي'):(currentWeek?'Daily Performance Trend':'Weekly Performance Trend')}
+function plotTrend(svg,points,series=['overall']){
+ const th=themeColors(),w=600,h=300,L=58,R=24,Tp=36,B=72;
+ const inset=28;
+ const x=i=>points.length<2?(L+w-R)/2:L+inset+i*(w-L-R-2*inset)/(points.length-1),y=v=>h-B-v/10*(h-Tp-B);
+ let s='';[0,2,4,6,8,10].forEach(v=>s+=`<line x1="${L}" y1="${y(v)}" x2="${w-R}" y2="${y(v)}" stroke="${th.grid2}"/><text x="${L-20}" y="${y(v)+4}" text-anchor="middle" fill="${th.dim}" font-size="10">${toAr(v)}</text>`);
+ series.forEach(k=>{let path='',segments=[],segment=[];points.forEach((p,i)=>{const v=p[k];if(v===null){if(segment.length)segments.push(segment);segment=[];return}segment.push([x(i),y(v)]);});if(segment.length)segments.push(segment);
+ const gradient=svg.id+'-area-'+k;s+=`<defs><linearGradient id="${gradient}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${dimMeta[k].color}" stop-opacity="0.4"/><stop offset="100%" stop-color="${dimMeta[k].color}" stop-opacity="0.025"/></linearGradient></defs>`;
+ segments.forEach(seg=>{const line=seg.map((p,i)=>(i?'L':'M')+p.join(' ')).join(' ');path+=line+' ';if(seg.length>1)s+=`<path class="trend-area" d="${line} L${seg.at(-1)[0]} ${y(0)} L${seg[0][0]} ${y(0)} Z" fill="url(#${gradient})" stroke="none"/>`});s+=`<path d="${path}" fill="none" stroke="${dimMeta[k].color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+ points.forEach((p,i)=>{if(p[k]===null)return;s+=`<circle data-point="${p.start}" cx="${x(i)}" cy="${y(p[k])}" r="4" fill="${dimMeta[k].color}"><title>${p.start} — ${p.end} | ${dimMeta[k].label}: ${fmt1(p[k])} | ${p.count}</title></circle>`;if(series.length===1)s+=`<text x="${x(i)}" y="${y(p[k])-13}" text-anchor="middle" fill="${dimMeta[k].color}" font-size="11">${toAr(fmt1(p[k]))}</text>`})});
+ points.forEach((p,i)=>{
+   if(currentMonth==='all'){s+=`<text x="${x(i)}" y="${h-B+29}" text-anchor="middle" fill="${th.dim}" font-size="11">${p.label}</text>`;}
+   else if(currentWeek){s+=`<text class="trend-date-label" x="${x(i)}" y="${h-B+28}" style="direction:ltr;unicode-bidi:isolate" text-anchor="middle" fill="${th.dim}" font-size="11">${p.label}</text>`;}
+   else{s+=`<text class="trend-week-label" x="${x(i)}" y="${h-B+29}" style="direction:ltr;unicode-bidi:isolate" text-anchor="middle" fill="${th.text}" font-family="Arial,sans-serif" font-weight="600" font-size="12">Week ${p.id??i+1}</text><text class="trend-date-label" x="${x(i)}" y="${h-B+49}" style="direction:ltr;unicode-bidi:isolate" text-anchor="middle" fill="${th.dim}" font-family="Arial,sans-serif" font-size="11">${Number(p.start.slice(8))} – ${Number(p.end.slice(8))}</text>`;}
+ });
+ if(!points.some(p=>p.count))s+=`<text x="300" y="140" text-anchor="middle" fill="${th.dim}" font-size="16">${LANG==='ar'?'لا توجد بيانات للفترة المختارة':'No data for this period'}</text>`;
+ svg.setAttribute('viewBox',`0 0 ${w} ${h}`);svg.innerHTML=s;svg.dataset.mode=currentWeek?'daily':'weekly';
+}
+
+
+
+function fmt1(n){ return n===null||n===undefined||!Number.isFinite(n)?'–':(Math.round(n*10)/10).toFixed(1); }
+
+/* ============================================================
+   LANGUAGE / i18n
+   ============================================================ */
+let LANG = 'ar';
+function toAr(s){ return String(s); } // all numbers are always shown in English (Latin) digits
+function pctSign(){ return '%'; }
+function dayLabel(k){ const n=parseInt(k.split('-')[2],10); return (LANG==='ar'?'يوم ':'Day ') + toAr(n); }
+function scoreColor(v){ if(v===null)return "#8E9BB3"; if(v>=8) return '#34B27B'; if(v>=6.5) return '#E0B24E'; return '#D2624B'; }
+function deptName(d){ return LANG==='en' ? (d.name_en||d.name) : d.name; }
+const TASK_DESC_EN = {
+  'معالجة عطل عاجل أثر على سير العمل':'Resolving an urgent malfunction that affected workflow',
+  'متابعة طلب تنفيذي عاجل من الإدارة':'Following up on an urgent executive request from management',
+  'التعامل مع شكوى عميل حرجة تتطلب حلاً فورياً':'Handling a critical customer complaint requiring an immediate solution',
+};
+function taskDesc(s){ return LANG==='en' ? (TASK_DESC_EN[s]||s) : s; }
+
+const I18N = {
+  ar: {
+    app_title:'لوحة تحكم الأداء الإداري', tagline:'معًا .. نحو أداء أفضل',
+    theme_toggle_title:'تبديل الوضع الليلي/النهاري', theme_day:'الوضع النهاري', theme_night:'الوضع الليلي',
+    lang_toggle_title:'التبديل بين العربية والإنجليزية', lang_toggle_label:'English',
+    dim_filter_label:'بُعد التقييم (خط الاتجاه)', dept_label:'الإدارة', week_label:'الأسبوع', month_label:'الشهر',
+    all_label:'الكل', all_selected:'الكل محدَّدة', selected_suffix:'محدَّدة',
+    kpi_avg:'متوسط التقييم النهائي', out_of_10:'من 10', kpi_count:'عدد التقييمات', unit_task:'مهمة',
+    kpi_depts:'الإدارات المعروضة', unit_dept:'إدارة', kpi_incomplete:'مهام غير مكتملة', in_progress:'قيد التنفيذ',
+    completion_rate:'نسبة الإنجاز', completion_sub:'مكتمل / إجمالي المهام', kpi_best:'أفضل إدارة أداءً',
+    hero_line1:'الأداء العالي يبدأ', hero_line2:'من البيانات الصحيحة',
+    trend_title:'اتجاه الأداء اليومي', trend_note:'المتوسط الكلي = حاصل جمع الأبعاد الأربعة.',
+    rank_title:'ترتيب الإدارات — من الأكبر إلى الأصغر',
+    detail_table_title:'أداء الإدارات التفصيلي', sort_hint:'مرتّب تنازليًا حسب التقييم النهائي',
+    th_dept:'الإدارة', th_overall:'الأداء العام', th_basic:'الأساسية', th_quality:'الجودة', th_behavior:'السلوك',
+    th_initiatives:'المبادرات', th_urgent:'العاجلة', th_incomplete:'غير مكتملة', th_bonus:'البونص', th_final:'النهائي',
+    radar_title:'تحليل متعدد الأبعاد', urgent_bonus_title:'المهام العاجلة والبونص',
+    urgent_flagged:'مهمة عاجلة مكتملة', bonus_earned:'نقاط بونص مُكتسبة',
+    urgent_incomplete_label:'مهام عاجلة غير مكتملة', urgent_rate_label:'نسبة إنجاز المهام العاجلة',
+    ur_of_total:'من إجمالي', ur_completion_rate:'نسبة إنجاز نقاط البونص', dd_completion_rate:'نسبة الإنجاز',
+    details_dept_filter_hint:'اختر إدارة من الفلتر أعلاه لعرض تقييماتها بالتفصيل، أو اتركه على "الكل" لعرض جميع الإدارات',
+    th_date2:'التاريخ', th_evalcount2:'عدد التقييمات', th_tasksum:'مجموع الدرجات', details_log_title:'سجل التقييمات التفصيلي — كسجل الإكسل',
+    range_title:'نطاق التقييم الأساسي ضمن التحديد', alert_title:'تنبيه — يحتاج متابعة عاجلة',
+    range_max:'أعلى متوسط', range_min:'أقل متوسط', range_diff:'الفارق', range_median:'الوسيط',
+    page_dept_title:'الأداء حسب الإدارة',
+    nav_home:'الرئيسية', nav_dept:'الأداء حسب الإدارة', nav_details:'تفاصيل التقييمات', nav_urgent:'المهام العاجلة والبونص',
+    nav_weekly:'التقرير الأسبوعي', nav_monthly:'التقرير الشهري', nav_compare:'مقارنة الإدارات', nav_settings:'إعدادات',
+    page_details_title:'تفاصيل التقييمات — كل الإدارات', th_avg_short:'المتوسط', th_basic4:'الأساسية /4',
+    th_quality2:'الجودة /2', th_behavior2:'السلوك /2', th_init2:'المبادرات /2', th_evalcount:'عدد التقييمات',
+    th_bestday:'أفضل يوم', th_worstday:'أضعف يوم',
+    page_urgent_title:'المهام العاجلة والبونص — كل الإدارات', ur_total:'المهام العاجلة المكتملة',
+    ur_bonus:'إجمالي نقاط البونص', ur_avg:'متوسط تقييم المهام العاجلة', th_date:'التاريخ', th_desc:'الوصف', th_score:'التقييم',
+    page_compare_title:'مقارنة الإدارات', cmp_first:'الإدارة الأولى', cmp_second:'الإدارة الثانية',
+    cmp_radar_title:'مقارنة الأبعاد الأربعة', cmp_quick_title:'مقارنة سريعة', cmp_final_avg:'المتوسط النهائي',
+    cmp_eval_count:'عدد التقييمات', cmp_urgent:'المهام العاجلة المكتملة', cmp_urgent_bonus:'بونص العاجلة',
+    cmp_incomplete:'مهام غير مكتملة', cmp_rank:'الترتيب',
+    page_weekly_title:'التقرير الأسبوعي', wk_summary_title:'ملخص الأسبوع الأول (1 – 7 سبتمبر 2026)',
+    wk_rank_title:'ترتيب الإدارات', wk_urgent_title:'المهام العاجلة هذا الأسبوع',
+    wk_avg:'متوسط الأداء العام', wk_taskcount:'مهمة تم تقييمها', wk_bonus:'بونص مكتسب',
+    page_monthly_title:'التقرير الشهري', monthly_placeholder_title:'البيانات الشهرية غير متاحة بعد',
+    monthly_placeholder_text:'النظام لسه في أول أسبوع تشغيل (1 – 7 سبتمبر 2026)، فمفيش شهر كامل نقدر نجمّع بياناته. بمجرد ما تتراكم بيانات أربع أسابيع، الصفحة دي هتتفعّل تلقائيًا بنفس تصميم التقرير الأسبوعي لكن على مستوى الشهر.',
+    page_settings_title:'إعدادات النظام', settings_criteria_title:'معايير التقييم (من 10)',
+    crit_basic:'المهام الأساسية', crit_quality:'جودة المخرجات', crit_behavior:'السلوك المهني والتعاون',
+    crit_initiatives:'المبادرات', crit_bonus:'بونص المهمة العاجلة (لكل مهمة)', crit_bonus_val:'حتى 2+', num_4:'4', num_2:'2',
+    settings_depts_title:'الإدارات المشمولة بالنظام', th_manager:'المدير', th_code:'الكود',
+    sidebar_filters:'الفلاتر', sidefoot_text:'الجودة تبدأ من فريق متميز',
+    trend_dim_overall:'المتوسط الكلي', trend_dim_basic:'المهام الأساسية', trend_dim_quality:'جودة المخرجات',
+    trend_dim_behavior:'السلوك المهني', trend_dim_init:'المبادرات', trend_dim_all:'قارن الكل',
+    week1:'الأسبوع الأول', week2:'الأسبوع الثاني', week3:'الأسبوع الثالث', week4:'الأسبوع الرابع',
+    month_sep:'سبتمبر 2026', no_week_data_title:'لا توجد بيانات لهذا الأسبوع بعد', no_urgent_tasks:'لا توجد مهام عاجلة.',
+    dd_rank_prefix:'الترتيب', dd_of:'من', dd_manager:'مدير القسم:', dd_avg_label:'متوسط الأداء',
+    dd_taskcount:'مهمة مقيَّمة', dd_urgentcount:'مهمة عاجلة مكتملة', dd_bonus:'بونص عاجل', dd_incomplete:'مهام غير مكتملة',
+    dd_trend_title:'الاتجاه اليومي', dd_criteria_title:'عناصر التقييم', dd_urgent_title:'المهام العاجلة',
+    dd_score_label:'التقييم:', dd_bonus_label:'بونص:',
+    insight_strength_title:'🏆 أبرز نقاط القوة', insight_note_title:'⚠ أهم الملاحظات',
+    month_short:'سبتمبر',
+  },
+  en: {
+    app_title:'Administrative Performance Dashboard', tagline:'Together, towards better performance',
+    theme_toggle_title:'Toggle dark/light mode', theme_day:'Light mode', theme_night:'Dark mode',
+    lang_toggle_title:'Switch between Arabic and English', lang_toggle_label:'العربية',
+    dim_filter_label:'Evaluation Dimension (Trend Line)', dept_label:'Department', week_label:'Week', month_label:'Month',
+    all_label:'All', all_selected:'All selected', selected_suffix:'selected',
+    kpi_avg:'Final Average Score', out_of_10:'out of 10', kpi_count:'Evaluations Count', unit_task:'task',
+    kpi_depts:'Departments Shown', unit_dept:'department', kpi_incomplete:'Incomplete Tasks', in_progress:'In progress',
+    completion_rate:'Evaluation Completion Rate', completion_sub:'Completed / Total Tasks', kpi_best:'Top Performing Department',
+    hero_line1:'High performance starts', hero_line2:'with accurate data',
+    trend_title:'Daily Performance Trend', trend_note:'Overall average = sum of the four dimensions.',
+    rank_title:'Department Ranking — Highest to Lowest',
+    detail_table_title:'Detailed Department Performance', sort_hint:'Highest to lowest final score',
+    th_dept:'Department', th_overall:'Overall', th_basic:'Core Tasks', th_quality:'Quality', th_behavior:'Behavior',
+    th_initiatives:'Initiatives', th_urgent:'Urgent', th_incomplete:'Incomplete', th_bonus:'Bonus', th_final:'Final',
+    radar_title:'Multi-Dimensional Analysis', urgent_bonus_title:'Urgent Tasks & Bonus',
+    urgent_flagged:'Completed urgent task', bonus_earned:'Bonus points earned',
+    urgent_incomplete_label:'Incomplete urgent tasks', urgent_rate_label:'Urgent Task Completion Rate',
+    ur_of_total:'of total', ur_completion_rate:'Bonus Points Completion Rate', dd_completion_rate:'Completion Rate',
+    details_dept_filter_hint:'Pick a department from the filter above to see its full evaluation log, or leave it on "All" to see every department',
+    th_date2:'Date', th_evalcount2:'Evaluations', th_tasksum:'Score Total', details_log_title:'Detailed Evaluation Log — Like the Excel Sheet',
+    range_title:'Base Score Range in Current Selection', alert_title:'Alert — Needs Urgent Follow-up',
+    range_max:'Highest Average', range_min:'Lowest Average', range_diff:'Difference', range_median:'Median',
+    page_dept_title:'Performance by Department',
+    nav_home:'Home', nav_dept:'Performance by Department', nav_details:'Evaluation Details', nav_urgent:'Urgent Tasks & Bonus',
+    nav_weekly:'Weekly Report', nav_monthly:'Monthly Report', nav_compare:'Compare Departments', nav_settings:'Settings',
+    page_details_title:'Evaluation Details — All Departments', th_avg_short:'Average', th_basic4:'Core /4',
+    th_quality2:'Quality /2', th_behavior2:'Behavior /2', th_init2:'Initiatives /2', th_evalcount:'Evaluations',
+    th_bestday:'Best Day', th_worstday:'Worst Day',
+    page_urgent_title:'Urgent Tasks & Bonus — All Departments', ur_total:'Completed Urgent Tasks',
+    ur_bonus:'Total Bonus Points', ur_avg:'Average Urgent Task Score', th_date:'Date', th_desc:'Description', th_score:'Score',
+    page_compare_title:'Compare Departments', cmp_first:'First Department', cmp_second:'Second Department',
+    cmp_radar_title:'Comparing the Four Dimensions', cmp_quick_title:'Quick Comparison', cmp_final_avg:'Final Average',
+    cmp_eval_count:'Evaluations Count', cmp_urgent:'Completed Urgent Tasks', cmp_urgent_bonus:'Urgent Bonus',
+    cmp_incomplete:'Incomplete Tasks', cmp_rank:'Rank',
+    page_weekly_title:'Weekly Report', wk_summary_title:'First Week Summary (Sep 1 – 7, 2026)',
+    wk_rank_title:'Department Ranking', wk_urgent_title:'Urgent Tasks This Week',
+    wk_avg:'Overall Average Performance', wk_taskcount:'Tasks Evaluated', wk_bonus:'Bonus Earned',
+    page_monthly_title:'Monthly Report', monthly_placeholder_title:'Monthly Data Not Available Yet',
+    monthly_placeholder_text:'The system is still in its first week of operation (Sep 1 – 7, 2026), so there isn\'t a full month of data to aggregate yet. Once four weeks of data have accumulated, this page will activate automatically with the same design as the weekly report, but at a monthly level.',
+    page_settings_title:'System Settings', settings_criteria_title:'Evaluation Criteria (out of 10)',
+    crit_basic:'Core Tasks', crit_quality:'Output Quality', crit_behavior:'Professional Behavior & Collaboration',
+    crit_initiatives:'Initiatives', crit_bonus:'Urgent Task Bonus (per task)', crit_bonus_val:'Up to +2', num_4:'4', num_2:'2',
+    settings_depts_title:'Departments Covered by the System', th_manager:'Manager', th_code:'Code',
+    sidebar_filters:'Filters', sidefoot_text:'Quality starts with an outstanding team',
+    trend_dim_overall:'Overall Average', trend_dim_basic:'Core Tasks', trend_dim_quality:'Output Quality',
+    trend_dim_behavior:'Professional Behavior', trend_dim_init:'Initiatives', trend_dim_all:'Compare All',
+    week1:'Week 1', week2:'Week 2', week3:'Week 3', week4:'Week 4',
+    month_sep:'September 2026', no_week_data_title:'No data for this week yet', no_urgent_tasks:'No urgent tasks.',
+    dd_rank_prefix:'Rank', dd_of:'of', dd_manager:'Department Manager:', dd_avg_label:'Average Performance',
+    dd_taskcount:'Tasks Evaluated', dd_urgentcount:'Completed Urgent Tasks', dd_bonus:'Urgent Bonus', dd_incomplete:'Incomplete Tasks',
+    dd_trend_title:'Daily Trend', dd_criteria_title:'Evaluation Criteria', dd_urgent_title:'Urgent Tasks',
+    dd_score_label:'Score:', dd_bonus_label:'Bonus:',
+    insight_strength_title:'🏆 Top Strengths', insight_note_title:'⚠ Key Observations',
+    month_short:'September',
+  }
+};
+
+Object.assign(I18N.ar,{kpi_avg:'متوسط التقييم قبل البونص',kpi_best_note:'',urgent_rank_title:'ترتيب الإدارات بعد إضافة البونص',sort_hint:'اضغط أي عمود للترتيب',kpi_count:'المهام المكتملة',completion_rate:'نسبة الإنجاز',kpi_depts:'عدد الإدارات المقيّمة',in_progress:'تشمل التقييم صفر والخانات الفاضية',dd_taskcount:'المهام المكتملة',cmp_eval_count:'المهام المكتملة',dd_avg_label:'متوسط التقييم الأساسي',cmp_final_avg:'متوسط التقييم الأساسي',th_evalcount:'المهام المكتملة',th_overall:'الأساسي',rank_title:'ترتيب الإدارات — التقييم قبل البونص',urgent_incomplete_label:'مهام عاجلة غير مكتملة',details_log_title:'متوسط التقييمات لكل إدارة ويوم'});
+Object.assign(I18N.en,{kpi_avg:'Average Score Before Bonus',kpi_best_note:'',urgent_rank_title:'Department Ranking — After Bonus',sort_hint:'Click any column to sort',kpi_count:'Completed Tasks',completion_rate:'Completion Rate',kpi_depts:'Departments with Data',in_progress:'Includes zero and blank scores',dd_taskcount:'Completed Tasks',cmp_eval_count:'Completed Tasks',dd_avg_label:'Base Average Score',cmp_final_avg:'Base Average Score',th_evalcount:'Completed Tasks',th_overall:'Base Score',rank_title:'Department Ranking — Score Before Bonus',urgent_incomplete_label:'Incomplete Urgent Tasks',details_log_title:'Average scores by department and day'});
+
+function T(key){ return (I18N[LANG] && I18N[LANG][key]) || (I18N.ar[key]) || key; }
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = T(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el=>{ el.title = T(el.dataset.i18nTitle); });
+}
+
+/* ============================================================
+   PAGE: HOME
+   ============================================================ */
+let selectedDepts = new Set();   // empty = all
+let dimFilter = 'overall';
+let currentWeek = 0;
+let currentMonth = SOURCE.months.at(-1);
+const WEEK_KEYS = {1:'week1', 2:'week2', 3:'week3', 4:'week4'};
+const MONTH_KEYS = Object.fromEntries(SOURCE.months.map(m=>[m,m]));
+function weekLabel(w){ if(!w)return LANG==='ar'?'كل الأسابيع':'All weeks';return LANG==='ar'?['','الأسبوع الأول','الأسبوع الثاني','الأسبوع الثالث','الأسبوع الرابع'][w]:'Week '+w; }
+function monthLabel(m){ if(m==='all')return LANG==='ar'?'كل الشهور':'All months'; return new Intl.DateTimeFormat(LANG==='ar'?'ar-EG-u-nu-latn':'en-GB',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(m+'-01T12:00:00Z')); }
+let radarDept = DATA.departments[0].name;
+let sortKey = 'avg', sortDir = -1;
+
+const dimKeys = {
+  overall:{key:'trend_dim_overall', color:'#2BA6BE'},
+  H:{key:'trend_dim_basic', color:'#34B27B'},
+  I:{key:'trend_dim_quality', color:'#E0B24E'},
+  J:{key:'trend_dim_behavior', color:'#C9A24B'},
+  K:{key:'trend_dim_init', color:'#E4C377'},
+  all:{key:'trend_dim_all', color:null},
+};
+const dimMeta = new Proxy({}, { get(_, k){ return { label: T(dimKeys[k].key), color: dimKeys[k].color }; } });
+
+function activeDepts(){ return selectedDepts.size===0 ? DATA.departments : DATA.departments.filter(d=>selectedDepts.has(d.name)); }
+function activeDays(){ return DATA.daily_trend; }
+
+const PS={};
+['home','dept','urgent','compare','settings'].forEach(p=>PS[p]={depts:new Set(),week:0,month:SOURCE.months.at(-1)});
+function activePage(){const el=document.querySelector('.page.active');return el?el.id.replace('page-',''):'home';}
+function applyPage(page){const st=PS[page];selectedDepts=st.depts;currentWeek=st.week;currentMonth=st.month;DATA=aggregate(currentMonth,currentWeek);}
+function renderPage(page){
+  if(page==='home')refreshHome();
+  else if(page==='dept')renderDeptPage();
+  else if(page==='urgent')renderUrgentPage();
+  else if(page==='compare')renderComparePage();
+  else if(page==='settings')renderSettingsPage();
+}
+function renderPageFilters(page){
+  const el=document.getElementById('flt-'+page); if(!el)return;
+  const st=PS[page];
+  const chip=(f,v,label,on,cls)=>`<div class="fchip ${cls||''} ${on?'on':''}" data-f="${f}" data-v="${v}">${label}</div>`;
+  const group=(label,chips)=>`<div class="fgroup"><div class="flabel"><span>${label}</span></div><div class="fchips">${chips}</div></div>`;
+  let h='';
+  h+=group(T('week_label'),[0,1,2,3,4].map(w=>chip('week',w,weekLabel(w),st.week===w)).join(''));
+  h+=group(T('month_label'),['all',...SOURCE.months].map(m=>chip('month',m,monthLabel(m),st.month===m)).join(''));
+  el.innerHTML=h;
+  const handler=e=>{
+    const c=e.target.closest('[data-f]'); if(!c)return;
+    const f=c.dataset.f,v=c.dataset.v;
+    if(f==='dept') st.depts=(v===''||st.depts.has(v))?new Set():new Set([v]);
+    else if(f==='week') st.week=+v;
+    else if(f==='month'){st.month=v;st.week=0;}
+    applyPage(page);renderPageFilters(page);renderPage(page);
+  };
+  el.onclick=handler;
+  const dl=document.getElementById('flt-home-dept');
+  if(page==='home'&&dl){
+    dl.innerHTML=DATA.departments.map(d=>chip('dept',d.name,deptName(d),st.depts.has(d.name),'dept')).join('')+chip('dept','',T('all_label'),st.depts.size===0,'dept all');
+    dl.onclick=handler;
+  }
+}
+function renderFilters(){}
+function rerenderActivePage(){const pg=activePage();applyPage(pg);renderPageFilters(pg);renderPage(pg);}
+
+let currentTheme = 'dark';
+function themeColors(){
+  return currentTheme==='light'
+    ? { text:'#20242E', dim:'#6B7280', grid:'rgba(20,20,30,0.08)', grid2:'rgba(20,20,30,0.10)', tooltipBg:'#FFFFFF' }
+    : { text:'#EAE3D2', dim:'#8E9BB3', grid:'rgba(255,255,255,0.06)', grid2:'rgba(255,255,255,0.08)', tooltipBg:'#0C1526' };
+}
+function toggleTheme(){
+  currentTheme = currentTheme==='dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', currentTheme);
+  document.getElementById('themeicon').textContent = currentTheme==='dark' ? '☀' : '🌙';
+  document.getElementById('themelabel').textContent = currentTheme==='dark' ? T('theme_day') : T('theme_night');
+  rerenderActivePage();
+}
+function toggleLang(){
+  LANG = LANG==='ar' ? 'en' : 'ar';
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = LANG==='ar' ? 'rtl' : 'ltr';
+  document.getElementById('dashboard-view').classList.toggle('lang-en', LANG==='en');
+  document.getElementById('langicon').textContent = LANG==='ar' ? 'EN' : 'AR';
+  document.getElementById('langlabel').textContent = T('lang_toggle_label');
+  document.getElementById('langtoggle').title = T('lang_toggle_title');
+  document.getElementById('themetoggle').title = T('theme_toggle_title');
+  applyI18n();
+  renderFilters();
+  rerenderActivePage();
+}
+
+function renderKPIs(){
+  document.getElementById("k-avg").title="المتوسط قبل البونص = متوسط تقييمات الإدارات شامل الصفر. بعد البونص: "+fmt1(mean(activeDepts().filter(d=>d.avg!==null).map(d=>d.final)));
+  const depts = activeDepts();
+  const count = depts.reduce((s,d)=>s+d.count,0);
+  const baseAvg = mean(depts.filter(d=>d.avg!==null).map(d=>d.avg));
+  const afterBonusAvg = mean(depts.filter(d=>d.avg!==null).map(d=>d.final));
+  const urgentCount = depts.reduce((s,d)=>s+d.urgent_count,0);
+  const urgentBonus = depts.reduce((s,d)=>s+d.urgent_bonus,0);
+  const urgentIncomplete = depts.reduce((s,d)=>s+(d.urgent_incomplete||0),0);
+  const urgentTotalPossible = urgentCount*2;
+  const urgentTaskRate = (urgentCount+urgentIncomplete) ? urgentCount/(urgentCount+urgentIncomplete)*100 : null;
+  const incompleteCount = depts.reduce((s,d)=>s+(d.incomplete_count||0),0);
+  const totalTasks = depts.reduce((s,d)=>s+d.record_count,0);
+  const completionRate = totalTasks ? count/totalTasks*100 : null;
+  const best = depts.filter(d=>d.avg!==null).sort(baseDescending)[0];
+
+  document.getElementById('k-avg').textContent = toAr(baseAvg===null?'–':baseAvg.toFixed(2));
+  document.querySelector('[data-i18n="out_of_10"]').textContent=(LANG==='ar'?'بعد البونص: ':'After bonus: ')+toAr(afterBonusAvg===null?'–':afterBonusAvg.toFixed(2));
+  document.getElementById('k-count').textContent = toAr(count);
+  document.getElementById('k-count-total').textContent=(LANG==='ar'?'من أصل ':'out of ')+toAr(totalTasks)+(LANG==='ar'?' مهمة':' tasks');
+  document.getElementById('k-depts-total').textContent=(LANG==='ar'?'من أصل ':'out of ')+toAr(depts.length)+(LANG==='ar'?' إدارة':' departments');
+  document.getElementById('k-depts').textContent = toAr(depts.filter(d=>d.avg!==null).length);
+  document.getElementById('k-incomplete').textContent = toAr(incompleteCount);
+  document.querySelector('[data-i18n="in_progress"]').textContent=LANG==='ar'?'تشمل التقييم صفر والخانات الفاضية':'Includes zero and blank scores';
+  document.getElementById('k-completion').textContent = toAr(fmt1(completionRate))+pctSign();
+  document.getElementById('k-best').textContent = best ? deptName(best) : '–';
+  document.getElementById('k-best-score').textContent = best ? toAr(fmt1(best.avg)) + '/' + toAr(10) : '';
+  document.getElementById('mu-count').textContent = toAr(urgentCount);
+  document.getElementById('mu-bonus').innerHTML = '+' + toAr(fmt1(urgentBonus)) + `<span class="of"> / ${toAr(urgentTotalPossible)}</span>`;
+  document.getElementById('mu-incomplete').textContent = toAr(urgentIncomplete);
+  document.getElementById('mu-rate').textContent = toAr(fmt1(urgentTaskRate)) + pctSign();
+}
+
+function drawTrend(){
+ document.querySelector('[data-i18n="trend_title"]').textContent=trendTitle();
+ document.querySelector('[data-i18n="trend_note"]').textContent=LANG==='ar'?'المتوسط الأساسي للإدارات بالتساوي، شامل التقييم صفر والخانات الفاضية بصفر، وبدون البونص. السبت–الخميس؛ يبدأ الشهر من أول سبت، وتُضم أيام السبت الخامس للرابع دون الجمعة؛ الفراغ يعني عدم وجود بيانات.':'Equal-weight department base averages, including zero and blank scores as zero, excluding bonus. Saturday–Thursday; starts on the first Saturday, with any fifth week merged into week four, excluding Fridays; gaps mean no data.';
+ plotTrend(document.getElementById('trendchart'),trendPoints(),dimFilter==='all'?['overall','H','I','J','K']:[dimFilter]);
+} 
+
+function drawRangeStats(){
+  const depts = activeDepts().filter(d=>d.avg!==null);
+  const wrap = document.getElementById('rangestats');
+  if(depts.length===0){ wrap.innerHTML=''; return; }
+  const vals = depts.map(d=>d.avg).sort((a,b)=>a-b);
+  const max = vals[vals.length-1], min = vals[0];
+  const mid = vals.length%2===1 ? vals[(vals.length-1)/2] : (vals[vals.length/2-1]+vals[vals.length/2])/2;
+  const ctx=comparisonContext(),prior=metricValues(ctx.prior);
+  wrap.innerHTML = `
+    <div class="sg max">${metricTile(toAr(fmt1(max)),T('range_max'),'max',max,prior.max,ctx)}</div>
+    <div class="sg min">${metricTile(toAr(fmt1(min)),T('range_min'),'min',min,prior.min,ctx)}</div>
+    <div class="sg diff">${metricTile(toAr(fmt1(max-min)),T('range_diff'),'spread',max-min,prior.spread,ctx)}</div>
+    <div class="sg median">${metricTile(toAr(fmt1(mid)),T('range_median'),'median',mid,prior.median,ctx)}</div>
+  `;
+}
+
+function computeComposition(depts){
+  let sums=[0,0,0,0], count=0, bonus=0;
+  depts.forEach(d=>{ d.comp_avg.forEach((v,i)=> sums[i]+=v*(d.record_count-d.pending_count)); count+=d.record_count-d.pending_count; bonus+=d.urgent_bonus; });
+  return {sums, count, bonus};
+}
+function computeCompletion(depts){
+  const completed = depts.reduce((s,d)=>s+d.count,0);
+  const incomplete = depts.reduce((s,d)=>s+(d.incomplete_count||0),0);
+  const total = depts.reduce((s,d)=>s+d.record_count,0);
+  const rate = total? completed/total*100 : null;
+  return {completed, incomplete, total, rate};
+}
+function gaugeColor(rate){
+  if(rate>=95) return '#34B27B';
+  if(rate>=85) return '#E0B24E';
+  return '#D2624B';
+}
+function drawGauge(){
+  const depts = activeDepts();
+  const svg=document.getElementById('gaugechart');
+  const th = themeColors();
+  const {completed,incomplete,total,rate} = computeCompletion(depts);
+  const cx=160, cy=150, r=115, sw=24;
+  const color = gaugeColor(rate);
+  const angle=(t)=> -180 + t*180;
+  const pt=(t)=>{ const a=angle(t)*Math.PI/180; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; };
+  const pStart=pt(0), pMid=pt(0.5), pEnd=pt(1);
+  // ambient backdrop glow behind the arc, colored by current status — gives depth without flat fills
+  const backdrop = `<circle cx="${cx}" cy="${cy}" r="${r+26}" fill="url(#gaugeBackdrop)"/>`;
+  // background track, split into two 90° arcs to avoid the ambiguous exact-180° single-arc case
+  let track = `<path d="M ${pStart[0].toFixed(1)} ${pStart[1].toFixed(1)} A ${r} ${r} 0 0 1 ${pMid[0].toFixed(1)} ${pMid[1].toFixed(1)}" fill="none" stroke="${th.grid2}" stroke-width="${sw}" stroke-linecap="round"/>`
+    + `<path d="M ${pMid[0].toFixed(1)} ${pMid[1].toFixed(1)} A ${r} ${r} 0 0 1 ${pEnd[0].toFixed(1)} ${pEnd[1].toFixed(1)}" fill="none" stroke="${th.grid2}" stroke-width="${sw}" stroke-linecap="round"/>`;
+  // value arc — gradient stroke (rust → amber → green) so its own color reads as a scale, not a flat fill
+  const t = rate===null?0:Math.min(Math.max(rate/100,0),1);
+  let valueArc='';
+  if(t>0){
+    const pv=pt(t);
+    const d=`M ${pStart[0]} ${pStart[1]} `+(t>0.5?`A ${r} ${r} 0 0 1 ${pMid[0]} ${pMid[1]} `:'')+`A ${r} ${r} 0 0 1 ${pv[0]} ${pv[1]}`;
+    valueArc=`<path data-gauge-value="true" d="${d}" fill="none" stroke="url(#gaugeGrad)" stroke-width="${sw}" stroke-linecap="round" filter="url(#gaugeGlow)"/>`;
+  }
+  // needle + hub, pointing at the current value — the gauge's own identity, distinct from the flat bars elsewhere
+  const na = angle(t)*Math.PI/180;
+  const needleLen = r;
+  const needleTip = [cx+needleLen*Math.cos(na), cy+needleLen*Math.sin(na)];
+  const needle = rate===null?'':`<line x1="${cx}" y1="${cy}" x2="${needleTip[0].toFixed(1)}" y2="${needleTip[1].toFixed(1)}" stroke="var(--gold-2)" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="9" fill="var(--gold)" stroke="${th.tooltipBg}" stroke-width="2.5"/>`;
+
+  const defs = `<defs>
+      <linearGradient id="gaugeGrad" gradientUnits="userSpaceOnUse" x1="${pStart[0].toFixed(1)}" y1="${pStart[1].toFixed(1)}" x2="${pEnd[0].toFixed(1)}" y2="${pEnd[1].toFixed(1)}">
+        <stop offset="0%" stop-color="#D2624B"/>
+        <stop offset="55%" stop-color="#E0B24E"/>
+        <stop offset="100%" stop-color="#34B27B"/>
+      </linearGradient>
+      <radialGradient id="gaugeBackdrop" cx="50%" cy="68%" r="65%">
+        <stop offset="0%" stop-color="${color}" stop-opacity="0.16"/>
+        <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="gaugeGlow" filterUnits="userSpaceOnUse" x="0" y="0" width="320" height="240">
+        <feGaussianBlur stdDeviation="4.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>`;
+
+  svg.setAttribute('viewBox','0 0 320 240');
+  svg.innerHTML = defs + backdrop + track + valueArc + needle +
+    `<text x="${cx}" y="${cy+55}" text-anchor="middle" font-family="IBM Plex Mono" font-size="46" font-weight="700" fill="${color}">${toAr(fmt1(rate))}${pctSign()}</text>
+     <text x="${cx}" y="${cy+79}" text-anchor="middle" font-family="'Noto Sans Arabic',Tahoma,Arial,sans-serif" font-size="13" font-weight="600" fill="${th.dim}">${T('completion_sub')}</text>`;
+
+  const detail = document.getElementById('gaugedetail');
+  const rows = [
+    {c:th.dim, l:(LANG==='ar'?'إجمالي المهام':'Total Tasks'), v:total, p: total?'100.0':'–'},
+    {c:'#34B27B', l:(LANG==='ar'?'مهام مكتملة':'Completed Tasks'), v:completed, p: total? (completed/total*100).toFixed(1):'–'},
+    {c:'#D2624B', l:T('kpi_incomplete'), v:incomplete, p: total? (incomplete/total*100).toFixed(1):'–'},
+  ];
+  detail.innerHTML = rows.map(r=>`
+    <div class="gstat">
+      <div class="gl"><span class="gdot" style="background:${r.c}"></span>${r.l}</div>
+      <div class="gvwrap"><span class="gv" style="color:${r.c}">${toAr(r.v)}</span><span class="gpct">${toAr(r.p)}${pctSign()}</span></div>
+    </div>
+  `).join('');
+}
+
+/* Full ranking of ALL departments, largest → smallest — horizontal bar chart */
+function drawDeptBars(svgId, rows, key){
+  const svg = document.getElementById(svgId);
+  if(!svg) return;
+  const th = themeColors();
+  const n = rows.length;
+  if(n===0){ svg.innerHTML=''; return; }
+  const w=900, rowH=23, padTop=8, padBottom=8;
+  const rankColW=32, labelW=300, gap=8, valueSpace=54, leftMargin=8;
+  const x0 = w-rankColW-labelW-gap;          // right edge of the bar track
+  const barMaxW = x0-valueSpace-leftMargin;  // available width for the bars themselves
+  const h = padTop+padBottom+n*rowH;
+  // in English mode mirror the whole row left-to-right
+  const flip = LANG==='en';
+  const mx = x => flip ? (w-x) : x;
+  const manchor = a => !flip ? a : (a==='end' ? 'start' : (a==='start' ? 'end' : a));
+  const mrx = (x,width) => flip ? (w-x-width) : x;
+  const maxV = Math.max(10,...rows.map(d=>d[key]));
+  let out='';
+  rows.forEach((d,i)=>{
+    const cy = padTop + i*rowH + rowH/2;
+    const v = d[key];
+    const color = scoreColor(v);
+    const barW = Math.max(0,v/maxV)*barMaxW;
+    out += `<text x="${mx(w).toFixed(1)}" y="${(cy+3.5).toFixed(1)}" text-anchor="${manchor('end')}" font-family="IBM Plex Mono" font-size="10" font-weight="700" fill="${th.dim}">${toAr(i+1)}.</text>`;
+    const _dn = deptName(d);
+    out += `<text x="${mx(w-rankColW).toFixed(1)}" y="${(cy+3.5).toFixed(1)}" text-anchor="${manchor('end')}" font-family="'Noto Sans Arabic',Tahoma,Arial,sans-serif" font-size="11" font-weight="700" fill="${th.text}">${_dn.length>44? _dn.slice(0,43)+'…' : _dn}</text>`;
+    out += `<rect x="${mrx(x0-barMaxW, barMaxW).toFixed(1)}" y="${(cy-6).toFixed(1)}" width="${barMaxW}" height="12" rx="6" fill="${th.grid}"/>`;
+    out += `<rect x="${mrx(x0-barW, barW).toFixed(1)}" y="${(cy-6+1).toFixed(1)}" width="${barW.toFixed(1)}" height="12" rx="6" fill="rgba(0,0,0,0.3)"/>`;
+    out += `<rect x="${mrx(x0-barW, barW).toFixed(1)}" y="${(cy-6).toFixed(1)}" width="${barW.toFixed(1)}" height="12" rx="6" fill="${color}"/>`;
+    out += `<rect x="${mrx(x0-barW, barW).toFixed(1)}" y="${(cy-6).toFixed(1)}" width="${barW.toFixed(1)}" height="4" rx="2" fill="#ffffff" opacity="0.18"/>`;
+    out += `<text x="${mx(x0-barMaxW-8).toFixed(1)}" y="${(cy+3.5).toFixed(1)}" text-anchor="${manchor('end')}" font-family="IBM Plex Mono" font-size="10.5" font-weight="700" fill="${color}">${toAr(fmt1(v))}</text>`;
+  });
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.innerHTML = out;
+}
+// Home page: ranking by score BEFORE bonus
+function drawRanking(){
+  drawDeptBars('rankchart', DATA.departments.filter(d=>d.avg!==null).sort(baseDescending), 'avg');
+}
+// Urgent & Bonus page: ranking by score AFTER bonus
+function drawUrgentRanking(){
+  drawDeptBars('urgentrankchart', activeDepts().filter(d=>d.final!==null).sort(scoreDescending), 'final');
+}
+
+let homeSortKey='avg', homeSortDir=-1;
+function homeSortValue(d,k){
+  if(k==='name') return deptName(d);
+  if(k==='H') return d.comp_avg[0];
+  if(k==='I') return d.comp_avg[1];
+  if(k==='J') return d.comp_avg[2];
+  if(k==='K') return d.comp_avg[3];
+  return d[k];
+}
+function renderTable(){
+  let depts=[...activeDepts()];
+  depts.sort((a,b)=>{
+    const va=homeSortValue(a,homeSortKey), vb=homeSortValue(b,homeSortKey);
+    const an=(va===null||va===undefined||Number.isNaN(va)), bn=(vb===null||vb===undefined||Number.isNaN(vb));
+    if(an&&bn) return baseDescending(a,b);
+    if(an) return 1;            // no-data rows always go last
+    if(bn) return -1;
+    let c = (typeof va==='string') ? va.localeCompare(vb,LANG==='ar'?'ar':'en')*homeSortDir : (va-vb)*homeSortDir;
+    return c || baseDescending(a,b);
+  });
+  document.querySelectorAll('th[data-fixed-k]').forEach(th=>{
+    th.classList.remove('sorted-asc','sorted-desc');
+    if(th.dataset.fixedK===homeSortKey) th.classList.add(homeSortDir===1?'sorted-asc':'sorted-desc');
+    th.onclick=()=>{
+      const k=th.dataset.fixedK;
+      if(homeSortKey===k) homeSortDir*=-1; else { homeSortKey=k; homeSortDir=(k==='name')?1:-1; }
+      renderTable();
+    };
+  });
+  document.getElementById('tbody').innerHTML = depts.map(d=>`
+    <tr>
+      <td class="deptcell"><span class="statusdot" style="background:${scoreColor(d.avg)}"></span>${deptName(d)}</td>
+      <td class="num">${toAr(fmt1(d.avg))}</td>
+      <td class="num">${toAr(fmt1(d.comp_avg[0]))}</td>
+      <td class="num">${toAr(fmt1(d.comp_avg[1]))}</td>
+      <td class="num">${toAr(fmt1(d.comp_avg[2]))}</td>
+      <td class="num">${toAr(fmt1(d.comp_avg[3]))}</td>
+
+      <td class="num">${toAr(d.urgent_count)}</td>
+      <td class="num" style="color:${(d.incomplete_count||0)>10?'var(--rust)':'var(--text-dim)'}">${toAr(d.incomplete_count||0)}</td>
+      <td class="num">+${toAr(fmt1(d.urgent_bonus))}</td>
+      <td class="num" style="color:var(--gold-2); font-weight:700;">${toAr(fmt1(d.final))}</td>
+    </tr>
+  `).join('');
+}
+function renderRadarPicker(){
+  const wrap = document.getElementById('radar-picker');
+  const depts = activeDepts();
+  wrap.innerHTML = depts.map(d=>`<div class="fchip dept ${d.name===radarDept?'on':''}" data-rd="${d.name}">${d.code}</div>`).join('');
+  wrap.querySelectorAll('[data-rd]').forEach(c=> c.addEventListener('click', ()=>{
+    radarDept=c.dataset.rd;
+    wrap.querySelectorAll('.fchip').forEach(x=> x.classList.toggle('on', x.dataset.rd===radarDept));
+    drawRadar();
+  }));
+  if(!depts.find(d=>d.name===radarDept) && depts.length) radarDept = depts[0].name;
+}
+function computeRadarValues(depts){
+  const {sums,count} = computeComposition(depts);
+  const maxes=[4,2,2,2];
+  return count ? sums.map((s,i)=> (s/count)/maxes[i]*10) : [0,0,0,0];
+}
+function drawRadar(){
+  const dept = DATA.departments.find(d=>d.name===radarDept);
+  document.getElementById('radar-dept-name').textContent = dept ? deptName(dept) : '';
+  const svg = document.getElementById('radarchart');
+  const th = themeColors();
+  if(!dept||dept.avg===null){ svg.innerHTML='<text x="130" y="120" text-anchor="middle" fill="#8E9BB3">'+(LANG==='ar'?'لا توجد بيانات':'No data')+'</text>'; return; }
+  const labels=[T('th_overall'),T('th_quality'),T('th_behavior'),T('th_initiatives')];
+  const maxes=[4,2,2,2];
+  if(dept.avg===null){svg.innerHTML=`<text x="130" y="120" text-anchor="middle" fill="${th.dim}" font-size="11">${LANG==='ar'?'لا توجد تقييمات مكتملة':'No scored evaluations'}</text>`;return;}
+  const deptVals = dept.comp_avg.map((v,i)=> v/maxes[i]*10);
+  const companyVals = computeRadarValues(activeDepts());
+  const cx=130, cy=118, R=85;
+  const pt=(val,i)=>{ const a=(-90+i*90)*Math.PI/180; const rr=(val/10)*R; return [cx+rr*Math.cos(a), cy+rr*Math.sin(a)]; };
+  let rings='';
+  [2,4,6,8,10].forEach(g=>{
+    const pts=[0,1,2,3].map(i=>pt(g,i));
+    rings+=`<polygon points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${th.grid2}" stroke-width="1"/>`;
+  });
+  let axes='';
+  labels.forEach((l,i)=>{
+    const p = pt(10,i);
+    axes+=`<line x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}" stroke="${th.grid2}" stroke-width="1"/>`;
+    const lp = pt(12.5,i);
+    axes+=`<text x="${lp[0].toFixed(1)}" y="${lp[1].toFixed(1)}" text-anchor="middle" font-family="'Noto Sans Arabic',Tahoma,Arial,sans-serif" font-size="9.5" fill="${th.dim}">${l}</text>`;
+  });
+  const compPts = [0,1,2,3].map(i=>pt(companyVals[i],i));
+  const deptPts = [0,1,2,3].map(i=>pt(deptVals[i],i));
+  const compPoly = `<polygon points="${compPts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="rgba(142,155,179,0.12)" stroke="${th.dim}" stroke-width="1.5" stroke-dasharray="3,3"/>`;
+  const deptPoly = `<polygon points="${deptPts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="rgba(43,166,190,0.22)" stroke="#2BA6BE" stroke-width="2"/>`;
+  const deptDots = deptPts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="#2BA6BE"/>`).join('');
+  svg.setAttribute('viewBox','0 0 260 240');
+  svg.innerHTML = rings + axes + compPoly + deptPoly + deptDots;
+}
+
+function renderInsights(){
+  const depts = activeDepts().filter(d=>d.avg!==null);
+  if(depts.length){
+  const bestDept = [...depts].sort((a,b)=>b.avg-a.avg)[0];
+  const worstDept = [...depts].sort((a,b)=>a.avg-b.avg)[0];
+  const goodText = LANG==='ar'
+    ? `«${deptName(bestDept)}» أعلى تقييم أساسي، بمتوسط ${fmt1(bestDept.avg)}/10 عبر الأبعاد الأربعة (الأساسية، الجودة، السلوك، المبادرات).`
+    : `“${deptName(bestDept)}” has the highest base score, with an average of ${fmt1(bestDept.avg)}/10 across the four dimensions (core tasks, quality, behavior, initiatives).`;
+  const warnText = LANG==='ar'
+    ? `«${deptName(worstDept)}» سجّلت أقل متوسط أداء (${fmt1(worstDept.avg)}/10) — تحتاج متابعة مع ${worstDept.manager}.`
+    : `“${deptName(worstDept)}” recorded the lowest average performance (${fmt1(worstDept.avg)}/10) — needs follow-up with ${worstDept.manager}.`;
+  document.getElementById('insightrow').innerHTML = `
+    <div class="ibox good"><div class="ititle">${T('insight_strength_title')}</div><p>${goodText}</p></div>
+    <div class="ibox warn"><div class="ititle">${T('insight_note_title')}</div><p>${warnText}</p></div>
+  `;
+  }
+  else document.getElementById('insightrow').innerHTML='';
+  // The alert banner always reflects the weakest department across ALL departments (ignores the
+  // department slicer on purpose) — it only moves if the week/month slicer changes the data period.
+  const globalWorst = DATA.departments.filter(d=>d.avg!==null).sort((a,b)=>a.avg-b.avg)[0];
+  if(!globalWorst){ document.getElementById('alertbanner-text').textContent=LANG==='ar'?'لا توجد بيانات للفترة المختارة':'No data for this period'; return; }
+  document.getElementById('alertbanner-text').innerHTML = LANG==='ar'
+    ? `إدارة <b>«${deptName(globalWorst)}»</b> سجّلت أقل متوسط أداء بين كل الإدارات خلال ${weekLabel(currentWeek)} (${fmt1(globalWorst.avg)}/10)، ومسؤولها <b>${globalWorst.manager}</b>. يُنصح بجدولة اجتماع متابعة معه قبل بداية الأسبوع القادم لمراجعة أسباب التراجع ووضع خطة تحسين.`
+    : `Department <b>“${deptName(globalWorst)}”</b> recorded the lowest average performance among all departments during ${weekLabel(currentWeek)} (${fmt1(globalWorst.avg)}/10), managed by <b>${globalWorst.manager}</b>. A follow-up meeting is recommended before next week begins to review the causes and set an improvement plan.`;
+}
+
+
+function previousMonth(month){
+ const d=new Date(month+'-01T12:00:00Z');d.setUTCMonth(d.getUTCMonth()-1);return iso(d).slice(0,7);
+}
+function selectedPool(data,names){return data.departments.filter(d=>names.includes(d.name));}
+function comparableScores(now,before,names){
+ const prior=selectedPool(before,names),current=selectedPool(now,names);
+ const common=current.filter(d=>d.avg!==null&&prior.some(p=>p.name===d.name&&p.avg!==null));
+ return {now:mean(common.map(d=>d.avg)),before:mean(common.map(d=>prior.find(p=>p.name===d.name).avg)),count:common.length};
+}
+function comparisonContext(){
+ const all=currentMonth==='all',names=activeDepts().map(d=>d.name);
+ const before=all?null:aggregate(previousMonth(currentMonth),currentWeek);
+ const prior=before?selectedPool(before,names):[];
+ const now=activeDepts();
+ const valid=pool=>pool.some(d=>d.record_count||d.urgent_count||d.urgent_incomplete);
+ const label=all?'':(currentWeek?weekLabel(currentWeek)+(LANG==='ar'?' في ':' in '):'')+monthLabel(previousMonth(currentMonth));
+ return {all,prior,now,label,validNow:valid(now),validBefore:valid(prior)};
+}
+function metricValues(pool){
+ const scored=pool.filter(d=>d.avg!==null),scores=scored.map(d=>d.avg).sort((a,b)=>a-b);
+ const urgentTasks=pool.flatMap(d=>d.urgent_tasks);
+ const completed=pool.reduce((s,d)=>s+d.count,0),total=pool.reduce((s,d)=>s+d.record_count,0);
+ const urgent=urgentTasks.length,pending=pool.reduce((s,d)=>s+d.urgent_incomplete,0);
+ const bonus=pool.reduce((s,d)=>s+d.urgent_bonus,0);
+ const best=scores.length?scores.at(-1):null;
+ return {avg:mean(scores),completed,incomplete:pool.reduce((s,d)=>s+d.incomplete_count,0),
+ completion:total?completed/total*100:null,departments:scored.length,best,
+ winners:best===null?[]:scored.filter(d=>Math.abs(d.avg-best)<1e-9).sort((a,b)=>a.code.localeCompare(b.code)),
+ urgent,bonus,urgent_pending:pending,urgent_completion:urgent+pending?urgent/(urgent+pending)*100:null,
+ bonus_rate:urgent?bonus/(urgent*2)*100:null,urgent_avg:mean(urgentTasks.map(u=>u.score)),
+ max:best,min:scores.length?scores[0]:null,spread:scores.length?best-scores[0]:null,
+ median:scores.length?(scores.length%2?scores[(scores.length-1)/2]:(scores[scores.length/2-1]+scores[scores.length/2])/2):null};
+}
+function shortDepartment(d){
+ const names={HR:'الموارد البشرية',FIN:'المالية',SS:'الخدمات والمساندة',MNT:'الصيانة',SM:'المبيعات والتسويق',PROC:'المشتريات',CS:'خدمة العملاء',FAC:'مصنع التحميص',FR:'الامتياز التجاري',LEG:'الشؤون القانونية',DAE:'التطوير والتميز',DP:'منصات التوصيل',EXEC:'الإدارة التنفيذية'};
+ return LANG==='ar'?(names[d.code]||deptName(d)):d.code;
+}
+function comparisonNumber(value,metric){
+ if(value==null||!Number.isFinite(value))return '–';
+ if(['completion','urgent_completion','bonus_rate'].includes(metric))return value.toFixed(1)+'%';
+ if(['avg','best','urgent_avg','max','min','median','spread'].includes(metric))return value.toFixed(2);
+ if(metric==='bonus')return value.toFixed(1);
+ return String(value);
+}
+function comparisonBadge(now,before,ctx,metric){
+ const ar=LANG==='ar';
+ if(ctx.all)return '<span class="metric-badge flat">'+(ar?'الكل':'All')+'</span>';
+ if(!ctx.validNow||!ctx.validBefore||now==null||before==null)return '<span class="metric-badge flat" title="'+(ar?'لا تتوفر مقارنة مكتملة':'Comparison unavailable')+'">—</span>';
+ const rate=['completion','urgent_completion','bonus_rate'].includes(metric);
+ const difference=now-before;
+ let value,label;
+ if(before===0&&!rate&&now!==0){value=null;label=ar?'جديد':'New';}
+ else{value=rate?difference:before?difference/Math.abs(before)*100:0;label=Math.abs(value).toFixed(1)+(rate?(ar?' ن.م.':' pp'):'%');}
+ const changed=value===null||Math.abs(value)>=0.05;
+ const inverse=['incomplete','urgent_pending'].includes(metric);
+ const good=inverse?difference<0:difference>0;
+ const color=metric==='spread'?'flat':changed?(good?'up':'down'):'flat';
+ const arrow=!changed?'→':difference>0?'↑':'↓';
+ const title=(rate?(ar?'الفرق بالنقاط المئوية':'Difference in percentage points'):(ar?'نسبة التغير عن الفترة السابقة':'Percentage change from prior period'))+(inverse?(ar?'؛ الانخفاض أفضل':' · lower is better'):'');
+ return '<span class="metric-badge '+color+'" title="'+title+'"><bdi>'+arrow+' '+label+'</bdi></span>';
+}
+function comparisonCaption(before,ctx,metric){
+ const ar=LANG==='ar';
+ if(ctx.all)return ar?'كل الشهور · اختر شهرًا للمقارنة':'All months · select a month to compare';
+ if(!ctx.validBefore)return ar?'لا توجد بيانات سابقة':'No previous data';
+ return (ar?'مقابل ':'vs. ')+'<b><bdi>'+comparisonNumber(before,metric)+'</bdi></b> '+taskHTML(ctx.label);
+}
+function staticCardComparison(id,metric,now,before,ctx){
+ const badge=document.getElementById(id+'-badge'),previous=document.getElementById(id+'-previous');
+ if(badge){badge.outerHTML=comparisonBadge(now,before,ctx,metric).replace('class="metric-badge','id="'+id+'-badge" class="metric-badge');}
+ if(previous)previous.innerHTML=comparisonCaption(before,ctx,metric);
+}
+function renderCardComparisons(scope='home'){
+ const ctx=comparisonContext(),now=metricValues(ctx.now),prior=metricValues(ctx.prior);
+ const ids=scope==='urgent'?{'ur-total':'urgent','ur-bonus':'bonus','ur-rate':'bonus_rate','ur-avg':'urgent_avg','ur-incomplete':'urgent_pending'}:
+ {'k-avg':'avg','k-count':'completed','k-incomplete':'incomplete','k-completion':'completion','k-depts':'departments','k-best':'best','mu-count':'urgent','mu-bonus':'bonus','mu-incomplete':'urgent_pending','mu-rate':'urgent_completion'};
+ for(const [id,metric] of Object.entries(ids))staticCardComparison(id,metric,now[metric],prior[metric],ctx);
+ if(scope==='home'){
+  const best=document.getElementById('k-best');
+  best.textContent=now.winners.length?now.winners.map(shortDepartment).join(' + '):'–';
+  best.title=now.winners.map(deptName).join(' + ');
+  const previous=document.getElementById('k-best-previous');
+  if(ctx.validBefore&&prior.winners.length)previous.innerHTML=(LANG==='ar'?'الأفضل سابقًا: ':'Previously best: ')+'<b>'+taskHTML(prior.winners.map(shortDepartment).join(' + '))+'</b> <bdi>('+comparisonNumber(prior.best,'best')+'/10)</bdi><br>'+taskHTML(ctx.label);
+ }
+}
+function metricIcon(metric){
+ const glyphs={"avg":"<path d=\"m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9Z\"/>","completed":"<rect x=\"5\" y=\"5\" width=\"14\" height=\"16\" rx=\"3\"/><path d=\"M9 5V3h6v2M8.5 13l2.5 2.5 4.5-5\"/>","completion":"<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m8 12 2.5 2.5L16 9\"/>","incomplete":"<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 2\"/>","urgent":"<path d=\"m13 2-9 12h7l-1 8 10-13h-7Z\"/>","bonus":"<path d=\"m12 3 2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2ZM20 3v4m-2-2h4\"/>","bonus_rate":"<circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"1\"/>","urgent_avg":"<path d=\"M4 20h16M6 16v-5m6 5V5m6 11V8\"/>"};
+ const aliases={"urgent_pending":"incomplete","urgent_completion":"completion"};
+ const key=aliases[metric]||metric;
+ return '<span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">'+(glyphs[key]||glyphs.avg)+'</svg></span>';
+}
+function metricTile(value,label,metric,now,before,ctx,extra=''){
+ if(ctx.iconCards)return '<div class="metric-card-heading"><div class="l">'+label+'</div>'+metricIcon(metric)+'</div><div class="metric-value-row"><div class="v">'+value+'</div>'+comparisonBadge(now,before,ctx,metric)+'</div>'+extra+'<div class="metric-previous">'+comparisonCaption(before,ctx,metric)+'</div>';
+ return '<div class="metric-value-row"><div class="v">'+value+'</div>'+comparisonBadge(now,before,ctx,metric)+'</div><div class="l">'+label+'</div>'+extra+'<div class="metric-previous">'+comparisonCaption(before,ctx,metric)+'</div>';
+}
+
+function renderComparisonTableHead(){
+ // Incomplete totals include blank and zero scores; there is no separate status column.
+}
+
+function refreshHome(){
+  renderComparisonTableHead();
+  renderKPIs();
+  renderCardComparisons();
+  drawTrend();
+  drawRangeStats();
+  drawGauge();
+  drawRanking();
+  renderTable();
+  renderRadarPicker();
+  drawRadar();
+  renderInsights();
+}
+
+/* ============================================================
+   PAGE: DEPT DEEP DIVE
+   ============================================================ */
+let ddDept = null;
+function renderDeptPage(){
+  const wrap = document.getElementById('dd-picker');
+  const pool = [...activeDepts()].sort(scoreDescending);
+  wrap.innerHTML = pool.map(d=>`<div class="fchip dept ${d.name===ddDept?'on':''}" data-dd="${d.name}">${deptName(d)}</div>`).join('');
+  wrap.querySelectorAll('[data-dd]').forEach(c=> c.addEventListener('click', ()=>{
+    ddDept = c.dataset.dd;
+    wrap.querySelectorAll('.fchip').forEach(x=> x.classList.toggle('on', x.dataset.dd===ddDept));
+    drawDeptContent();
+  }));
+  if(!ddDept || !pool.find(d=>d.name===ddDept)) ddDept = pool[0] ? pool[0].name : DATA.departments[0].name;
+  wrap.querySelectorAll('.fchip').forEach(x=> x.classList.toggle('on', x.dataset.dd===ddDept));
+  drawDeptContent();
+}
+function taskHTML(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderIncompleteTasks(dept){
+ const rows=SOURCE.rows.filter(r=>r.dept===dept.name&&r.total===0&&periodContains(r.date,currentMonth,currentWeek)).sort((a,b)=>b.date.localeCompare(a.date)||a.taskId.localeCompare(b.taskId));
+ const ar=LANG==='ar';
+ const title=ar?'المهام غير المكتملة خلال الفترة المختارة':'Incomplete Tasks in Selected Period';
+ return `<section class="panel dd-incomplete" aria-labelledby="dd-incomplete-title"><h3 id="dd-incomplete-title">${title} <span class="dd-task-count">${toAr(rows.length)}</span></h3>${rows.length?`<div class="tablewrap"><table class="dtable" id="dd-incomplete-table" dir="${ar?'rtl':'ltr'}"><colgroup><col style="width:138px"><col style="width:122px"><col><col style="width:112px"></colgroup><thead><tr><th>${ar?'التاريخ':'Date'}</th><th>${ar?'معرّف المهمة':'Task ID'}</th><th>${ar?'المهمة':'Task'}</th><th>${ar?'التقييم / 10':'Score / 10'}</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="num"><bdi>${taskHTML(r.date)}</bdi></td><td class="num"><bdi>${taskHTML(r.taskId)}</bdi></td><td class="dd-task-name"><bdi dir="auto">${taskHTML(r.taskName)}</bdi></td><td class="num" style="color:var(--rust)">${toAr(fmt1(r.total))}</td></tr>`).join('')}</tbody></table></div>`:`<p class="dd-empty">${dept.record_count?(ar?'لا توجد مهام غير مكتملة خلال الفترة المختارة.':'No incomplete tasks in this period.'):(ar?'لا توجد تقييمات لهذه الإدارة خلال الفترة المختارة.':'No evaluations for this department in this period.')}</p>`}</section>`;
+}
+
+function drawDeptContent(){
+  const dept = DATA.departments.find(d=>d.name===ddDept);
+  const ctx=comparisonContext();
+  const priorDept=ctx.prior.find(d=>d.name===dept.name);
+  const currentMetrics=metricValues([dept]),priorMetrics=metricValues(priorDept?[priorDept]:[]);
+  const deptCtx={...ctx,iconCards:true,validNow:!!(dept.record_count||dept.urgent_count||dept.urgent_incomplete),validBefore:!!priorDept&&(priorDept.record_count>0||priorDept.urgent_count>0||priorDept.urgent_incomplete>0)};
+  const days = DATA.days;
+  const dailyVals = days.map(d=> dept.daily[d] ? dept.daily[d].avg : 0);
+  document.getElementById('dd-content').innerHTML = `
+    <div class="deptbig">
+      <div class="deptbig-top">
+        <div>
+          <div class="code">${dept.code} · ${T('dd_rank_prefix')} ${toAr(dept.rank)} ${T('dd_of')} ${toAr(DATA.departments.length)}</div>
+          <h2>${deptName(dept)}</h2>
+          <div class="meta">${T('dd_manager')} ${dept.manager}</div>
+        </div>
+      </div>
+      <div class="kpirow2">
+        <div class="kpi2 metric-card tone-avg" id="dd-average-card">${metricTile(toAr(fmt1(dept.avg))+'<span style="font-size:12px;color:var(--text-dim)">/10</span>',LANG==='ar'?'متوسط التقييم قبل البونص':'Average Score Before Bonus','avg',currentMetrics.avg,priorMetrics.avg,deptCtx,'<div class="dd-after-bonus">'+(LANG==='ar'?'بعد البونص: ':'After bonus: ')+'<strong>'+toAr(fmt1(dept.final))+'</strong></div>')}</div>
+        <div class="kpi2 metric-card tone-completed">${metricTile(toAr(dept.count),T('dd_taskcount'),'completed',currentMetrics.completed,priorMetrics.completed,deptCtx)}</div>
+        <div class="kpi2 metric-card tone-completion">${metricTile(toAr(fmt1(currentMetrics.completion))+'%',T('dd_completion_rate'),'completion',currentMetrics.completion,priorMetrics.completion,deptCtx)}</div>
+        <div class="kpi2 metric-card tone-incomplete">${metricTile(toAr(dept.incomplete_count),T('dd_incomplete'),'incomplete',currentMetrics.incomplete,priorMetrics.incomplete,deptCtx)}</div>
+        <div class="kpi2 metric-card tone-urgent">${metricTile(toAr(dept.urgent_count),T('dd_urgentcount'),'urgent',currentMetrics.urgent,priorMetrics.urgent,deptCtx)}</div>
+        <div class="kpi2 metric-card tone-bonus">${metricTile('+'+toAr(fmt1(dept.urgent_bonus)),T('dd_bonus'),'bonus',currentMetrics.bonus,priorMetrics.bonus,deptCtx)}</div>
+      </div>
+      <div class="twocol2">
+        <div>
+          <h4>${trendTitle()}</h4>
+          <svg class="chart" id="dd-trend" viewBox="0 0 460 200"></svg>
+        </div>
+        <div>
+          <h4>${T('dd_criteria_title')}</h4>
+          ${[T('th_basic'),T('th_quality'),T('th_behavior'),T('th_initiatives')].map((l,i)=>{
+            const maxes=[4,2,2,2];
+            const v = dept.comp_avg[i];
+            return `<div class="comprow2"><div class="t"><span>${l}</span><span>${toAr(fmt1(v))}/${toAr(maxes[i])}</span></div><div class="compbarwrap2"><div class="compbar2" style="width:${(v/maxes[i]*100).toFixed(1)}%"></div></div></div>`;
+          }).join('')}
+          <h4 style="margin-top:18px;">${T('dd_urgent_title')}</h4>
+          ${dept.urgent_tasks.length ? dept.urgent_tasks.map(u=>`
+            <div class="urgentitem2"><div class="udate2">${toAr(u.date)}</div><div class="udesc2">${taskDesc(u.desc)}</div><div style="font-size:11px;color:var(--text-dim);">${T('dd_score_label')} ${u.score===0?(LANG==='ar'?'غير مكتملة · 0/10':'Incomplete · 0/10'):toAr(u.score)+'/'+toAr(10)} — ${T('dd_bonus_label')} +${toAr(fmt1(u.bonus))}</div></div>
+          `).join('') : `<div style="font-size:11.5px;color:var(--text-dim);">${T('no_urgent_tasks')}</div>`}
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('dd-content').insertAdjacentHTML('beforeend',renderIncompleteTasks(dept));
+  plotTrend(document.getElementById('dd-trend'),trendPoints([dept.name]));
+}
+
+/* ============================================================
+   PAGE: URGENT
+   ============================================================ */
+function renderUrgentPage(){
+  let rows = [];
+  activeDepts().forEach(d=> d.urgent_tasks.forEach(u=> rows.push({dept:d.name, deptDisp:deptName(d), ...u})));
+  const earnedBonus = rows.reduce((s,u)=>s+u.bonus,0);
+  const totalPossible = rows.length*2;
+  document.getElementById('ur-total').textContent = toAr(rows.length);
+  document.getElementById('ur-bonus').innerHTML = '+' + toAr(fmt1(earnedBonus)) + `<span class="of" style="font-size:13px;color:var(--text-dim);font-weight:600;"> / ${toAr(totalPossible)}</span>`;
+  document.getElementById('ur-rate').textContent = toAr(fmt1(totalPossible?earnedBonus/totalPossible*100:null)) + pctSign();
+  document.getElementById('ur-avg').textContent = rows.length ? toAr(fmt1(rows.reduce((s,u)=>s+u.score,0)/rows.length)) : '–';
+  document.getElementById('ur-incomplete').textContent = toAr(activeDepts().reduce((s,d)=>s+(d.urgent_incomplete||0),0));
+  renderCardComparisons('urgent');
+
+  let sortK='date', sortD=1;
+  function render(){
+    rows.sort((a,b)=>{
+      let va=a[sortK], vb=b[sortK];
+      if(typeof va==='string') return va.localeCompare(vb,'ar')*sortD;
+      return (va-vb)*sortD;
+    });
+    document.getElementById('urgbody').innerHTML = [...rows,...activeDepts().flatMap(d=>d.urgent_pending.map(u=>({...u,deptDisp:deptName(d)})))].map(u=>`
+      <tr><td>${u.deptDisp}</td><td class="num">${toAr(u.date)}</td><td>${taskDesc(u.desc)}</td><td class="num">${u.score===0?(LANG==='ar'?'غير مكتملة · 0/10':'Incomplete · 0/10'):toAr(u.score)+'/'+toAr(10)}</td><td class="num" style="color:var(--gold-2)">+${toAr(fmt1(u.bonus))}</td></tr>
+    `).join('');
+  }
+  document.querySelectorAll('table.dtable th[data-k3]').forEach(th=>{
+    th.onclick = ()=>{ const k=th.dataset.k3; if(sortK===k) sortD*=-1; else {sortK=k; sortD=1;} render(); };
+  });
+  render();
+  drawUrgentRanking();
+}
+
+/* ============================================================
+   PAGE: COMPARE
+   ============================================================ */
+let cmpA = DATA.departments[0].name, cmpB = DATA.departments[DATA.departments.length-1].name;
+function renderComparePage(){
+  const wrapA = document.getElementById('cmp-a'), wrapB = document.getElementById('cmp-b');
+  const pool = activeDepts();
+  if(!pool.find(d=>d.name===cmpA)) cmpA = pool[0] ? pool[0].name : cmpA;
+  if(!pool.find(d=>d.name===cmpB)) cmpB = pool[pool.length-1] ? pool[pool.length-1].name : cmpB;
+  function chipHtml(sel){ return pool.map(d=>`<div class="fchip dept ${d.name===sel?'on':''}" data-nm="${d.name}">${d.code}</div>`).join(''); }
+  wrapA.innerHTML = chipHtml(cmpA);
+  wrapB.innerHTML = chipHtml(cmpB);
+  wrapA.querySelectorAll('.fchip').forEach(c=> c.addEventListener('click', ()=>{ cmpA=c.dataset.nm; renderComparePage(); }));
+  wrapB.querySelectorAll('.fchip').forEach(c=> c.addEventListener('click', ()=>{ cmpB=c.dataset.nm; renderComparePage(); }));
+  drawCompareRadar();
+}
+function drawCompareRadar(){
+  const dA = DATA.departments.find(d=>d.name===cmpA);
+  const dB = DATA.departments.find(d=>d.name===cmpB);
+  const th = themeColors();
+  const labels=[T('th_overall'),T('th_quality'),T('th_behavior'),T('th_initiatives')];
+  const maxes=[4,2,2,2];
+  const valsA = dA.comp_avg.map((v,i)=> v/maxes[i]*10);
+  const valsB = dB.comp_avg.map((v,i)=> v/maxes[i]*10);
+  const cx=130, cy=118, R=85;
+  const pt=(val,i)=>{ const a=(-90+i*90)*Math.PI/180; const rr=(val/10)*R; return [cx+rr*Math.cos(a), cy+rr*Math.sin(a)]; };
+  let rings='';
+  [2,4,6,8,10].forEach(g=>{ const pts=[0,1,2,3].map(i=>pt(g,i)); rings+=`<polygon points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${th.grid2}" stroke-width="1"/>`; });
+  let axes='';
+  labels.forEach((l,i)=>{ const p=pt(10,i); axes+=`<line x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}" stroke="${th.grid2}"/>`; const lp=pt(12.5,i); axes+=`<text x="${lp[0].toFixed(1)}" y="${lp[1].toFixed(1)}" text-anchor="middle" font-family="'Noto Sans Arabic',Tahoma,Arial,sans-serif" font-size="9.5" fill="${th.dim}">${l}</text>`; });
+  const ptsA=[0,1,2,3].map(i=>pt(valsA[i],i));
+  const ptsB=[0,1,2,3].map(i=>pt(valsB[i],i));
+  const polyA = `<polygon points="${ptsA.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="rgba(43,166,190,0.2)" stroke="#2BA6BE" stroke-width="2"/>`;
+  const polyB = `<polygon points="${ptsB.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="rgba(201,162,75,0.18)" stroke="#C9A24B" stroke-width="2"/>`;
+  document.getElementById('cmp-radar').setAttribute('viewBox','0 0 260 240');
+  document.getElementById('cmp-radar').innerHTML = rings+axes+(dA.avg===null?'':polyA)+(dB.avg===null?'':polyB);
+  document.getElementById('cmp-legend').innerHTML = `<span><i style="background:#2BA6BE"></i>${deptName(dA)}</span><span><i style="background:#C9A24B"></i>${deptName(dB)}</span>`;
+  document.getElementById('cmp-table').innerHTML = `
+    <tr><th></th><th>${dA.code}</th><th>${dB.code}</th></tr>
+    <tr><td>${T('cmp_final_avg')}</td><td class="num">${toAr(fmt1(dA.avg))}</td><td class="num">${toAr(fmt1(dB.avg))}</td></tr>
+    <tr><td>${T('cmp_eval_count')}</td><td class="num">${toAr(dA.count)}</td><td class="num">${toAr(dB.count)}</td></tr>
+    <tr><td>${T('cmp_urgent')}</td><td class="num">${toAr(dA.urgent_count)}</td><td class="num">${toAr(dB.urgent_count)}</td></tr>
+    <tr><td>${T('cmp_urgent_bonus')}</td><td class="num">+${toAr(fmt1(dA.urgent_bonus))}</td><td class="num">+${toAr(fmt1(dB.urgent_bonus))}</td></tr>
+    <tr><td>${T('cmp_incomplete')}</td><td class="num">${toAr(dA.incomplete_count||0)}</td><td class="num">${toAr(dB.incomplete_count||0)}</td></tr>
+    <tr><td>${T('cmp_rank')}</td><td class="num">${toAr(dA.rank)}</td><td class="num">${toAr(dB.rank)}</td></tr>
+  `;
+}
+
+/* ============================================================
+   PAGE: WEEKLY REPORT
+   ============================================================ */
+
+
+/* ============================================================
+   PAGE: SETTINGS
+   ============================================================ */
+function renderSettingsPage(){
+  document.getElementById('settings-depts').innerHTML = `<tr><th>${T('th_dept')}</th><th>${T('th_code')}</th><th>${T('th_manager')}</th></tr>` +
+    DATA.departments.map(d=>`<tr><td>${deptName(d)}</td><td class="num">${d.code}</td><td>${d.manager}</td></tr>`).join('');
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+document.getElementById('navtoggle').addEventListener('click', ()=>{
+  document.getElementById('dashboard-view').classList.toggle('nav-open');
+});
+document.getElementById('navbackdrop').addEventListener('click', ()=>{
+  document.getElementById('dashboard-view').classList.remove('nav-open');
+});
+document.querySelectorAll('.navitem[data-page]').forEach(item=>{
+  item.addEventListener('click', ()=>{
+    document.getElementById('dashboard-view').classList.remove('nav-open');
+    document.querySelectorAll('.navitem[data-page]').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    const page = item.dataset.page;
+    document.getElementById('page-'+page).classList.add('active');
+    applyPage(page); renderPageFilters(page); renderPage(page);
+  });
+});
+
+applyI18n();
+applyPage('home');
+renderPageFilters('home');
+refreshHome();
+document.getElementById('themetoggle').addEventListener('click', toggleTheme);
+document.getElementById('langtoggle').addEventListener('click', toggleLang);
+
+
+
+  // single orchestrated reveal: gauge sweeps to the REAL completion rate (same figure the
+  // dashboard's own gauge shows, computed live from the same DATA object) and the number counts up with it
+  (function(){
+    const cx=160, cy=150, r=115;
+    const angle = t => -180 + t*180;
+    const pt = t => { const a = angle(t)*Math.PI/180; return [cx + r*Math.cos(a), cy + r*Math.sin(a)]; };
+    const fillPath = document.getElementById('hgFillPath');
+    const needle = document.getElementById('hgNeedle');
+    const num = document.getElementById('hgNum');
+    const toArabic = s => String(s);
+
+    // fill the stat strip with real, live numbers from DATA — guaranteed to match the dashboard
+    const completed = DATA.departments.reduce((s,d)=>s+d.count,0);
+    const incomplete = DATA.departments.reduce((s,d)=>s+(d.incomplete_count||0),0);
+    const totalTasks = DATA.departments.reduce((s,d)=>s+d.record_count,0);
+    const rateTarget = totalTasks ? completed/totalTasks : 0;
+    const previousRecordedMonth=SOURCE.months.at(-2);
+    const previousLanding=previousRecordedMonth?aggregate(previousRecordedMonth,0):null;
+    const previousLandingRate=previousLanding?computeCompletion(previousLanding.departments).rate:null;
+    const currentLandingRate=totalTasks?completed/totalTasks*100:null;
+    const landingContext={all:false,validNow:totalTasks>0,validBefore:previousLandingRate!==null};
+    document.getElementById('landing-completion-comparison').innerHTML=comparisonBadge(currentLandingRate,previousLandingRate,landingContext,'completion')+(previousLandingRate===null?'<span>لا توجد نسبة سابقة للمقارنة</span>':'<span>مقابل <b><bdi>'+previousLandingRate.toFixed(1)+'%</bdi></b> في '+taskHTML(monthLabel(previousRecordedMonth))+'</span>');
+
+    const statDepts = document.getElementById('stat-depts');
+    const statAvg = document.getElementById('stat-avg');
+    document.getElementById('landing-year').textContent = SOURCE.cutoff.slice(0,4);
+    document.getElementById('stat-updated').textContent = new Intl.DateTimeFormat('ar-EG-u-nu-latn',{day:'numeric',month:'long',timeZone:'UTC'}).format(new Date(SOURCE.cutoff+'T12:00:00Z'));
+    if(statDepts) statDepts.textContent = toArabic(DATA.total_departments);
+    if(statAvg) statAvg.textContent = toArabic((Math.round(DATA.base_avg*10)/10).toFixed(1)) + '/' + toArabic(10);
+
+    const target = rateTarget;
+    const start = performance.now();
+    const dur = 1400;
+    function frame(now){
+      const p = Math.min((now-start)/dur, 1);
+      const eased = 1 - Math.pow(1-p, 3);
+      const t = target * eased;
+      const tCapped = Math.min(t, 1);
+      const pStart = pt(0), pMid = pt(0.5), pEnd = pt(tCapped);
+      let d;
+      if(tCapped<=0.5){
+        d = `M ${pStart[0].toFixed(1)} ${pStart[1].toFixed(1)} A ${r} ${r} 0 0 1 ${pEnd[0].toFixed(1)} ${pEnd[1].toFixed(1)}`;
+      } else {
+        d = `M ${pStart[0].toFixed(1)} ${pStart[1].toFixed(1)} A ${r} ${r} 0 0 1 ${pMid[0].toFixed(1)} ${pMid[1].toFixed(1)} A ${r} ${r} 0 0 1 ${pEnd[0].toFixed(1)} ${pEnd[1].toFixed(1)}`;
+      }
+      fillPath.setAttribute('d', d);
+      const na = angle(tCapped)*Math.PI/180;
+      const nl = r;
+      needle.setAttribute('x2', (cx+nl*Math.cos(na)).toFixed(1));
+      needle.setAttribute('y2', (cy+nl*Math.sin(na)).toFixed(1));
+      num.textContent = toArabic((t*100).toFixed(1)) + '%';
+      if(p<1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+
+
+function showDashboard(){
+  document.getElementById('landing-view').style.display='none';
+  document.getElementById('dashboard-view').style.display='';
+  document.body.classList.add('dash-mode');
+  document.documentElement.dir = (typeof LANG!=='undefined' && LANG==='en') ? 'ltr' : 'rtl';
+  document.documentElement.lang = (typeof LANG!=='undefined' && LANG==='en') ? 'en' : 'ar';
+  window.scrollTo(0,0);
+}
+function showLanding(){
+  document.getElementById('dashboard-view').style.display='none';
+  document.getElementById('landing-view').style.display='';
+  document.body.classList.remove('dash-mode');
+  document.documentElement.dir = 'rtl';
+  document.documentElement.lang = 'ar';
+  window.scrollTo(0,0);
+}
+document.getElementById('dash-home-link').addEventListener('click', showLanding);
+
+window.showDashboard=showDashboard;
+window.showLanding=showLanding;
+document.getElementById('data-loading')?.remove();
+
+}
+const EMBEDDED_DATA = null;
+function validateSource(data){
+ const fail=message=>{throw new Error('Invalid data.json: '+message)};
+ const dateOK=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&Number.isFinite(Date.parse(value))&&new Date(value).toISOString().slice(0,10)===value;
+ const scoreOK=(value,max)=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=max;
+ if(!data||data.schema_version!==1)fail('unsupported schema');
+ if(!Array.isArray(data.departments)||!data.departments.length||!Array.isArray(data.rows)||!data.rows.length||!Array.isArray(data.urgent))fail('missing records');
+ if(!dateOK(data.cutoff)||typeof data.generated_at!=='string')fail('missing update date');
+ const names=new Set(),codes=new Set();
+ for(const d of data.departments){if(!d||typeof d.name!=='string'||!d.name||typeof d.code!=='string'||!d.code||names.has(d.name)||codes.has(d.code)||d.code==='WH')fail('invalid or excluded department');names.add(d.name);codes.add(d.code);}
+ if(!Array.isArray(data.months)||!data.months.length||data.months.some(m=>typeof m!=='string'||!/^\d{4}-(0[1-9]|1[0-2])$/.test(m))||new Set(data.months).size!==data.months.length)fail('invalid months');
+ for(const r of data.rows){
+  if(!r||!names.has(r.dept)||!dateOK(r.date)||typeof r.taskId!=='string'||!r.taskId||!Array.isArray(r.dims)||r.dims.length!==4||!r.dims.every((v,i)=>scoreOK(v,[4,2,2,2][i]))||!scoreOK(r.total,10)||Math.abs(r.total-r.dims.reduce((a,b)=>a+b,0))>1e-8)fail('invalid task evaluation');
+ }
+ for(const r of data.urgent)if(!r||!names.has(r.dept)||!dateOK(r.date)||typeof r.desc!=='string'||!scoreOK(r.score,10)||!scoreOK(r.bonus,2)||Math.abs(r.bonus-r.score/5)>1e-8)fail('invalid urgent evaluation');
+ const expectedMonths=[...new Set(data.rows.filter(r=>r.date<=data.cutoff).map(r=>r.date.slice(0,7)))].sort();
+ if(JSON.stringify(expectedMonths)!==JSON.stringify(data.months))fail('months do not match the records');
+ return data;
+}
+async function loadDashboard(){
+ try{
+  let data;
+  if(location.protocol==='file:'){
+   if(!EMBEDDED_DATA)throw new Error('Use the standalone preview or select data.json');
+   data=EMBEDDED_DATA;
+  }else{
+   const response=await fetch('./data.json?v='+Date.now(),{cache:'no-store'});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+   data=await response.json();
+  }
+  initializeDashboard(validateSource(data));
+ }catch(error){
+  console.error(error);
+  document.getElementById('data-loading-message').textContent=location.protocol==='file:'?'افتح 1K_Coffee_Dashboard.html للمعاينة، أو اختَر ملف data.json من الزر التالي.':'تعذّر تحميل البيانات. أعد تحميل الصفحة، أو تأكد من رفع data.json بجوار index.html.';
+  document.getElementById('load-json-button').hidden=location.protocol!=='file:';
+ }
+}
+document.getElementById('load-json-button').onclick=()=>document.getElementById('load-json-file').click();
+document.getElementById('load-json-file').onchange=async event=>{
+ try{const file=event.target.files[0];if(file)initializeDashboard(validateSource(JSON.parse(await file.text())));}
+ catch(error){console.error(error);document.getElementById('data-loading-message').textContent='تعذّر قراءة ملف البيانات. اختَر ملف data.json الناتج من التحديث.';}
+};
+loadDashboard();
+</script>
+</body>
+</html>
