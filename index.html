@@ -450,6 +450,24 @@
 #data-loading h2{color:var(--gold-2);font-size:21px;margin-bottom:14px}
 #data-loading p{color:var(--text-dim);font-size:13px;line-height:1.9}
 #load-json-button{margin-top:18px;border:0;border-radius:9px;padding:10px 18px;background:var(--gold);color:#231A0C;font:600 13px 'Noto Sans Arabic',Tahoma,Arial,sans-serif;cursor:pointer}
+
+/* Equal-height cards with a shared comparison footer and room for department names. */
+#dashboard-view .kpirow,#dashboard-view .kpirow2{align-items:stretch;grid-auto-rows:1fr}
+#dashboard-view .kpi,#dashboard-view .kpi2,#dashboard-view .miniStat,#dashboard-view .statgrid .sg{display:flex;flex-direction:column;min-width:0}
+#dashboard-view .kpi .metric-previous,#dashboard-view .kpi2 .metric-previous,#dashboard-view .miniStat .metric-previous,#dashboard-view .statgrid .sg .metric-previous{margin-top:auto;padding-top:10px;border-top:1px solid var(--border)}
+#dashboard-view :is(.kpi,.kpi2,.miniStat,.sg) .metric-value-row{margin-bottom:10px}
+#dashboard-view .kpi .d{margin-top:-4px;margin-bottom:10px}
+#dashboard-view .executive-kpis>.kpi{padding:16px}
+#dashboard-view .executive-kpis .ico{position:absolute;inset-inline-end:14px;top:14px;margin:0}
+#dashboard-view .executive-kpis>.kpi>.l{padding-inline-end:38px;min-height:36px;line-height:1.7}
+#dashboard-view .executive-kpis .metric-value-row{min-height:42px;margin-top:6px}
+#dashboard-view .executive-kpis #k-best{flex:initial;min-width:0;font-size:16px!important;line-height:1.65}
+#dashboard-view .best-previous-title{display:block;margin-bottom:3px;font-size:12px;font-weight:600;color:var(--text-dim)}
+#dashboard-view .best-winners{display:block;font-size:13px;line-height:1.7}
+#dashboard-view .best-period{display:block;margin-top:5px;font-size:12px;line-height:1.65}
+#dashboard-view .urgent-panel .miniStatRow,#dashboard-view .range-panel .statgrid{align-items:stretch;grid-auto-rows:1fr}
+@media(min-width:901px){#dashboard-view .executive-kpis,#dashboard-view .kpirow2{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){#dashboard-view .executive-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -642,7 +660,7 @@
         <div class="kpi"><div class="ico" style="background:rgba(210,98,75,0.15)">⏳</div><div class="l" data-i18n="kpi_incomplete">مهام غير مكتملة</div><div class="metric-value-row"><div class="v num" id="k-incomplete">–</div><span id="k-incomplete-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" data-i18n="in_progress">قيد التنفيذ</div><div id="k-incomplete-previous" class="metric-previous"></div></div>
         <div class="kpi"><div class="ico" style="background:rgba(52,178,123,0.15)">◎</div><div class="l" data-i18n="completion_rate">نسبة الإنجاز</div><div class="metric-value-row"><div class="v num" id="k-completion">–</div><span id="k-completion-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" data-i18n="completion_sub">مكتمل / إجمالي المهام</div><div id="k-completion-previous" class="metric-previous"></div></div>
         <div class="kpi"><div class="ico" style="background:rgba(52,178,123,0.15)">▦</div><div class="l" data-i18n="kpi_depts">الإدارات المعروضة</div><div class="metric-value-row"><div class="v num" id="k-depts">–</div><span id="k-depts-badge" class="metric-badge flat">—</span></div><div class="d" style="color:var(--text-dim)" id="k-depts-total">إدارة</div><div id="k-depts-previous" class="metric-previous"></div></div>
-        <div class="kpi"><div class="ico" style="background:rgba(228,195,119,0.15)">🏆</div><div class="l" data-i18n="kpi_best">أفضل إدارة أداءً</div><div class="metric-value-row"><div class="v" id="k-best" style="font-size:14px;"></div><span id="k-best-badge" class="metric-badge flat">—</span></div><div class="d num" id="k-best-score" style="color:var(--gold-2)"></div><div id="k-best-previous" class="metric-previous"></div></div>
+        <div class="kpi"><div class="ico" style="background:rgba(228,195,119,0.15)">🏆</div><div class="l" data-i18n="kpi_best">أفضل إدارة أداءً</div><div class="metric-value-row"><div class="v" id="k-best" style="font-size:14px;"></div></div><div class="d num" id="k-best-score" style="color:var(--gold-2)"></div><div id="k-best-previous" class="metric-previous"></div></div>
       </div>
 
       <div class="grid2">
@@ -1497,14 +1515,15 @@ function staticCardComparison(id,metric,now,before,ctx){
 function renderCardComparisons(scope='home'){
  const ctx=comparisonContext(),now=metricValues(ctx.now),prior=metricValues(ctx.prior);
  const ids=scope==='urgent'?{'ur-total':'urgent','ur-bonus':'bonus','ur-rate':'bonus_rate','ur-avg':'urgent_avg','ur-incomplete':'urgent_pending'}:
- {'k-avg':'avg','k-count':'completed','k-incomplete':'incomplete','k-completion':'completion','k-depts':'departments','k-best':'best','mu-count':'urgent','mu-bonus':'bonus','mu-incomplete':'urgent_pending','mu-rate':'urgent_completion'};
+ {'k-avg':'avg','k-count':'completed','k-incomplete':'incomplete','k-completion':'completion','k-depts':'departments','mu-count':'urgent','mu-bonus':'bonus','mu-incomplete':'urgent_pending','mu-rate':'urgent_completion'};
  for(const [id,metric] of Object.entries(ids))staticCardComparison(id,metric,now[metric],prior[metric],ctx);
  if(scope==='home'){
   const best=document.getElementById('k-best');
   best.textContent=now.winners.length?now.winners.map(shortDepartment).join(' + '):'–';
   best.title=now.winners.map(deptName).join(' + ');
   const previous=document.getElementById('k-best-previous');
-  if(ctx.validBefore&&prior.winners.length)previous.innerHTML=(LANG==='ar'?'الأفضل سابقًا: ':'Previously best: ')+'<b>'+taskHTML(prior.winners.map(shortDepartment).join(' + '))+'</b> <bdi>('+comparisonNumber(prior.best,'best')+'/10)</bdi><br>'+taskHTML(ctx.label);
+  if(ctx.validBefore&&prior.winners.length)previous.innerHTML='<span class="best-previous-title">'+(LANG==='ar'?'الأفضل سابقًا':'Previously best')+'</span><b class="best-winners">'+taskHTML(prior.winners.map(shortDepartment).join(' · '))+'</b><span class="best-period">'+taskHTML(ctx.label)+'</span>';
+  else previous.innerHTML=comparisonCaption(null,ctx,'best');
  }
 }
 function metricIcon(metric){
