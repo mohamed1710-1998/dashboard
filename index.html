@@ -377,47 +377,48 @@
 #dashboard-view #dd-incomplete-table td.dd-task-name{white-space:normal;overflow-wrap:anywhere;font-family:Tahoma,Arial,sans-serif;font-size:13px}
 #dashboard-view #dd-incomplete-table td.num{font-family:Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:12px}
 
-/* Small comparisons inside the existing KPI cards */
+/* Comparisons stay secondary to the main values, with readable type. */
 #dashboard-view .data-freshness{font-size:10px;color:var(--text-dim);margin:0 0 10px;line-height:1.7}
-#dashboard-view .kpi-change{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;font-size:10px;line-height:1.7;margin-top:5px;color:var(--text-dim)}
+#dashboard-view .kpi-change{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;font-size:13px;line-height:1.8;margin-top:7px;color:var(--text-dim)}
 #dashboard-view .kpi-change + .kpi-change{margin-top:1px}
-#dashboard-view .kpi-change .change-value{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;white-space:nowrap;color:var(--text-dim)}
+#dashboard-view .kpi-change .change-value{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;white-space:nowrap;color:var(--text-dim)}
 #dashboard-view .kpi-change .change-value.up{color:var(--green)}
 #dashboard-view .kpi-change .change-value.down{color:var(--rust)}
-#dashboard-view .kpi-change .change-label{font-size:9px;font-weight:400;color:var(--text-dim)}
+#dashboard-view .kpi-change .change-label{font-size:13px;font-weight:500;color:var(--text-dim)}
 :root[data-theme="light"] #dashboard-view .kpi-change .up{color:#16704b}
 :root[data-theme="light"] #dashboard-view .kpi-change .down{color:#a13625}
 
-/* Compact comparison badges, following the supplied metric-card reference. */
+/* Clear comparison badges inside every metric card. */
 #dashboard-view .metric-value-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;margin-top:4px}
 #dashboard-view .metric-value-row>.v,#dashboard-view .metric-value-row>.mv{margin-top:0;min-width:0}
-#dashboard-view .metric-badge{display:inline-flex;align-items:center;justify-content:center;gap:3px;border-radius:5px;padding:3px 5px;font:600 9px 'IBM Plex Mono',Arial,sans-serif;line-height:1.35;white-space:nowrap;flex:none;vertical-align:middle;background:rgba(142,155,179,.11);color:var(--text-dim)}
+#dashboard-view .metric-badge{display:inline-flex;align-items:center;justify-content:center;gap:5px;border-radius:6px;padding:5px 8px;font:700 14px 'IBM Plex Mono',Arial,sans-serif;line-height:1.35;white-space:nowrap;flex:none;vertical-align:middle;background:rgba(142,155,179,.11);color:var(--text-dim)}
 #dashboard-view .metric-badge.up{color:#58d5a0;background:rgba(52,178,123,.13)}
 #dashboard-view .metric-badge.down{color:#f08c7b;background:rgba(210,98,75,.13)}
 #dashboard-view .metric-badge.flat{color:var(--text-dim);background:rgba(142,155,179,.10)}
-#dashboard-view .metric-previous{font-size:9px;color:var(--text-dim);font-weight:400;line-height:1.7;margin-top:7px;overflow-wrap:anywhere}
-#dashboard-view .metric-previous b{font-weight:600;color:var(--text)}
+#dashboard-view .metric-previous{font-size:13px;color:var(--text-dim);font-weight:500;line-height:1.85;margin-top:9px;overflow-wrap:anywhere}
+#dashboard-view .metric-previous b{font-size:14px;font-weight:700;color:var(--text)}
+#dashboard-view .metric-previous bdi{font-variant-numeric:tabular-nums}
 #dashboard-view .kpi{overflow:visible;min-width:0}
 #dashboard-view .kpi .v{font-size:24px}
 #dashboard-view .kpi .d{font-weight:400}
 #dashboard-view .kpi:has(#k-best) .metric-value-row{align-items:flex-start}
-#dashboard-view #k-best{font-size:12px!important;line-height:1.65;flex:1;min-width:85px}
-#dashboard-view .miniStat .metric-value-row{justify-content:center;gap:5px}
+#dashboard-view #k-best{font-size:16px!important;line-height:1.65;flex:1;min-width:85px}
+#dashboard-view .miniStat .metric-value-row{justify-content:center;gap:8px}
 #dashboard-view .kpi2 .metric-value-row,#dashboard-view .sg .metric-value-row{justify-content:center}
-#dashboard-view .miniStat .metric-previous,#dashboard-view .sg .metric-previous{font-size:8.5px}
-#dashboard-view .sg .metric-badge{font-size:8px}
+#dashboard-view .miniStat .metric-previous,#dashboard-view .sg .metric-previous{font-size:13px}
+#dashboard-view .sg .metric-badge{font-size:14px}
 #dashboard-view .sg{min-width:0}
 #dashboard-view .data-freshness{font-size:10px;line-height:1.8}
 :root[data-theme="light"] #dashboard-view .metric-badge.up{color:#168154;background:rgba(36,169,112,.11)}
 :root[data-theme="light"] #dashboard-view .metric-badge.down{color:#c54157;background:rgba(216,64,96,.09)}
-@media(max-width:640px){#dashboard-view .metric-value-row{gap:6px}#dashboard-view .kpi .v{font-size:23px}#dashboard-view .metric-previous{font-size:9px}}
+@media(max-width:640px){#dashboard-view .metric-value-row{gap:6px}#dashboard-view .kpi .v{font-size:23px}#dashboard-view .metric-previous{font-size:13px}}
 
-#landing-view .landing-comparison{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:var(--text-dim);line-height:1.8}
-#landing-view .landing-comparison .metric-badge{display:inline-flex;padding:4px 7px;border-radius:5px;font:600 11px 'IBM Plex Mono',Arial,sans-serif;white-space:nowrap}
+#landing-view .landing-comparison{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:10px;font-size:14px;font-weight:500;color:var(--text-dim);line-height:1.9}
+#landing-view .landing-comparison .metric-badge{display:inline-flex;padding:6px 10px;border-radius:6px;font:700 15px 'IBM Plex Mono',Arial,sans-serif;white-space:nowrap}
 #landing-view .landing-comparison .metric-badge.down{color:#f08c7b;background:rgba(210,98,75,.13)}
 #landing-view .landing-comparison .metric-badge.up{color:#58d5a0;background:rgba(52,178,123,.13)}
 #landing-view .landing-comparison .metric-badge.flat{color:var(--text-dim);background:rgba(142,155,179,.10)}
-#landing-view .landing-comparison b{color:var(--text);font-weight:600}
+#landing-view .landing-comparison b{color:var(--text);font-weight:700;font-size:15px}
 :root[data-theme="light"] #landing-view .landing-comparison .metric-badge.down{color:#c54157;background:rgba(216,64,96,.09)}
 :root[data-theme="light"] #landing-view .landing-comparison .metric-badge.up{color:#168154;background:rgba(36,169,112,.11)}
 
@@ -432,10 +433,10 @@
 #dashboard-view .metric-card-heading :is(.l,.ml){margin:0;min-width:0;font-size:10.5px;font-weight:600;line-height:1.75;color:var(--text-dim)}
 #dashboard-view .metric-icon{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex:0 0 34px;border-radius:10px;color:var(--metric-accent);background:rgba(var(--metric-rgb),.12);box-shadow:inset 0 0 0 1px rgba(var(--metric-rgb),.1)}
 #dashboard-view .metric-icon svg{width:19px;height:19px;display:block}
-#dashboard-view .metric-card .metric-value-row{justify-content:flex-start;gap:7px;margin-top:0;min-height:32px}
+#dashboard-view .metric-card .metric-value-row{justify-content:flex-start;gap:9px;margin-top:0;min-height:32px}
 #dashboard-view .metric-card :is(.v,.mv){font-size:25px;line-height:1.25;letter-spacing:-.7px;color:var(--text)}
-#dashboard-view .metric-card .metric-previous{border-top:1px solid var(--border);padding-top:8px;margin-top:11px;font-size:9px;line-height:1.8;letter-spacing:0}
-#dashboard-view .metric-card .dd-after-bonus{margin-top:6px;font-size:9px;color:var(--text-dim)}
+#dashboard-view .metric-card .metric-previous{border-top:1px solid var(--border);padding-top:10px;margin-top:12px;font-size:13px;line-height:1.85;letter-spacing:0}
+#dashboard-view .metric-card .dd-after-bonus{margin-top:8px;font-size:13px;color:var(--text-dim)}
 #dashboard-view .metric-card .dd-after-bonus strong{color:var(--gold-2)}
 :root[data-theme="light"] #dashboard-view .metric-card{--metric-accent:#168496}
 :root[data-theme="light"] #dashboard-view :is(.tone-avg,.tone-bonus,.tone-urgent){--metric-accent:#a1741c}
