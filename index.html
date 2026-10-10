@@ -1820,7 +1820,7 @@ function validateSource(data){
  const scoreOK=(value,max)=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=max;
  if(!data||data.schema_version!==1)fail('unsupported schema');
  if(!Array.isArray(data.departments)||!data.departments.length||!Array.isArray(data.rows)||!data.rows.length||!Array.isArray(data.urgent))fail('missing records');
- if(!dateOK(data.cutoff)||typeof data.generated_at!=='string')fail('missing update date');
+ if(!dateOK(data.cutoff)||typeof data.generated_at!=='string'||!Number.isFinite(Date.parse(data.generated_at)))fail('missing update date');
  const names=new Set(),codes=new Set();
  for(const d of data.departments){if(!d||typeof d.name!=='string'||!d.name||typeof d.code!=='string'||!d.code||names.has(d.name)||codes.has(d.code)||d.code==='WH')fail('invalid or excluded department');names.add(d.name);codes.add(d.code);}
  if(!Array.isArray(data.months)||!data.months.length||data.months.some(m=>typeof m!=='string'||!/^\d{4}-(0[1-9]|1[0-2])$/.test(m))||new Set(data.months).size!==data.months.length)fail('invalid months');
@@ -1832,6 +1832,45 @@ function validateSource(data){
  if(JSON.stringify(expectedMonths)!==JSON.stringify(data.months))fail('months do not match the records');
  return data;
 }
+// Monday 12:00 Riyadh = Monday 09:00 UTC, independent of the visitor's timezone.
+function latestMondayNoon(now=Date.now()){
+ const local=new Date(now+3*60*60*1000);
+ const days=(local.getUTCDay()+6)%7;
+ let due=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate()-days,9);
+ if(due>now)due-=7*24*60*60*1000;
+ return due;
+}
+function startWeeklyRefresh(data){
+ if(location.protocol==='file:')return;
+ let timer=null,busy=false,retries=0;
+ const loadedVersion=data.generated_at,week=7*24*60*60*1000;
+ function later(delay){clearTimeout(timer);timer=setTimeout(check,Math.max(1000,Math.min(delay,week)));}
+ async function check(){
+  if(busy)return;
+  clearTimeout(timer);
+  const now=Date.now(),due=latestMondayNoon(now);
+  if(Date.parse(loadedVersion)>=due){later(due+week-now);return;}
+  if(document.hidden){later(5*60*1000);return;}
+  busy=true;
+  try{
+   const response=await fetch('./data.json?v='+Date.now(),{cache:'no-store'});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+   const fresh=validateSource(await response.json());
+   if(fresh.generated_at!==loadedVersion){
+    try{sessionStorage.setItem('coffee-return-dashboard',document.getElementById('dashboard-view').style.display==='none'?'0':'1');}catch{}
+    location.reload();return;
+   }
+  }catch(error){console.error('Weekly dashboard refresh:',error);}
+  finally{busy=false;}
+  // Give the Monday upload and Pages deployment time to finish, then back off.
+  const delay=[60000,120000,300000,900000,3600000][Math.min(retries++,4)];
+  later(delay);
+ }
+ window.addEventListener('focus',check);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)check();});
+ check();
+}
+
 async function loadDashboard(){
  try{
   let data;
@@ -1844,6 +1883,8 @@ async function loadDashboard(){
    data=await response.json();
   }
   initializeDashboard(validateSource(data));
+  try{if(sessionStorage.getItem('coffee-return-dashboard')==='1')window.showDashboard();sessionStorage.removeItem('coffee-return-dashboard');}catch{}
+  startWeeklyRefresh(data);
  }catch(error){
   console.error(error);
   document.getElementById('data-loading-message').textContent=location.protocol==='file:'?'افتح 1K_Coffee_Dashboard.html للمعاينة، أو اختَر ملف data.json من الزر التالي.':'تعذّر تحميل البيانات. أعد تحميل الصفحة، أو تأكد من رفع data.json بجوار index.html.';
