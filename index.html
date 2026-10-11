@@ -747,6 +747,7 @@
     <div class="page" id="page-urgent">
       <h2 class="ptitle" data-i18n="page_urgent_title">المهام العاجلة والبونص — كل الإدارات</h2>
       <div class="filterbar" id="flt-urgent" style="margin-bottom:14px;"></div>
+      <div class="fchips" id="flt-urgent-dept" style="margin-bottom:14px;"></div>
       <div class="kpirow" style="grid-template-columns:repeat(5,1fr); margin-bottom:20px;">
         <div class="kpi metric-card tone-urgent"><div class="metric-card-heading"><div class="l" data-i18n="ur_total">المهام العاجلة المكتملة</div><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m13 2-9 12h7l-1 8 10-13h-7Z"/></svg></span></div><div class="metric-value-row"><div class="v num" id="ur-total"></div><span id="ur-total-badge" class="metric-badge flat">—</span></div><div id="ur-total-previous" class="metric-previous"></div></div>
         <div class="kpi metric-card tone-bonus"><div class="metric-card-heading"><div class="l" data-i18n="ur_bonus">إجمالي نقاط البونص</div><span class="metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m12 3 2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2ZM20 3v4m-2-2h4"/></svg></span></div><div class="metric-value-row"><div class="v num" id="ur-bonus"></div><span id="ur-bonus-badge" class="metric-badge flat">—</span></div><div id="ur-bonus-previous" class="metric-previous"></div></div>
@@ -858,12 +859,20 @@ function periodContains(date,month,week){
  const w=weeksFor(date.slice(0,7)).find(x=>x.id===week);
  return date>=w.start&&date<=w.end;
 }
+// Urgent work follows its actual calendar date, including non-evaluation days.
+function urgentPeriodContains(date,month,week){
+ if(date>SOURCE.cutoff||(month!=='all'&&!date.startsWith(month)))return false;
+ if(!week)return true;
+ const w=weeksFor(date.slice(0,7)).find(x=>x.id===week);
+ return date>=w.start&&date<=w.end;
+}
+const newestUrgentFirst=(a,b)=>b.date.localeCompare(a.date);
 function scoreDescending(a,b){return (b.final??-Infinity)-(a.final??-Infinity)||a.code.localeCompare(b.code)}
 function baseDescending(a,b){return (b.avg??-Infinity)-(a.avg??-Infinity)||a.code.localeCompare(b.code)}
 const mean=arr=>arr.length?arr.reduce((s,v)=>s+v,0)/arr.length:null;
 function aggregate(month,week){
  const rows=SOURCE.rows.filter(r=>periodContains(r.date,month,week));
- const urgent=SOURCE.urgent.filter(r=>periodContains(r.date,month,week));
+ const urgent=SOURCE.urgent.filter(r=>urgentPeriodContains(r.date,month,week)).sort(newestUrgentFirst);
  const departments=SOURCE.departments.map(d=>{
    const rr=rows.filter(r=>r.dept===d.name),scored=rr.filter(r=>typeof r.total==='number');
    const ur=urgent.filter(r=>r.dept===d.name),done=ur.filter(r=>r.score>0);
@@ -1082,6 +1091,7 @@ function activeDays(){ return DATA.daily_trend; }
 
 const PS={};
 ['home','dept','urgent','compare','settings'].forEach(p=>PS[p]={depts:new Set(),week:0,month:SOURCE.months.at(-1)});
+PS.urgent.month='all';
 function activePage(){const el=document.querySelector('.page.active');return el?el.id.replace('page-',''):'home';}
 function applyPage(page){const st=PS[page];selectedDepts=st.depts;currentWeek=st.week;currentMonth=st.month;DATA=aggregate(currentMonth,currentWeek);}
 function renderPage(page){
@@ -1109,8 +1119,8 @@ function renderPageFilters(page){
     applyPage(page);renderPageFilters(page);renderPage(page);
   };
   el.onclick=handler;
-  const dl=document.getElementById('flt-home-dept');
-  if(page==='home'&&dl){
+  const dl=document.getElementById('flt-'+page+'-dept');
+  if((page==='home'||page==='urgent')&&dl){
     dl.innerHTML=DATA.departments.map(d=>chip('dept',d.name,deptName(d),st.depts.has(d.name),'dept')).join('')+chip('dept','',T('all_label'),st.depts.size===0,'dept all');
     dl.onclick=handler;
   }
@@ -1319,7 +1329,8 @@ function drawRanking(){
 }
 // Urgent & Bonus page: ranking by score AFTER bonus
 function drawUrgentRanking(){
-  drawDeptBars('urgentrankchart', activeDepts().filter(d=>d.final!==null).sort(scoreDescending), 'final');
+  // Department chips filter the cards/table; this chart keeps all departments.
+  drawDeptBars('urgentrankchart', DATA.departments.filter(d=>d.final!==null).sort(scoreDescending), 'final');
 }
 
 let homeSortKey='avg', homeSortDir=-1;
@@ -1590,6 +1601,7 @@ function drawDeptContent(){
   const priorDept=ctx.prior.find(d=>d.name===dept.name);
   const currentMetrics=metricValues([dept]),priorMetrics=metricValues(priorDept?[priorDept]:[]);
   const deptCtx={...ctx,iconCards:true,validNow:!!(dept.record_count||dept.urgent_count||dept.urgent_incomplete),validBefore:!!priorDept&&(priorDept.record_count>0||priorDept.urgent_count>0||priorDept.urgent_incomplete>0)};
+  const deptUrgent=[...dept.urgent_tasks,...dept.urgent_pending].sort(newestUrgentFirst);
   const days = DATA.days;
   const dailyVals = days.map(d=> dept.daily[d] ? dept.daily[d].avg : 0);
   document.getElementById('dd-content').innerHTML = `
@@ -1622,7 +1634,7 @@ function drawDeptContent(){
             return `<div class="comprow2"><div class="t"><span>${l}</span><span>${toAr(fmt1(v))}/${toAr(maxes[i])}</span></div><div class="compbarwrap2"><div class="compbar2" style="width:${(v/maxes[i]*100).toFixed(1)}%"></div></div></div>`;
           }).join('')}
           <h4 style="margin-top:18px;">${T('dd_urgent_title')}</h4>
-          ${dept.urgent_tasks.length ? dept.urgent_tasks.map(u=>`
+          ${deptUrgent.length ? deptUrgent.map(u=>`
             <div class="urgentitem2"><div class="udate2">${toAr(u.date)}</div><div class="udesc2">${taskDesc(u.desc)}</div><div style="font-size:11px;color:var(--text-dim);">${T('dd_score_label')} ${u.score===0?(LANG==='ar'?'غير مكتملة · 0/10':'Incomplete · 0/10'):toAr(u.score)+'/'+toAr(10)} — ${T('dd_bonus_label')} +${toAr(fmt1(u.bonus))}</div></div>
           `).join('') : `<div style="font-size:11.5px;color:var(--text-dim);">${T('no_urgent_tasks')}</div>`}
         </div>
@@ -1648,19 +1660,20 @@ function renderUrgentPage(){
   document.getElementById('ur-incomplete').textContent = toAr(activeDepts().reduce((s,d)=>s+(d.urgent_incomplete||0),0));
   renderCardComparisons('urgent');
 
-  let sortK='date', sortD=1;
+  const tableRows=[...rows,...activeDepts().flatMap(d=>d.urgent_pending.map(u=>({...u,dept:d.name,deptDisp:deptName(d)})))];
+  let sortK='date', sortD=-1;
   function render(){
-    rows.sort((a,b)=>{
+    tableRows.sort((a,b)=>{
       let va=a[sortK], vb=b[sortK];
       if(typeof va==='string') return va.localeCompare(vb,'ar')*sortD;
       return (va-vb)*sortD;
     });
-    document.getElementById('urgbody').innerHTML = [...rows,...activeDepts().flatMap(d=>d.urgent_pending.map(u=>({...u,deptDisp:deptName(d)})))].map(u=>`
+    document.getElementById('urgbody').innerHTML = tableRows.map(u=>`
       <tr><td>${u.deptDisp}</td><td class="num">${toAr(u.date)}</td><td>${taskDesc(u.desc)}</td><td class="num">${u.score===0?(LANG==='ar'?'غير مكتملة · 0/10':'Incomplete · 0/10'):toAr(u.score)+'/'+toAr(10)}</td><td class="num" style="color:var(--gold-2)">+${toAr(fmt1(u.bonus))}</td></tr>
     `).join('');
   }
   document.querySelectorAll('table.dtable th[data-k3]').forEach(th=>{
-    th.onclick = ()=>{ const k=th.dataset.k3; if(sortK===k) sortD*=-1; else {sortK=k; sortD=1;} render(); };
+    th.onclick = ()=>{ const k=th.dataset.k3; if(sortK===k) sortD*=-1; else {sortK=k; sortD=k==='date'?-1:1;} render(); };
   });
   render();
   drawUrgentRanking();
@@ -1852,7 +1865,7 @@ function validateSource(data){
   if(!r||!names.has(r.dept)||!dateOK(r.date)||typeof r.taskId!=='string'||!r.taskId||!Array.isArray(r.dims)||r.dims.length!==4||!r.dims.every((v,i)=>scoreOK(v,[4,2,2,2][i]))||!scoreOK(r.total,10)||Math.abs(r.total-r.dims.reduce((a,b)=>a+b,0))>1e-8)fail('invalid task evaluation');
  }
  for(const r of data.urgent)if(!r||!names.has(r.dept)||!dateOK(r.date)||typeof r.desc!=='string'||!scoreOK(r.score,10)||!scoreOK(r.bonus,2)||Math.abs(r.bonus-r.score/5)>1e-8)fail('invalid urgent evaluation');
- const expectedMonths=[...new Set(data.rows.filter(r=>r.date<=data.cutoff).map(r=>r.date.slice(0,7)))].sort();
+ const expectedMonths=[...new Set([...data.rows,...data.urgent].filter(r=>r.date<=data.cutoff).map(r=>r.date.slice(0,7)))].sort();
  if(JSON.stringify(expectedMonths)!==JSON.stringify(data.months))fail('months do not match the records');
  return data;
 }
