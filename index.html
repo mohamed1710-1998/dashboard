@@ -844,7 +844,9 @@ function weeksFor(month){
   if(WEEK_CACHE[month])return WEEK_CACHE[month];
   const first=month+'-01',last=iso(new Date(Date.UTC(+month.slice(0,4),+month.slice(5,7),0)));
   let start=addDay(first,(6-new Date(first+'T12:00:00Z').getUTCDay()+7)%7),out=[];
+  const earlyFirstWeek=month==='2026-11'; // استثناء نوفمبر 2026: الأسبوع الأول من 1 إلى 5
   for(let id=1;id<=4;id++){
+    if(earlyFirstWeek&&id===1){out.push({id,start:first,end:addDay(first,4)});continue;}
     let end=id===4?last:addDay(start,5);if(end>last)end=last;
     if(new Date(end+'T12:00:00Z').getUTCDay()===5)end=addDay(end,-1);
     out.push({id,start,end});start=addDay(start,7);
