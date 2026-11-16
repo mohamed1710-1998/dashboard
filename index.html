@@ -507,7 +507,7 @@
     <div>
       <div class="kicker">ديوان القهوة للتجارة المحدودة</div>
       <h1>نظام واحد يجمع أداء <b>كل الإدارات</b>، ويحوّله لقرار</h1>
-      <p class="herotext">تقييم يومي موحّد لكل إدارات الشركة على أربعة أبعاد ثابتة — أساسية، جودة، سلوك، مبادرات — مع رصد المهام العاجلة والبونص، في لوحة تحكم واحدة تُحدَّث أولًا بأول.</p>
+      <p class="herotext">تقييم يومي موحّد لكل إدارات الشركة على خمسة أبعاد ثابتة — أساسية، جودة، اجتماعات، سلوك، مبادرات — مع رصد المهام العاجلة والبونص، في لوحة تحكم واحدة تُحدَّث أولًا بأول.</p>
       <div class="heroactions">
         <a class="btn btn-gold" href="#" onclick="showDashboard(); return false;">افتح لوحة التحكم</a>
         <a class="btn btn-ghost" href="#dimensions">آلية التقييم</a>
@@ -592,26 +592,28 @@
       <div class="fcard">
         <div class="ftag" style="background:rgba(201,162,75,0.16); color:var(--gold);">⇄</div>
         <h3>مقارنة جنبًا إلى جنب</h3>
-        <p>اختر إدارتين لمقارنة أدائهما على الأبعاد الأربعة في آن واحد.</p>
+        <p>اختر إدارتين لمقارنة أدائهما على الأبعاد الخمسة في آن واحد.</p>
       </div>
     </div>
   </section>
 
   <section id="dimensions">
     <div class="sectitle">آلية التقييم — 10 نقاط لكل مهمة</div>
-    <p class="secsub">كل مهمة تُقيَّم على أربعة أبعاد ثابتة، بالإضافة إلى بونص منفصل للمهام العاجلة يُضاف بلا سقف.</p>
+    <p class="secsub">كل مهمة تُقيَّم على خمسة أبعاد ثابتة، بالإضافة إلى بونص منفصل للمهام العاجلة يُضاف بلا سقف.</p>
     <div class="dimband">
       <div class="segbar">
         <i style="width:40%; background:var(--green);"></i>
         <i style="width:20%; background:var(--teal);"></i>
-        <i style="width:20%; background:var(--gold);"></i>
-        <i style="width:20%; background:var(--gold-2);"></i>
+        <i style="width:20%; background:#8E7CC3;"></i>
+        <i style="width:10%; background:var(--gold);"></i>
+        <i style="width:10%; background:var(--gold-2);"></i>
       </div>
       <div class="dimlegend">
         <div class="dimitem"><div class="t"><span class="dot" style="background:var(--green);"></span>المهام الأساسية</div><div class="w">4 من 10</div></div>
         <div class="dimitem"><div class="t"><span class="dot" style="background:var(--teal);"></span>جودة المخرجات</div><div class="w">2 من 10</div></div>
-        <div class="dimitem"><div class="t"><span class="dot" style="background:var(--gold);"></span>السلوك المهني والتعاون</div><div class="w">2 من 10</div></div>
-        <div class="dimitem"><div class="t"><span class="dot" style="background:var(--gold-2);"></span>المبادرات</div><div class="w">2 من 10</div></div>
+        <div class="dimitem"><div class="t"><span class="dot" style="background:#8E7CC3;"></span>الاجتماعات</div><div class="w">2 من 10</div></div>
+        <div class="dimitem"><div class="t"><span class="dot" style="background:var(--gold);"></span>السلوك المهني والتعاون</div><div class="w">1 من 10</div></div>
+        <div class="dimitem"><div class="t"><span class="dot" style="background:var(--gold-2);"></span>المبادرات</div><div class="w">1 من 10</div></div>
       </div>
     </div>
   </section>
@@ -677,7 +679,7 @@
           <h3><span data-i18n="trend_title">اتجاه الأداء اليومي</span>
             <span class="legend" id="trend-legend"></span>
           </h3>
-          <div style="font-size:10px; color:var(--text-dim); margin:-6px 0 6px;" data-i18n="trend_note">المتوسط الكلي = حاصل جمع الأبعاد الأربعة.</div>
+          <div style="font-size:10px; color:var(--text-dim); margin:-6px 0 6px;" data-i18n="trend_note">المتوسط الكلي = حاصل جمع الأبعاد الخمسة.</div>
           <svg class="chart" id="trendchart" viewBox="0 0 500 300"></svg>
         </div>
 
@@ -699,7 +701,7 @@
           <div class="tablewrap"><table class="dtable">
             <thead><tr>
               <th data-fixed-k="name" data-i18n="th_dept">الإدارة</th><th data-fixed-k="avg" data-i18n="th_overall">الأداء العام</th><th data-fixed-k="H" data-i18n="th_basic">الأساسية</th>
-              <th data-fixed-k="I" data-i18n="th_quality">الجودة</th><th data-fixed-k="J" data-i18n="th_behavior">السلوك</th><th data-fixed-k="K" data-i18n="th_initiatives">المبادرات</th>
+              <th data-fixed-k="I" data-i18n="th_quality">الجودة</th><th data-fixed-k="J" data-i18n="th_meetings">الاجتماعات</th><th data-fixed-k="K" data-i18n="th_behavior">السلوك</th><th data-fixed-k="L" data-i18n="th_initiatives">المبادرات</th>
               <th data-fixed-k="urgent_count" data-i18n="th_urgent">العاجلة</th><th data-fixed-k="incomplete_count" data-i18n="th_incomplete">غير مكتملة</th><th data-fixed-k="urgent_bonus" data-i18n="th_bonus">البونص</th><th data-fixed-k="final" data-i18n="th_final">النهائي</th>
             </tr></thead>
             <tbody id="tbody"></tbody>
@@ -778,7 +780,7 @@
       </div>
       <div class="grid3">
         <div class="panel">
-          <h3 data-i18n="cmp_radar_title">مقارنة الأبعاد الأربعة</h3>
+          <h3 data-i18n="cmp_radar_title">مقارنة الأبعاد الخمسة</h3>
           <svg class="chart" id="cmp-radar" viewBox="0 0 260 240" style="max-width:300px; margin:0 auto; display:block;"></svg>
           <div class="legend" id="cmp-legend" style="margin-top:10px;"></div>
         </div>
@@ -798,8 +800,9 @@
           <div class="tablewrap"><table class="minitable">
             <tr><td data-i18n="crit_basic">المهام الأساسية</td><td class="num" data-i18n="num_4">4</td></tr>
             <tr><td data-i18n="crit_quality">جودة المخرجات</td><td class="num" data-i18n="num_2">2</td></tr>
-            <tr><td data-i18n="crit_behavior">السلوك المهني والتعاون</td><td class="num" data-i18n="num_2">2</td></tr>
-            <tr><td data-i18n="crit_initiatives">المبادرات</td><td class="num" data-i18n="num_2">2</td></tr>
+            <tr><td data-i18n="crit_meetings">الاجتماعات (تلقائي من حضور الاجتماعات)</td><td class="num" data-i18n="num_2">2</td></tr>
+            <tr><td data-i18n="crit_behavior">السلوك المهني والتعاون</td><td class="num" data-i18n="num_1">1</td></tr>
+            <tr><td data-i18n="crit_initiatives">المبادرات</td><td class="num" data-i18n="num_1">1</td></tr>
             <tr><td data-i18n="crit_bonus">بونص المهمة العاجلة (لكل مهمة)</td><td class="num" data-i18n="crit_bonus_val">حتى 2+</td></tr>
           </table></div>
         </div>
@@ -832,7 +835,7 @@ function initializeDashboard(SOURCE){
 // Business rule: a blank evaluation and an explicit zero both mean incomplete.
 // Normalize copies so that cards, averages, trends and task details use one rule.
 SOURCE={...SOURCE,
- rows:SOURCE.rows.map(r=>({...r,total:r.total??0,dims:r.dims.map(x=>x??0)})),
+ rows:SOURCE.rows.map(r=>({...r,total:r.total??0,dims:r.dims.map(x=>x===undefined?null:x)})),
  urgent:SOURCE.urgent.map(r=>({...r,score:r.score??0,bonus:r.bonus??0})),
  methodology:{...SOURCE.methodology,blank:'incomplete_counted_as_zero_in_average'}
 };
@@ -872,6 +875,7 @@ const newestUrgentFirst=(a,b)=>b.date.localeCompare(a.date);
 function scoreDescending(a,b){return (b.final??-Infinity)-(a.final??-Infinity)||a.code.localeCompare(b.code)}
 function baseDescending(a,b){return (b.avg??-Infinity)-(a.avg??-Infinity)||a.code.localeCompare(b.code)}
 const mean=arr=>arr.length?arr.reduce((s,v)=>s+v,0)/arr.length:null;
+const meanN=arr=>mean(arr.filter(v=>typeof v==='number'));
 function aggregate(month,week){
  const rows=SOURCE.rows.filter(r=>periodContains(r.date,month,week));
  const urgent=SOURCE.urgent.filter(r=>urgentPeriodContains(r.date,month,week)).sort(newestUrgentFirst);
@@ -879,9 +883,9 @@ function aggregate(month,week){
    const rr=rows.filter(r=>r.dept===d.name),scored=rr.filter(r=>typeof r.total==='number');
    const ur=urgent.filter(r=>r.dept===d.name),done=ur.filter(r=>r.score>0);
    const daily={};
-   scored.forEach(r=>{const v=daily[r.date]??={count:0,sum:0,comp_sum:[0,0,0,0]};v.count++;v.sum+=r.total??0;r.dims.forEach((x,i)=>v.comp_sum[i]+=x??0);v.avg=v.sum/v.count});
+   scored.forEach(r=>{const v=daily[r.date]??={count:0,sum:0,comp_sum:[0,0,0,0,0]};v.count++;v.sum+=r.total??0;r.dims.forEach((x,i)=>v.comp_sum[i]+=x??0);v.avg=v.sum/v.count});
    const avg=mean(scored.map(r=>r.total)),bonus=done.reduce((s,r)=>s+r.bonus,0);
-   return {...d,avg,final:avg===null?null:avg+bonus,record_count:rr.length,count:scored.filter(r=>r.total!==0).length,incomplete_count:scored.filter(r=>r.total===0).length,pending_count:rr.length-scored.length,comp_avg:[0,1,2,3].map(i=>mean(scored.map(r=>r.dims[i]))),daily,urgent_count:done.length,urgent_incomplete:ur.length-done.length,urgent_bonus:bonus,urgent_tasks:done,urgent_pending:ur.filter(r=>r.score===0)};
+   return {...d,avg,final:avg===null?null:avg+bonus,record_count:rr.length,count:scored.filter(r=>r.total!==0).length,incomplete_count:scored.filter(r=>r.total===0).length,pending_count:rr.length-scored.length,comp_avg:[0,1,2,3,4].map(i=>meanN(scored.map(r=>r.dims[i]))),comp_n:[0,1,2,3,4].map(i=>scored.filter(r=>typeof r.dims[i]==='number').length),daily,urgent_count:done.length,urgent_incomplete:ur.length-done.length,urgent_bonus:bonus,urgent_tasks:done,urgent_pending:ur.filter(r=>r.score===0)};
  });
  const ranked=departments.filter(d=>d.avg!==null).sort((a,b)=>b.final-a.final);ranked.forEach((d,i)=>d.rank=i+1);departments.filter(d=>d.avg===null).forEach(d=>d.rank='–');
  const days=[...new Set(rows.map(r=>r.date))].sort();
@@ -894,12 +898,12 @@ function trendPoints(names=activeDepts().map(d=>d.name)){
   const w=currentWeek?weeksFor(month).find(w=>w.id===currentWeek):null;
   const start=w?w.start:weeksFor(month)[0].start;
   const end=w?w.end:iso(new Date(Date.UTC(+month.slice(0,4),+month.slice(5,7),0)));
-  return {start,end,label:monthLabel(month),count:depts.reduce((s,d)=>s+d.record_count-d.pending_count,0),overall:mean(depts.map(d=>d.avg)),...Object.fromEntries(['H','I','J','K'].map((k,i)=>[k,mean(depts.map(d=>d.comp_avg[i]))]))};
+  return {start,end,label:monthLabel(month),count:depts.reduce((s,d)=>s+d.record_count-d.pending_count,0),overall:mean(depts.map(d=>d.avg)),...Object.fromEntries(['H','I','J','K','L'].map((k,i)=>[k,meanN(depts.map(d=>d.comp_avg[i]))]))};
  });
  const periods=currentWeek?(()=>{const w=weeksFor(currentMonth).find(x=>x.id===currentWeek),a=[];for(let d=w.start;d<=w.end&&d<=SOURCE.cutoff;d=addDay(d,1))if(evaluationDate(d))a.push({start:d,end:d});return a})():weeksFor(currentMonth).filter(w=>w.start<=SOURCE.cutoff);
  return periods.map(p=>{const r=SOURCE.rows.filter(r=>evaluationDate(r.date)&&names.includes(r.dept)&&r.date>=p.start&&r.date<=p.end&&r.date<=SOURCE.cutoff&&typeof r.total==='number');
  const groups=[...new Set(r.map(x=>x.dept))].map(name=>r.filter(x=>x.dept===name));
- return {...p,label:currentWeek?p.start.slice(8)+'/'+p.start.slice(5,7):p.start.slice(8)+'/'+p.start.slice(5,7)+' – '+p.end.slice(8)+'/'+p.end.slice(5,7),count:r.length,overall:mean(groups.map(g=>mean(g.map(x=>x.total)))),...Object.fromEntries(['H','I','J','K'].map((k,i)=>[k,mean(groups.map(g=>mean(g.map(x=>x.dims[i]))))]))}});
+ return {...p,label:currentWeek?p.start.slice(8)+'/'+p.start.slice(5,7):p.start.slice(8)+'/'+p.start.slice(5,7)+' – '+p.end.slice(8)+'/'+p.end.slice(5,7),count:r.length,overall:mean(groups.map(g=>mean(g.map(x=>x.total)))),...Object.fromEntries(['H','I','J','K','L'].map((k,i)=>[k,meanN(groups.map(g=>meanN(g.map(x=>x.dims[i]))))]))}});
 }
 function trendTitle(){if(currentMonth==='all')return LANG==='ar'?(currentWeek?'مقارنة نفس الأسبوع عبر الشهور':'اتجاه الأداء الشهري'):(currentWeek?'Same week across months':'Monthly Performance Trend');return LANG==='ar'?(currentWeek?'اتجاه الأداء اليومي':'اتجاه الأداء الأسبوعي'):(currentWeek?'Daily Performance Trend':'Weekly Performance Trend')}
 function plotTrend(svg,points,series=['overall']){
@@ -951,10 +955,10 @@ const I18N = {
     kpi_depts:'الإدارات المعروضة', unit_dept:'إدارة', kpi_incomplete:'مهام غير مكتملة', in_progress:'قيد التنفيذ',
     completion_rate:'نسبة الإنجاز', completion_sub:'مكتمل / إجمالي المهام', kpi_best:'أفضل إدارة أداءً',
     hero_line1:'الأداء العالي يبدأ', hero_line2:'من البيانات الصحيحة',
-    trend_title:'اتجاه الأداء اليومي', trend_note:'المتوسط الكلي = حاصل جمع الأبعاد الأربعة.',
+    trend_title:'اتجاه الأداء اليومي', trend_note:'المتوسط الكلي = حاصل جمع الأبعاد الخمسة.',
     rank_title:'ترتيب الإدارات — من الأكبر إلى الأصغر',
     detail_table_title:'أداء الإدارات التفصيلي', sort_hint:'مرتّب تنازليًا حسب التقييم النهائي',
-    th_dept:'الإدارة', th_overall:'الأداء العام', th_basic:'الأساسية', th_quality:'الجودة', th_behavior:'السلوك',
+    th_dept:'الإدارة', th_overall:'الأداء العام', th_basic:'الأساسية', th_quality:'الجودة', th_meetings:'الاجتماعات', th_behavior:'السلوك',
     th_initiatives:'المبادرات', th_urgent:'العاجلة', th_incomplete:'غير مكتملة', th_bonus:'البونص', th_final:'النهائي',
     radar_title:'تحليل متعدد الأبعاد', urgent_bonus_title:'المهام العاجلة والبونص',
     urgent_flagged:'مهمة عاجلة مكتملة', bonus_earned:'نقاط بونص مُكتسبة',
@@ -968,12 +972,12 @@ const I18N = {
     nav_home:'الرئيسية', nav_dept:'الأداء حسب الإدارة', nav_details:'تفاصيل التقييمات', nav_urgent:'المهام العاجلة والبونص',
     nav_weekly:'التقرير الأسبوعي', nav_monthly:'التقرير الشهري', nav_compare:'مقارنة الإدارات', nav_settings:'إعدادات',
     page_details_title:'تفاصيل التقييمات — كل الإدارات', th_avg_short:'المتوسط', th_basic4:'الأساسية /4',
-    th_quality2:'الجودة /2', th_behavior2:'السلوك /2', th_init2:'المبادرات /2', th_evalcount:'عدد التقييمات',
+    th_quality2:'الجودة /2', th_behavior2:'السلوك /1', th_init2:'المبادرات /1', th_evalcount:'عدد التقييمات',
     th_bestday:'أفضل يوم', th_worstday:'أضعف يوم',
     page_urgent_title:'المهام العاجلة والبونص — كل الإدارات', ur_total:'المهام العاجلة المكتملة',
     ur_bonus:'إجمالي نقاط البونص', ur_avg:'متوسط تقييم المهام العاجلة', th_date:'التاريخ', th_desc:'الوصف', th_score:'التقييم',
     page_compare_title:'مقارنة الإدارات', cmp_first:'الإدارة الأولى', cmp_second:'الإدارة الثانية',
-    cmp_radar_title:'مقارنة الأبعاد الأربعة', cmp_quick_title:'مقارنة سريعة', cmp_final_avg:'المتوسط النهائي',
+    cmp_radar_title:'مقارنة الأبعاد الخمسة', cmp_quick_title:'مقارنة سريعة', cmp_final_avg:'المتوسط النهائي',
     cmp_eval_count:'عدد التقييمات', cmp_urgent:'المهام العاجلة المكتملة', cmp_urgent_bonus:'بونص العاجلة',
     cmp_incomplete:'مهام غير مكتملة', cmp_rank:'الترتيب',
     page_weekly_title:'التقرير الأسبوعي', wk_summary_title:'ملخص الأسبوع الأول (1 – 7 سبتمبر 2026)',
@@ -983,11 +987,11 @@ const I18N = {
     monthly_placeholder_text:'النظام لسه في أول أسبوع تشغيل (1 – 7 سبتمبر 2026)، فمفيش شهر كامل نقدر نجمّع بياناته. بمجرد ما تتراكم بيانات أربع أسابيع، الصفحة دي هتتفعّل تلقائيًا بنفس تصميم التقرير الأسبوعي لكن على مستوى الشهر.',
     page_settings_title:'إعدادات النظام', settings_criteria_title:'معايير التقييم (من 10)',
     crit_basic:'المهام الأساسية', crit_quality:'جودة المخرجات', crit_behavior:'السلوك المهني والتعاون',
-    crit_initiatives:'المبادرات', crit_bonus:'بونص المهمة العاجلة (لكل مهمة)', crit_bonus_val:'حتى 2+', num_4:'4', num_2:'2',
+    crit_meetings:'الاجتماعات', crit_initiatives:'المبادرات', num_1:'1', crit_bonus:'بونص المهمة العاجلة (لكل مهمة)', crit_bonus_val:'حتى 2+', num_4:'4', num_2:'2',
     settings_depts_title:'الإدارات المشمولة بالنظام', th_manager:'المدير', th_code:'الكود',
     sidebar_filters:'الفلاتر', sidefoot_text:'الجودة تبدأ من فريق متميز',
     trend_dim_overall:'المتوسط الكلي', trend_dim_basic:'المهام الأساسية', trend_dim_quality:'جودة المخرجات',
-    trend_dim_behavior:'السلوك المهني', trend_dim_init:'المبادرات', trend_dim_all:'قارن الكل',
+    trend_dim_meet:'الاجتماعات', trend_dim_behavior:'السلوك المهني', trend_dim_init:'المبادرات', trend_dim_all:'قارن الكل',
     week1:'الأسبوع الأول', week2:'الأسبوع الثاني', week3:'الأسبوع الثالث', week4:'الأسبوع الرابع',
     month_sep:'سبتمبر 2026', no_week_data_title:'لا توجد بيانات لهذا الأسبوع بعد', no_urgent_tasks:'لا توجد مهام عاجلة.',
     dd_rank_prefix:'الترتيب', dd_of:'من', dd_manager:'مدير القسم:', dd_avg_label:'متوسط الأداء',
@@ -1007,10 +1011,10 @@ const I18N = {
     kpi_depts:'Departments Shown', unit_dept:'department', kpi_incomplete:'Incomplete Tasks', in_progress:'In progress',
     completion_rate:'Evaluation Completion Rate', completion_sub:'Completed / Total Tasks', kpi_best:'Top Performing Department',
     hero_line1:'High performance starts', hero_line2:'with accurate data',
-    trend_title:'Daily Performance Trend', trend_note:'Overall average = sum of the four dimensions.',
+    trend_title:'Daily Performance Trend', trend_note:'Overall average = sum of the five dimensions.',
     rank_title:'Department Ranking — Highest to Lowest',
     detail_table_title:'Detailed Department Performance', sort_hint:'Highest to lowest final score',
-    th_dept:'Department', th_overall:'Overall', th_basic:'Core Tasks', th_quality:'Quality', th_behavior:'Behavior',
+    th_dept:'Department', th_overall:'Overall', th_basic:'Core Tasks', th_quality:'Quality', th_meetings:'Meetings', th_behavior:'Behavior',
     th_initiatives:'Initiatives', th_urgent:'Urgent', th_incomplete:'Incomplete', th_bonus:'Bonus', th_final:'Final',
     radar_title:'Multi-Dimensional Analysis', urgent_bonus_title:'Urgent Tasks & Bonus',
     urgent_flagged:'Completed urgent task', bonus_earned:'Bonus points earned',
@@ -1024,7 +1028,7 @@ const I18N = {
     nav_home:'Home', nav_dept:'Performance by Department', nav_details:'Evaluation Details', nav_urgent:'Urgent Tasks & Bonus',
     nav_weekly:'Weekly Report', nav_monthly:'Monthly Report', nav_compare:'Compare Departments', nav_settings:'Settings',
     page_details_title:'Evaluation Details — All Departments', th_avg_short:'Average', th_basic4:'Core /4',
-    th_quality2:'Quality /2', th_behavior2:'Behavior /2', th_init2:'Initiatives /2', th_evalcount:'Evaluations',
+    th_quality2:'Quality /2', th_behavior2:'Behavior /1', th_init2:'Initiatives /1', th_evalcount:'Evaluations',
     th_bestday:'Best Day', th_worstday:'Worst Day',
     page_urgent_title:'Urgent Tasks & Bonus — All Departments', ur_total:'Completed Urgent Tasks',
     ur_bonus:'Total Bonus Points', ur_avg:'Average Urgent Task Score', th_date:'Date', th_desc:'Description', th_score:'Score',
@@ -1039,11 +1043,11 @@ const I18N = {
     monthly_placeholder_text:'The system is still in its first week of operation (Sep 1 – 7, 2026), so there isn\'t a full month of data to aggregate yet. Once four weeks of data have accumulated, this page will activate automatically with the same design as the weekly report, but at a monthly level.',
     page_settings_title:'System Settings', settings_criteria_title:'Evaluation Criteria (out of 10)',
     crit_basic:'Core Tasks', crit_quality:'Output Quality', crit_behavior:'Professional Behavior & Collaboration',
-    crit_initiatives:'Initiatives', crit_bonus:'Urgent Task Bonus (per task)', crit_bonus_val:'Up to +2', num_4:'4', num_2:'2',
+    crit_meetings:'Meetings', crit_initiatives:'Initiatives', num_1:'1', crit_bonus:'Urgent Task Bonus (per task)', crit_bonus_val:'Up to +2', num_4:'4', num_2:'2',
     settings_depts_title:'Departments Covered by the System', th_manager:'Manager', th_code:'Code',
     sidebar_filters:'Filters', sidefoot_text:'Quality starts with an outstanding team',
     trend_dim_overall:'Overall Average', trend_dim_basic:'Core Tasks', trend_dim_quality:'Output Quality',
-    trend_dim_behavior:'Professional Behavior', trend_dim_init:'Initiatives', trend_dim_all:'Compare All',
+    trend_dim_meet:'Meetings', trend_dim_behavior:'Professional Behavior', trend_dim_init:'Initiatives', trend_dim_all:'Compare All',
     week1:'Week 1', week2:'Week 2', week3:'Week 3', week4:'Week 4',
     month_sep:'September 2026', no_week_data_title:'No data for this week yet', no_urgent_tasks:'No urgent tasks.',
     dd_rank_prefix:'Rank', dd_of:'of', dd_manager:'Department Manager:', dd_avg_label:'Average Performance',
@@ -1082,8 +1086,9 @@ const dimKeys = {
   overall:{key:'trend_dim_overall', color:'#2BA6BE'},
   H:{key:'trend_dim_basic', color:'#34B27B'},
   I:{key:'trend_dim_quality', color:'#E0B24E'},
-  J:{key:'trend_dim_behavior', color:'#C9A24B'},
-  K:{key:'trend_dim_init', color:'#E4C377'},
+  J:{key:'trend_dim_meet', color:'#8E7CC3'},
+  K:{key:'trend_dim_behavior', color:'#C9A24B'},
+  L:{key:'trend_dim_init', color:'#E4C377'},
   all:{key:'trend_dim_all', color:null},
 };
 const dimMeta = new Proxy({}, { get(_, k){ return { label: T(dimKeys[k].key), color: dimKeys[k].color }; } });
@@ -1188,7 +1193,7 @@ function renderKPIs(){
 function drawTrend(){
  document.querySelector('[data-i18n="trend_title"]').textContent=trendTitle();
  document.querySelector('[data-i18n="trend_note"]').textContent=LANG==='ar'?'المتوسط الأساسي للإدارات بالتساوي، شامل التقييم صفر والخانات الفاضية بصفر، وبدون البونص. السبت–الخميس؛ يبدأ الشهر من أول سبت، وتُضم أيام السبت الخامس للرابع دون الجمعة؛ الفراغ يعني عدم وجود بيانات.':'Equal-weight department base averages, including zero and blank scores as zero, excluding bonus. Saturday–Thursday; starts on the first Saturday, with any fifth week merged into week four, excluding Fridays; gaps mean no data.';
- plotTrend(document.getElementById('trendchart'),trendPoints(),dimFilter==='all'?['overall','H','I','J','K']:[dimFilter]);
+ plotTrend(document.getElementById('trendchart'),trendPoints(),dimFilter==='all'?['overall','H','I','J','K','L']:[dimFilter]);
 } 
 
 function drawRangeStats(){
@@ -1208,9 +1213,9 @@ function drawRangeStats(){
 }
 
 function computeComposition(depts){
-  let sums=[0,0,0,0], count=0, bonus=0;
-  depts.forEach(d=>{ d.comp_avg.forEach((v,i)=> sums[i]+=v*(d.record_count-d.pending_count)); count+=d.record_count-d.pending_count; bonus+=d.urgent_bonus; });
-  return {sums, count, bonus};
+  let sums=[0,0,0,0,0], counts=[0,0,0,0,0], count=0, bonus=0;
+  depts.forEach(d=>{ d.comp_avg.forEach((v,i)=>{ if(typeof v==='number'){ sums[i]+=v*d.comp_n[i]; counts[i]+=d.comp_n[i]; } }); count+=d.record_count-d.pending_count; bonus+=d.urgent_bonus; });
+  return {sums, counts, count, bonus};
 }
 function computeCompletion(depts){
   const completed = depts.reduce((s,d)=>s+d.count,0);
@@ -1342,6 +1347,7 @@ function homeSortValue(d,k){
   if(k==='I') return d.comp_avg[1];
   if(k==='J') return d.comp_avg[2];
   if(k==='K') return d.comp_avg[3];
+  if(k==='L') return d.comp_avg[4];
   return d[k];
 }
 function renderTable(){
@@ -1372,6 +1378,7 @@ function renderTable(){
       <td class="num">${toAr(fmt1(d.comp_avg[1]))}</td>
       <td class="num">${toAr(fmt1(d.comp_avg[2]))}</td>
       <td class="num">${toAr(fmt1(d.comp_avg[3]))}</td>
+      <td class="num">${toAr(fmt1(d.comp_avg[4]))}</td>
 
       <td class="num">${toAr(d.urgent_count)}</td>
       <td class="num" style="color:${(d.incomplete_count||0)>10?'var(--rust)':'var(--text-dim)'}">${toAr(d.incomplete_count||0)}</td>
@@ -1392,9 +1399,9 @@ function renderRadarPicker(){
   if(!depts.find(d=>d.name===radarDept) && depts.length) radarDept = depts[0].name;
 }
 function computeRadarValues(depts){
-  const {sums,count} = computeComposition(depts);
-  const maxes=[4,2,2,2];
-  return count ? sums.map((s,i)=> (s/count)/maxes[i]*10) : [0,0,0,0];
+  const {sums,counts} = computeComposition(depts);
+  const maxes=[4,2,2,1,1];
+  return sums.map((s,i)=> counts[i] ? (s/counts[i])/maxes[i]*10 : 0);
 }
 function drawRadar(){
   const dept = DATA.departments.find(d=>d.name===radarDept);
@@ -1402,16 +1409,16 @@ function drawRadar(){
   const svg = document.getElementById('radarchart');
   const th = themeColors();
   if(!dept||dept.avg===null){ svg.innerHTML='<text x="130" y="120" text-anchor="middle" fill="#8E9BB3">'+(LANG==='ar'?'لا توجد بيانات':'No data')+'</text>'; return; }
-  const labels=[T('th_overall'),T('th_quality'),T('th_behavior'),T('th_initiatives')];
-  const maxes=[4,2,2,2];
+  const labels=[T('th_basic'),T('th_quality'),T('th_meetings'),T('th_behavior'),T('th_initiatives')];
+  const maxes=[4,2,2,1,1];
   if(dept.avg===null){svg.innerHTML=`<text x="130" y="120" text-anchor="middle" fill="${th.dim}" font-size="11">${LANG==='ar'?'لا توجد تقييمات مكتملة':'No scored evaluations'}</text>`;return;}
-  const deptVals = dept.comp_avg.map((v,i)=> v/maxes[i]*10);
+  const deptVals = dept.comp_avg.map((v,i)=> (v??0)/maxes[i]*10);
   const companyVals = computeRadarValues(activeDepts());
   const cx=130, cy=118, R=85;
-  const pt=(val,i)=>{ const a=(-90+i*90)*Math.PI/180; const rr=(val/10)*R; return [cx+rr*Math.cos(a), cy+rr*Math.sin(a)]; };
+  const pt=(val,i)=>{ const a=(-90+i*72)*Math.PI/180; const rr=(val/10)*R; return [cx+rr*Math.cos(a), cy+rr*Math.sin(a)]; };
   let rings='';
   [2,4,6,8,10].forEach(g=>{
-    const pts=[0,1,2,3].map(i=>pt(g,i));
+    const pts=[0,1,2,3,4].map(i=>pt(g,i));
     rings+=`<polygon points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${th.grid2}" stroke-width="1"/>`;
   });
   let axes='';
@@ -1421,8 +1428,8 @@ function drawRadar(){
     const lp = pt(12.5,i);
     axes+=`<text x="${lp[0].toFixed(1)}" y="${lp[1].toFixed(1)}" text-anchor="middle" font-family="'Noto Sans Arabic',Tahoma,Arial,sans-serif" font-size="9.5" fill="${th.dim}">${l}</text>`;
   });
-  const compPts = [0,1,2,3].map(i=>pt(companyVals[i],i));
-  const deptPts = [0,1,2,3].map(i=>pt(deptVals[i],i));
+  const compPts = [0,1,2,3,4].map(i=>pt(companyVals[i],i));
+  const deptPts = [0,1,2,3,4].map(i=>pt(deptVals[i],i));
   const compPoly = `<polygon points="${compPts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="rgba(142,155,179,0.12)" stroke="${th.dim}" stroke-width="1.5" stroke-dasharray="3,3"/>`;
   const deptPoly = `<polygon points="${deptPts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="rgba(43,166,190,0.22)" stroke="#2BA6BE" stroke-width="2"/>`;
   const deptDots = deptPts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="#2BA6BE"/>`).join('');
@@ -1436,8 +1443,8 @@ function renderInsights(){
   const bestDept = [...depts].sort((a,b)=>b.avg-a.avg)[0];
   const worstDept = [...depts].sort((a,b)=>a.avg-b.avg)[0];
   const goodText = LANG==='ar'
-    ? `«${deptName(bestDept)}» أعلى تقييم أساسي، بمتوسط ${fmt1(bestDept.avg)}/10 عبر الأبعاد الأربعة (الأساسية، الجودة، السلوك، المبادرات).`
-    : `“${deptName(bestDept)}” has the highest base score, with an average of ${fmt1(bestDept.avg)}/10 across the four dimensions (core tasks, quality, behavior, initiatives).`;
+    ? `«${deptName(bestDept)}» أعلى تقييم أساسي، بمتوسط ${fmt1(bestDept.avg)}/10 عبر الأبعاد الخمسة (الأساسية، الجودة، الاجتماعات، السلوك، المبادرات).`
+    : `“${deptName(bestDept)}” has the highest base score, with an average of ${fmt1(bestDept.avg)}/10 across the five dimensions (core tasks, quality, meetings, behavior, initiatives).`;
   const warnText = LANG==='ar'
     ? `«${deptName(worstDept)}» سجّلت أقل متوسط أداء (${fmt1(worstDept.avg)}/10) — تحتاج متابعة مع ${worstDept.manager}.`
     : `“${deptName(worstDept)}” recorded the lowest average performance (${fmt1(worstDept.avg)}/10) — needs follow-up with ${worstDept.manager}.`;
@@ -1630,9 +1637,9 @@ function drawDeptContent(){
         </div>
         <div>
           <h4>${T('dd_criteria_title')}</h4>
-          ${[T('th_basic'),T('th_quality'),T('th_behavior'),T('th_initiatives')].map((l,i)=>{
-            const maxes=[4,2,2,2];
-            const v = dept.comp_avg[i];
+          ${[T('th_basic'),T('th_quality'),T('th_meetings'),T('th_behavior'),T('th_initiatives')].map((l,i)=>{
+            const maxes=[4,2,2,1,1];
+            const v = dept.comp_avg[i]??0;
             return `<div class="comprow2"><div class="t"><span>${l}</span><span>${toAr(fmt1(v))}/${toAr(maxes[i])}</span></div><div class="compbarwrap2"><div class="compbar2" style="width:${(v/maxes[i]*100).toFixed(1)}%"></div></div></div>`;
           }).join('')}
           <h4 style="margin-top:18px;">${T('dd_urgent_title')}</h4>
@@ -1701,18 +1708,18 @@ function drawCompareRadar(){
   const dA = DATA.departments.find(d=>d.name===cmpA);
   const dB = DATA.departments.find(d=>d.name===cmpB);
   const th = themeColors();
-  const labels=[T('th_overall'),T('th_quality'),T('th_behavior'),T('th_initiatives')];
-  const maxes=[4,2,2,2];
-  const valsA = dA.comp_avg.map((v,i)=> v/maxes[i]*10);
-  const valsB = dB.comp_avg.map((v,i)=> v/maxes[i]*10);
+  const labels=[T('th_basic'),T('th_quality'),T('th_meetings'),T('th_behavior'),T('th_initiatives')];
+  const maxes=[4,2,2,1,1];
+  const valsA = dA.comp_avg.map((v,i)=> (v??0)/maxes[i]*10);
+  const valsB = dB.comp_avg.map((v,i)=> (v??0)/maxes[i]*10);
   const cx=130, cy=118, R=85;
-  const pt=(val,i)=>{ const a=(-90+i*90)*Math.PI/180; const rr=(val/10)*R; return [cx+rr*Math.cos(a), cy+rr*Math.sin(a)]; };
+  const pt=(val,i)=>{ const a=(-90+i*72)*Math.PI/180; const rr=(val/10)*R; return [cx+rr*Math.cos(a), cy+rr*Math.sin(a)]; };
   let rings='';
-  [2,4,6,8,10].forEach(g=>{ const pts=[0,1,2,3].map(i=>pt(g,i)); rings+=`<polygon points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${th.grid2}" stroke-width="1"/>`; });
+  [2,4,6,8,10].forEach(g=>{ const pts=[0,1,2,3,4].map(i=>pt(g,i)); rings+=`<polygon points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${th.grid2}" stroke-width="1"/>`; });
   let axes='';
   labels.forEach((l,i)=>{ const p=pt(10,i); axes+=`<line x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}" stroke="${th.grid2}"/>`; const lp=pt(12.5,i); axes+=`<text x="${lp[0].toFixed(1)}" y="${lp[1].toFixed(1)}" text-anchor="middle" font-family="'Noto Sans Arabic',Tahoma,Arial,sans-serif" font-size="9.5" fill="${th.dim}">${l}</text>`; });
-  const ptsA=[0,1,2,3].map(i=>pt(valsA[i],i));
-  const ptsB=[0,1,2,3].map(i=>pt(valsB[i],i));
+  const ptsA=[0,1,2,3,4].map(i=>pt(valsA[i],i));
+  const ptsB=[0,1,2,3,4].map(i=>pt(valsB[i],i));
   const polyA = `<polygon points="${ptsA.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="rgba(43,166,190,0.2)" stroke="#2BA6BE" stroke-width="2"/>`;
   const polyB = `<polygon points="${ptsB.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="rgba(201,162,75,0.18)" stroke="#C9A24B" stroke-width="2"/>`;
   document.getElementById('cmp-radar').setAttribute('viewBox','0 0 260 240');
@@ -1853,29 +1860,100 @@ document.getElementById('data-loading')?.remove();
 
 }
 const EMBEDDED_DATA = null;
+/* ===== مصادر البيانات =====
+   1) data.json : الأرشيف القديم (حتى 5 نوفمبر 2026) — يفضل زي ما هو بجوار index.html
+   2) Google Sheet المنشور (Publish to web كـ CSV) : البيانات الحية بعد 5 نوفمبر */
+const LEGACY_END='2026-11-05';
+const LIVE_SOURCES={departments:'',log:'',urgent:''};   // الصق هنا روابط CSV المنشورة (الأقسام / سجل التقييم / المهام العاجلة)
+const EXCLUDED_CODES=['WH'];
 function validateSource(data){
  const fail=message=>{throw new Error('Invalid data.json: '+message)};
  const dateOK=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&Number.isFinite(Date.parse(value))&&new Date(value).toISOString().slice(0,10)===value;
  const scoreOK=(value,max)=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=max;
  if(!data||data.schema_version!==1)fail('unsupported schema');
  if(!Array.isArray(data.departments)||!data.departments.length||!Array.isArray(data.rows)||!data.rows.length||!Array.isArray(data.urgent))fail('missing records');
- if(!dateOK(data.cutoff)||typeof data.generated_at!=='string'||!Number.isFinite(Date.parse(data.generated_at)))fail('missing update date');
- const names=new Set(),codes=new Set();
- for(const d of data.departments){if(!d||typeof d.name!=='string'||!d.name||typeof d.code!=='string'||!d.code||names.has(d.name)||codes.has(d.code)||d.code==='WH')fail('invalid or excluded department');names.add(d.name);codes.add(d.code);}
- if(!Array.isArray(data.months)||!data.months.length||data.months.some(m=>typeof m!=='string'||!/^\d{4}-(0[1-9]|1[0-2])$/.test(m))||new Set(data.months).size!==data.months.length)fail('invalid months');
+ if(!dateOK(data.cutoff))fail('missing update date');
+ const names=new Set();
+ for(const d of data.departments){if(!d||typeof d.name!=='string'||!d.name||typeof d.code!=='string'||!d.code||names.has(d.name))fail('invalid department');names.add(d.name);}
  for(const r of data.rows){
-  if(!r||!names.has(r.dept)||!dateOK(r.date)||typeof r.taskId!=='string'||!r.taskId||!Array.isArray(r.dims)||r.dims.length!==4||!r.dims.every((v,i)=>scoreOK(v,[4,2,2,2][i]))||!scoreOK(r.total,10)||Math.abs(r.total-r.dims.reduce((a,b)=>a+b,0))>1e-8)fail('invalid task evaluation');
+  if(!r||!names.has(r.dept)||!dateOK(r.date)||typeof r.taskId!=='string'||!r.taskId||!Array.isArray(r.dims)||r.dims.length!==4||!r.dims.every((v,i)=>v===null||scoreOK(v,[4,2,2,2][i])))fail('invalid task evaluation');
  }
- for(const r of data.urgent)if(!r||!names.has(r.dept)||!dateOK(r.date)||typeof r.desc!=='string'||!scoreOK(r.score,10)||!scoreOK(r.bonus,2)||Math.abs(r.bonus-r.score/5)>1e-8)fail('invalid urgent evaluation');
- const expectedMonths=[...new Set([...data.rows,...data.urgent].filter(r=>r.date<=data.cutoff).map(r=>r.date.slice(0,7)))].sort();
- if(JSON.stringify(expectedMonths)!==JSON.stringify(data.months))fail('months do not match the records');
  return data;
 }
-// Check all publications, including manual updates outside the Monday schedule.
+/* ---------- CSV ---------- */
+function parseCSV(text){
+ const rows=[];let row=[],cell='',q=false;
+ for(let i=0;i<text.length;i++){
+  const c=text[i];
+  if(q){if(c==='"'){if(text[i+1]==='"'){cell+='"';i++;}else q=false;}else cell+=c;}
+  else if(c==='"')q=true;
+  else if(c===','){row.push(cell);cell='';}
+  else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell='';}
+  else cell+=c;
+ }
+ if(cell!==''||row.length){row.push(cell);rows.push(row);}
+ return rows;
+}
+function arDigits(t){return String(t).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/٫/g,'.').replace(/٬/g,'');}
+function csvNum(t){t=arDigits(t).trim().replace(',','.');if(t==='')return null;const n=Number(t);return Number.isFinite(n)?n:null;}
+function csvDate(t){
+ t=arDigits(t).trim();let m=t.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+ if(m)return m[1]+'-'+m[2].padStart(2,'0')+'-'+m[3].padStart(2,'0');
+ m=t.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})/);
+ if(m)return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');
+ return null;
+}
+async function fetchCSV(url){
+ const r=await fetch(url+(url.includes('?')?'&':'?')+'v='+Date.now(),{cache:'no-store'});
+ if(!r.ok)throw new Error('HTTP '+r.status);
+ return parseCSV(await r.text()).slice(1);
+}
+async function loadLive(){
+ if(!LIVE_SOURCES.departments||!LIVE_SOURCES.log||!LIVE_SOURCES.urgent)return null;
+ const [dp,lg,ug]=await Promise.all([fetchCSV(LIVE_SOURCES.departments),fetchCSV(LIVE_SOURCES.log),fetchCSV(LIVE_SOURCES.urgent)]);
+ const departments=dp.filter(r=>r[1]&&r[1].trim()).map(r=>({code:r[0].trim(),name:r[1].trim(),manager:(r[2]||'').trim()}));
+ const byName={};departments.forEach(d=>byName[d.name]=d);
+ const rows=[];
+ for(const r of lg){
+  const date=csvDate(r[0]);const d=byName[(r[2]||'').trim()];
+  if(!date||!d||date<=LEGACY_END||EXCLUDED_CODES.includes(d.code)||!r[1])continue;
+  const g=csvNum(r[6]);
+  const dims=g===null?[0,0,0,0,0]:[g,csvNum(r[7])??0,csvNum(r[8])??0,csvNum(r[9])??0,csvNum(r[10])??0];
+  rows.push({dept:d.name,date,taskId:r[1].trim(),taskName:(r[4]||'').trim(),freq:(r[5]||'').trim(),dims,total:Math.round(dims.reduce((a,b)=>a+b,0)*1e6)/1e6});
+ }
+ const urgent=[];
+ for(const r of ug){
+  const date=csvDate(r[0]);const d=byName[(r[1]||'').trim()];
+  if(!date||!d||date<=LEGACY_END||EXCLUDED_CODES.includes(d.code))continue;
+  const score=csvNum(r[3])??0;
+  urgent.push({dept:d.name,date,desc:(r[2]||'').trim(),score,bonus:Math.round(score/5*1e6)/1e6});
+ }
+ return {departments:departments.filter(d=>!EXCLUDED_CODES.includes(d.code)),rows,urgent};
+}
+function combineSources(legacy,live){
+ const today=new Date(Date.now()+3*3600e3).toISOString().slice(0,10);
+ const conv=r=>({...r,dims:[r.dims[0]??0,r.dims[1]??0,null,(r.dims[2]??0)/2,(r.dims[3]??0)/2]});
+ let departments=legacy.departments.filter(d=>!EXCLUDED_CODES.includes(d.code));
+ let rows=legacy.rows.filter(r=>r.date<=LEGACY_END).map(conv),urgent=legacy.urgent.filter(r=>r.date<=LEGACY_END);
+ if(live){
+  const liveByCode={};live.departments.forEach(d=>liveByCode[d.code]=d);
+  const oldName={};legacy.departments.forEach(d=>oldName[d.name]=liveByCode[d.code]?liveByCode[d.code].name:d.name);
+  rows=rows.map(r=>({...r,dept:oldName[r.dept]||r.dept}));urgent=urgent.map(r=>({...r,dept:oldName[r.dept]||r.dept}));
+  const legacyByCode={};legacy.departments.forEach(d=>legacyByCode[d.code]=d);
+  departments=live.departments.map(d=>({...(legacyByCode[d.code]||{}),...d,manager:d.manager||(legacyByCode[d.code]||{}).manager||''}));
+  legacy.departments.forEach(d=>{if(!liveByCode[d.code]&&!EXCLUDED_CODES.includes(d.code))departments.push(d);});
+  rows=rows.concat(live.rows);urgent=urgent.concat(live.urgent);
+ }
+ const cutoff=live?today:legacy.cutoff;
+ const months=[...new Set([...rows,...urgent].filter(r=>r.date<=cutoff).map(r=>r.date.slice(0,7)))].sort();
+ const version=rows.length+':'+Math.round(rows.reduce((a,r)=>a+r.total,0)*100)+':'+urgent.length+':'+Math.round(urgent.reduce((a,r)=>a+r.score,0)*100)+':'+departments.map(d=>d.manager).join('|').length;
+ return {...legacy,schema_version:2,departments,rows,urgent,cutoff,months,generated_at:version};
+}
+// Check live sheet periodically and reload when the data changed.
 function startAutomaticRefresh(data){
- if(location.protocol==='file:')return;
+ if(location.protocol==='file:'||!LIVE_SOURCES.log)return;
  let timer=null,busy=false,reloading=false,failures=0;
- const loadedVersion=data.generated_at,interval=60000;
+ const loadedVersion=data.generated_at,interval=120000;
  function later(delay=interval){clearTimeout(timer);timer=setTimeout(check,delay);}
  async function check(){
   if(busy||reloading)return;
@@ -1883,9 +1961,8 @@ function startAutomaticRefresh(data){
   if(document.hidden){later();return;}
   busy=true;
   try{
-   const response=await fetch('./data.json?v='+Date.now(),{cache:'no-store'});
-   if(!response.ok)throw new Error('HTTP '+response.status);
-   const fresh=validateSource(await response.json());
+   const live=await loadLive();
+   const fresh=combineSources(LEGACY_SOURCE,live);
    if(fresh.generated_at!==loadedVersion){
     try{sessionStorage.setItem('coffee-return-dashboard',document.getElementById('dashboard-view').style.display==='none'?'0':'1');}catch{}
     reloading=true;
@@ -1894,14 +1971,14 @@ function startAutomaticRefresh(data){
    failures=0;
   }catch(error){failures++;console.error('Automatic dashboard refresh:',error);}
   finally{busy=false;}
-  later(Math.min(interval*2**Math.min(failures,3),300000));
+  later(Math.min(interval*2**Math.min(failures,3),600000));
  }
  window.addEventListener('focus',check);
  window.addEventListener('online',check);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)check();});
  later();
 }
-
+let LEGACY_SOURCE=null;
 async function loadDashboard(){
  try{
   let data;
@@ -1911,9 +1988,12 @@ async function loadDashboard(){
   }else{
    const response=await fetch('./data.json?v='+Date.now(),{cache:'no-store'});
    if(!response.ok)throw new Error('HTTP '+response.status);
-   data=await response.json();
+   LEGACY_SOURCE=validateSource(await response.json());
+   let live=null;
+   try{live=await loadLive();}catch(e){console.error('Live sheet unavailable, showing archive only:',e);}
+   data=combineSources(LEGACY_SOURCE,live);
   }
-  initializeDashboard(validateSource(data));
+  initializeDashboard(data);
   try{if(sessionStorage.getItem('coffee-return-dashboard')==='1')window.showDashboard();sessionStorage.removeItem('coffee-return-dashboard');}catch{}
   startAutomaticRefresh(data);
  }catch(error){
@@ -1924,7 +2004,7 @@ async function loadDashboard(){
 }
 document.getElementById('load-json-button').onclick=()=>document.getElementById('load-json-file').click();
 document.getElementById('load-json-file').onchange=async event=>{
- try{const file=event.target.files[0];if(file)initializeDashboard(validateSource(JSON.parse(await file.text())));}
+ try{const file=event.target.files[0];if(file){const lg=validateSource(JSON.parse(await file.text()));initializeDashboard(combineSources(lg,null));}}
  catch(error){console.error(error);document.getElementById('data-loading-message').textContent='تعذّر قراءة ملف البيانات. اختَر ملف data.json الناتج من التحديث.';}
 };
 loadDashboard();
