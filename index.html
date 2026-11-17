@@ -1867,7 +1867,7 @@ const EMBEDDED_DATA = null;
    1) data.json : الأرشيف القديم (حتى 5 نوفمبر 2026) — يفضل زي ما هو بجوار index.html
    2) Google Sheet المنشور (Publish to web كـ CSV) : البيانات الحية بعد 5 نوفمبر */
 const LEGACY_END='2026-11-05';
-const LIVE_SOURCES={departments:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQXCv3Fm5EJ3L9s6OU2jNYNNVLp8ReinTUI86b-TwywbZ7mjQCxAAEq8nPBttqKCsVyj7pP6pF6LQN-/pub?gid=2101329946&single=true&output=csv',log:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQXCv3Fm5EJ3L9s6OU2jNYNNVLp8ReinTUI86b-TwywbZ7mjQCxAAEq8nPBttqKCsVyj7pP6pF6LQN-/pub?gid=64010379&single=true&output=csv',urgent:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQXCv3Fm5EJ3L9s6OU2jNYNNVLp8ReinTUI86b-TwywbZ7mjQCxAAEq8nPBttqKCsVyj7pP6pF6LQN-/pub?gid=546086031&single=true&output=csv'};   // الصق هنا روابط CSV المنشورة (الأقسام / سجل التقييم / المهام العاجلة)
+const LIVE_SOURCES={departments:'',log:'',urgent:''};   // الصق هنا روابط CSV المنشورة (الأقسام / سجل التقييم / المهام العاجلة)
 const EXCLUDED_CODES=['WH'];
 function validateSource(data){
  const fail=message=>{throw new Error('Invalid data.json: '+message)};
@@ -1927,7 +1927,7 @@ async function loadLive(){
  const urgent=[];
  for(const r of ug){
   const date=csvDate(r[0]);const d=byName[(r[1]||'').trim()];
-  if(!date||!d||date<=LEGACY_END||EXCLUDED_CODES.includes(d.code))continue;
+  if(!date||!d||EXCLUDED_CODES.includes(d.code))continue;
   const score=csvNum(r[3])??0;
   urgent.push({dept:d.name,date,desc:(r[2]||'').trim(),score,bonus:Math.round(score/5*1e6)/1e6});
  }
@@ -1945,7 +1945,7 @@ function combineSources(legacy,live){
   const legacyByCode={};legacy.departments.forEach(d=>legacyByCode[d.code]=d);
   departments=live.departments.map(d=>({...(legacyByCode[d.code]||{}),...d,manager:d.manager||(legacyByCode[d.code]||{}).manager||''}));
   legacy.departments.forEach(d=>{if(!liveByCode[d.code]&&!EXCLUDED_CODES.includes(d.code))departments.push(d);});
-  rows=rows.concat(live.rows);urgent=urgent.concat(live.urgent);
+  rows=rows.concat(live.rows);urgent=live.urgent;   // المهام العاجلة كلها من الشيت (أي مسح/تعديل ينعكس)
  }
  const cutoff=live?today:legacy.cutoff;
  const months=[...new Set([...rows,...urgent].filter(r=>r.date<=cutoff).map(r=>r.date.slice(0,7)))].sort();
