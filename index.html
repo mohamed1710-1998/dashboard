@@ -1867,7 +1867,7 @@ const EMBEDDED_DATA = null;
    1) data.json : الأرشيف القديم (حتى 5 نوفمبر 2026) — يفضل زي ما هو بجوار index.html
    2) Google Sheet المنشور (Publish to web كـ CSV) : البيانات الحية بعد 5 نوفمبر */
 const LEGACY_END='2026-11-05';
-const LIVE_SOURCES={departments:'',log:'',urgent:''};   // الصق هنا روابط CSV المنشورة (الأقسام / سجل التقييم / المهام العاجلة)
+const LIVE_SOURCES={departments:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQXCv3Fm5EJ3L9s6OU2jNYNNVLp8ReinTUI86b-TwywbZ7mjQCxAAEq8nPBttqKCsVyj7pP6pF6LQN-/pub?gid=2101329946&single=true&output=csv',log:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQXCv3Fm5EJ3L9s6OU2jNYNNVLp8ReinTUI86b-TwywbZ7mjQCxAAEq8nPBttqKCsVyj7pP6pF6LQN-/pub?gid=64010379&single=true&output=csv',urgent:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQXCv3Fm5EJ3L9s6OU2jNYNNVLp8ReinTUI86b-TwywbZ7mjQCxAAEq8nPBttqKCsVyj7pP6pF6LQN-/pub?gid=546086031&single=true&output=csv'};   // الصق هنا روابط CSV المنشورة (الأقسام / سجل التقييم / المهام العاجلة)
 const EXCLUDED_CODES=[];
 function validateSource(data){
  const fail=message=>{throw new Error('Invalid data.json: '+message)};
